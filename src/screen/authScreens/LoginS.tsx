@@ -1,16 +1,15 @@
-import React, {useCallback, useEffect} from 'react';
-import {Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
-import {useFonts} from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
 import logo from '../../assets/images/logoWitchWiFi.png'
 import TextInput from "../../components/TextInput";
 import {colors} from "../../assets/colors/colors";
 import Button from "../../components/Button";
-import {allowStateChangesEnd} from "mobx/dist/core/action";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {LinearGradient} from "expo-linear-gradient";
 import {useFormik} from "formik";
+import AuthStore from "../../store/AuthStore/auth-store";
+
 
 type LoginSProps = {
     navigation: NavigationProp<ParamListBase>
@@ -18,11 +17,13 @@ type LoginSProps = {
 
 
 const LoginS = ({navigation}: LoginSProps) => {
+    const { setAuth } = AuthStore
         const onSubmit = (values) => {
             /*AuthStoreService.login({
                 email: values.login.trim(),
                 password: values.password,
             })*/
+
             setSubmitting(false)
         }
         const {handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, setSubmitting} =
@@ -68,7 +69,7 @@ const LoginS = ({navigation}: LoginSProps) => {
                             <Text style={{color: colors.blueMedium, fontSize: 18, fontFamily: 'Onest-medium'}}>Forgot my
                                 password</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() =>     setAuth(true)}>
 
                             <LinearGradient
                                 colors={['#89BDE7', '#7EA7D9']}
@@ -85,6 +86,7 @@ const LoginS = ({navigation}: LoginSProps) => {
                             color: colors.blue, fontFamily: 'Onest-medium', fontSize: 18,
                             lineHeight: 21
                         }} title={'Create an account'} onPress={() => {
+
                         }}/>
                     </View>
                 </View>

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React from 'react';
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {observer} from "mobx-react-lite";
 import AuthStore from "../store/AuthStore";
@@ -6,12 +6,12 @@ import NotificationStore from "../store/NotificationStore/notification-store";
 import {NavigationContainer} from "@react-navigation/native";
 import {LoadingEnum} from "../store/types/types";
 import Loading from "../components/Loading";
-import { routerConstants } from '../constants/routerConstants';
-import HomeS from "../screen/mainScreens/HomeS";
+import {routerConstants} from '../constants/routerConstants';
+import NeedHelpS from "../screen/mainScreens/NeedHelpS";
 import LoginS from "../screen/authScreens/LoginS";
 import * as SplashScreen from 'expo-splash-screen';
-import {ActivityIndicator} from "react-native";
-import * as Font from 'expo-font';
+import MainNavigation from "./MainNavigation";
+
 SplashScreen.preventAutoHideAsync();
 
 const RootStack = createNativeStackNavigator()
@@ -27,7 +27,7 @@ const RootNavigation = observer(() => {
                     <RootStack.Screen
                         options={{ headerShown: false }}
                         name={routerConstants.MAIN}
-                        component={HomeS}
+                        component={MainNavigation}
                     />
                 ) : (
                     <RootStack.Screen

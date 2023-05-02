@@ -15,13 +15,12 @@ export const BaseWrapperComponent = ({
 	isKeyboardAwareScrollView = false,
 }: BaseWrapperComponentType) => {
 	return (
-		<SafeAreaView>
+		<SafeAreaView style={{flex:1, marginTop: 40}}>
 				{isKeyboardAwareScrollView ? (
 					<KeyboardAwareScrollView
 						enableOnAndroid={true}
 						keyboardShouldPersistTaps={'handled'}
 						contentContainerStyle={{
-							marginTop: 10,
 							marginBottom: 10,
 							width: '100%',
 						}}
@@ -31,9 +30,7 @@ export const BaseWrapperComponent = ({
 						{children}
 					</KeyboardAwareScrollView>
 				) : (
-					<View style={{flex: 1, marginTop: Platform.OS === 'ios' ? 0 : 10}}>
-						{children}
-					</View>
+					children
 				)}
 		</SafeAreaView>
 	)

@@ -14,6 +14,7 @@ export const colors: { [key: string]: string } = {
 
     white: '#FFFFFF',
     blueLight: '#D5E3FE',
+    blueLightMedium: '#7FA8DA',
     blueMedium: '#1F8298',
     blue: '#51658D',
 }

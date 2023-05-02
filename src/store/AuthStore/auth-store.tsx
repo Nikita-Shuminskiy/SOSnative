@@ -18,6 +18,7 @@ export class AuthStore {
 			setUser: action,
 			setAuth: action
 		})
+	this.setAuth = this.setAuth.bind(this)
 	}
 }
 
