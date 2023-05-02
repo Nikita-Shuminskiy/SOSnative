@@ -5,8 +5,11 @@ import userImages from '../../assets/images/user.png'
 import {colors} from "../../assets/colors/colors";
 import TextInput from "../../components/TextInput";
 import {LinearGradient} from "expo-linear-gradient";
+import * as Constants from "constants";
+import {routerConstants} from "../../constants/routerConstants";
+import Backdrop from "../../components/backdrop";
 
-const NeedHelpS = () => {
+const NeedHelpS = ({navigation}) => {
     return (
         <>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>
@@ -24,7 +27,8 @@ const NeedHelpS = () => {
                         </View>
                         <View style={{flex: 1, alignItems: 'center'}}>
                             <TextInput style={styles.input} placeholder={'I feel depressed...'}/>
-                            <TouchableOpacity onPress={() => {
+                            <TouchableOpacity onPress={() =>{
+                                navigation.navigate(routerConstants.EVALUATION_CONDITION)
                             }}>
                                 <LinearGradient
                                     colors={['#89BDE7', '#7EA7D9']}
@@ -36,15 +40,7 @@ const NeedHelpS = () => {
                     </View>
                 </View>
             </BaseWrapperComponent>
-            <LinearGradient
-                // Background Linear Gradient
-                colors={['rgba(255,255,255,0.04)','rgb(213,227,254)', '#d5e3fe']}
-                //start={{ x: 1, y: 0.1 }}
-                locations={[0.14, 0.8, 2]}
-                start={{x: 0.2, y: 0.1}}
-                //end={{x: 0, y: 1}}
-                style={styles.background}
-            />
+            <Backdrop/>
         </>
     );
 };
@@ -54,15 +50,6 @@ const styles = StyleSheet.create({
        marginRight: 20,
        marginLeft: 20,
 
-    },
-    background: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 0,
-        width: '100%',
-        height: 350,
-        zIndex: -1
     },
     button: {
         width: 265,

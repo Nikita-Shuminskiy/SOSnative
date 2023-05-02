@@ -7,7 +7,6 @@ import {NavigationContainer} from "@react-navigation/native";
 import {LoadingEnum} from "../store/types/types";
 import Loading from "../components/Loading";
 import {routerConstants} from '../constants/routerConstants';
-import NeedHelpS from "../screen/mainScreens/NeedHelpS";
 import LoginS from "../screen/authScreens/LoginS";
 import * as SplashScreen from 'expo-splash-screen';
 import MainNavigation from "./MainNavigation";
@@ -16,22 +15,21 @@ SplashScreen.preventAutoHideAsync();
 
 const RootStack = createNativeStackNavigator()
 const RootNavigation = observer(() => {
-    const { isLoading } = NotificationStore
-    const { isAuth, user } = AuthStore
-
+    const {isLoading} = NotificationStore
+    const {isAuth} = AuthStore
     return (
         <NavigationContainer>
-            {isLoading === LoadingEnum.fetching && <Loading visible={true} />}
+            {isLoading === LoadingEnum.fetching && <Loading visible={true}/>}
             <RootStack.Navigator>
                 {isAuth ? (
                     <RootStack.Screen
-                        options={{ headerShown: false }}
+                        options={{headerShown: false}}
                         name={routerConstants.MAIN}
                         component={MainNavigation}
                     />
                 ) : (
                     <RootStack.Screen
-                        options={{ headerShown: false }}
+                        options={{headerShown: false}}
                         name={routerConstants.LOGIN}
                         component={LoginS}
                     />
