@@ -3,6 +3,8 @@ import React from 'react'
 import {routerConstants} from "../constants/routerConstants";
 import NeedHelpS from "../screen/mainScreens/NeedHelpS";
 import EvaluationConditionS from "../screen/mainScreens/EvaluationConditionS";
+import EmotionalStateS from "../screen/mainScreens/EmotionalStateS";
+import SearchingVolunteerS from "../screen/mainScreens/SearchingVolunteerS";
 
 const MainStack = createNativeStackNavigator()
 
@@ -19,6 +21,16 @@ const MainNavigation = ({navigation, route}) => {
                 options={{headerShown: false, animation: 'flip'}}
                 name={routerConstants.EVALUATION_CONDITION}
                 component={EvaluationConditionS}
+            />
+            <MainStack.Screen
+                options={{headerShown: false, animation: 'flip'}}
+                name={routerConstants.EMOTIONAL_STATE}
+                component={EmotionalStateS}
+            />
+            <MainStack.Screen
+                options={{headerShown: false, animation: 'flip'}}
+                name={routerConstants.SEARCHING_VOLUNTEER}
+                component={SearchingVolunteerS}
             />
 
         </MainStack.Navigator>

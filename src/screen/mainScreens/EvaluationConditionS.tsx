@@ -1,20 +1,19 @@
 import React, {useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Image, StyleSheet, Text, View} from "react-native";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import bodyImg from '../../assets/images/Body.png'
-import arrowLeftImg from '../../assets/images/arrow_left.png'
 import {colors} from "../../assets/colors/colors";
-import {LinearGradient} from "expo-linear-gradient";
 import Backdrop from "../../components/backdrop";
 import Checkbox from 'expo-checkbox';
+import ButtonGradient from "../../components/ButtonGradient";
+import {routerConstants} from "../../constants/routerConstants";
+import ArrowBack from "../../components/ArrowBack";
 
 const EvaluationConditionS = ({navigation}) => {
     const [isChecked, setChecked] = useState(false);
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-            <TouchableOpacity style={{marginTop: 10, marginLeft: 10}} onPress={() => navigation.goBack()}>
-                <Image style={{width: 31, height: 31}} source={arrowLeftImg}/>
-            </TouchableOpacity>
+            <ArrowBack goBackPress={() => navigation.goBack()}/>
             <View style={styles.container}>
                 <View style={{marginTop: 40}}>
                     <Text style={styles.text}>Which part of your body is bothering you?</Text>
@@ -60,15 +59,13 @@ const EvaluationConditionS = ({navigation}) => {
                         />
                     </View>
                 </View>
-                <TouchableOpacity style={{flex: 1, width: '100%'}} onPress={() => {
-                    // navigation.navigate(routerConstants.EVALUATION_CONDITION)
-                }}>
-                    <LinearGradient
-                        colors={['#89BDE7', '#7EA7D9']}
-                        style={styles.button}>
-                        <Text style={styles.textBtn}>Continue</Text>
-                    </LinearGradient>
-                </TouchableOpacity>
+                <ButtonGradient
+                    styleTouchable={{flex: 1, width: '100%'}}
+                    styleGradient={styles.button}
+                    styleText={styles.textBtn}
+                    btnText={'Continue'}
+                    onPress={() => navigation.navigate(routerConstants.EMOTIONAL_STATE)}
+                />
             </View>
             <Backdrop/>
         </BaseWrapperComponent>

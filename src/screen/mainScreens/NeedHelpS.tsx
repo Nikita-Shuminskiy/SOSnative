@@ -8,6 +8,7 @@ import {LinearGradient} from "expo-linear-gradient";
 import * as Constants from "constants";
 import {routerConstants} from "../../constants/routerConstants";
 import Backdrop from "../../components/backdrop";
+import ButtonGradient from "../../components/ButtonGradient";
 
 const NeedHelpS = ({navigation}) => {
     return (
@@ -19,23 +20,27 @@ const NeedHelpS = ({navigation}) => {
                         <Image source={userImages} style={styles.logo}/>
                     </View>
                     <View style={styles.description}>
-                        <View style={{   alignItems: 'flex-start',
-                            flex: 1}}>
+                        <View style={{
+                            alignItems: 'flex-start',
+                            flex: 1
+                        }}>
                             <Text style={styles.textHi}>Hi, Michael!</Text>
                             <Text style={styles.text}>Don’t worry, we’re here to help you cope with any situation.
                                 Describe the problem and press the button below.</Text>
                         </View>
                         <View style={{flex: 1, alignItems: 'center'}}>
                             <TextInput style={styles.input} placeholder={'I feel depressed...'}/>
-                            <TouchableOpacity onPress={() =>{
-                                navigation.navigate(routerConstants.EVALUATION_CONDITION)
-                            }}>
-                                <LinearGradient
-                                    colors={['#89BDE7', '#7EA7D9']}
-                                    style={styles.button}>
-                                    <Text style={styles.textBtn}>I need help!</Text>
-                                </LinearGradient>
-                            </TouchableOpacity>
+                            <ButtonGradient
+                                styleGradient={{
+                                    width: 265,
+                                    height: 160,
+                                    borderRadius: 100
+                                }}
+                                styleText={{fontSize: 24}}
+                                btnText={'I need help!'}
+                                onPress={() => navigation.navigate(routerConstants.EVALUATION_CONDITION)}
+                            />
+
                         </View>
                     </View>
                 </View>
@@ -46,36 +51,12 @@ const NeedHelpS = ({navigation}) => {
 };
 const styles = StyleSheet.create({
     container: {
-       flex: 1,
-       marginRight: 20,
-       marginLeft: 20,
+        flex: 1,
+        marginRight: 20,
+        marginLeft: 20,
 
     },
-    button: {
-        width: 265,
-        height: 160,
-        borderRadius: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-       /* shadowColor: "rgba(0,0,0,0.56)",
-        shadowOffset: {
-            width: 0,
-            height: 5,
-        },
-        shadowOpacity: 0.34,
-        shadowRadius: 100,
 
-        elevation: 10,*/
-    },
-    input: {
-        marginBottom: 40
-    },
-    textBtn: {
-        color: colors.white,
-        fontFamily: 'Onest-medium',
-        fontSize: 24
-
-    },
     description: {
         marginTop: 80
     },
@@ -92,6 +73,9 @@ const styles = StyleSheet.create({
     logo: {
         width: 34,
         height: 34
+    },
+    input: {
+        marginBottom: 40
     },
     header: {
         alignItems: 'center',
