@@ -5,11 +5,11 @@ import NeedHelpS from "../screen/mainScreens/NeedHelpS";
 import EvaluationConditionS from "../screen/mainScreens/EvaluationConditionS";
 import EmotionalStateS from "../screen/mainScreens/EmotionalStateS";
 import SearchingVolunteerS from "../screen/mainScreens/SearchingVolunteerS";
+import UserProfileS from "../screen/mainScreens/UserProfileS";
 
 const MainStack = createNativeStackNavigator()
 
 const MainNavigation = ({navigation, route}) => {
-    console.log(route)
     return (
         <MainStack.Navigator>
             <MainStack.Screen
@@ -31,6 +31,11 @@ const MainNavigation = ({navigation, route}) => {
                 options={{headerShown: false, animation: 'flip'}}
                 name={routerConstants.SEARCHING_VOLUNTEER}
                 component={SearchingVolunteerS}
+            />
+            <MainStack.Screen
+                options={{headerShown: false, animation: 'flip'}}
+                name={routerConstants.USER_PROFILE}
+                component={UserProfileS}
             />
 
         </MainStack.Navigator>

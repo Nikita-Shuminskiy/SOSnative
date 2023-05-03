@@ -15,10 +15,10 @@ const NeedHelpS = ({navigation}) => {
         <>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>
                 <View style={styles.container}>
-                    <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.navigate(routerConstants.USER_PROFILE)} style={styles.header}>
                         <Text style={styles.nameUser}>Michael</Text>
                         <Image source={userImages} style={styles.logo}/>
-                    </View>
+                    </TouchableOpacity>
                     <View style={styles.description}>
                         <View style={{
                             alignItems: 'flex-start',

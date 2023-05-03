@@ -53,6 +53,7 @@ type ItemProps = {
     onPress: () => void;
     borderColor: string;
 };
+
 const Item = ({item, onPress, borderColor}: ItemProps) => (
     <TouchableOpacity onPress={onPress} style={[styles.item, {
         borderColor: borderColor,

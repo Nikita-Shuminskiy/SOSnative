@@ -56,7 +56,7 @@ const LoginS = ({navigation}: LoginSProps) => {
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <View style={styles.container}>
                 <View
-                    style={{justifyContent: 'center', flex: 1, alignItems: 'center', marginTop: 30, marginBottom: 30}}>
+                    style={{justifyContent: 'center', flex: 1, alignItems: 'center', marginTop: 10, marginBottom: 30}}>
                     <Image style={styles.logo} source={logo}/>
                     <Text style={styles.textHeader}>Welcome!{"\n"}
                         Log in to your account</Text>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image} from "react-native";
+import {StyleSheet, Text, View, Image, Platform} from "react-native";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import ArrowBack from "../../components/ArrowBack";
 import {colors} from "../../assets/colors/colors";
@@ -13,7 +13,7 @@ import imgPeople3 from "../../assets/images/Ellipse48.png";
 const SearchingVolunteerS = ({navigation}) => {
     return (
         <BaseWrapperComponent isBackdrop={true} isKeyboardAwareScrollView={true} styleSafeArea={{marginTop: 0}}>
-            <View style={{marginTop: 40, marginHorizontal: 30}}>
+            <View style={{marginTop: Platform.OS === 'ios' ? 10 : 40, marginHorizontal: 30}}>
                 <View style={{marginBottom: 70}}>
                     <ArrowBack styleTouchable={styles.arrowBack} img={arrowLeftImg}
                                goBackPress={() => navigation.goBack()}/>

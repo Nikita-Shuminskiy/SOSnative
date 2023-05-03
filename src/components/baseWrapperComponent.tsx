@@ -55,7 +55,7 @@ export const BaseWrapperComponent = ({
         )
     }
     return (
-        <SafeAreaView style={{flex: 1, marginTop: 40, ...styleSafeArea}}>
+        <SafeAreaView style={{flex: 1, marginTop: Platform.OS === 'ios' ? 10 : 40, ...styleSafeArea}}>
             {isKeyboardAwareScrollView ? (
                 checkOnBackDrop()
             ) : (
