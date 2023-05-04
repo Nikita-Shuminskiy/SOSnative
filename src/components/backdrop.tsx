@@ -9,7 +9,7 @@ const Backdrop = () => {
             colors={['rgba(255,255,255,0.04)','rgb(213,227,254)', '#d5e3fe']}
             //start={{ x: 1, y: 0.1 }}
             locations={[0.14, 0.8, 2]}
-            start={{x: 0.2, y: 0.1}}
+            start={{x: 0.4, y: 0.1}}
             //end={{x: 0, y: 1}}
             style={styles.background}
         />
@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: '100%',
         height: 350,
-        zIndex: -1
+        opacity: 0.4,
+        zIndex: -10
     },
 })
 

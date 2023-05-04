@@ -6,6 +6,7 @@ import EvaluationConditionS from "../screen/mainScreens/EvaluationConditionS";
 import EmotionalStateS from "../screen/mainScreens/EmotionalStateS";
 import SearchingVolunteerS from "../screen/mainScreens/SearchingVolunteerS";
 import UserProfileS from "../screen/mainScreens/UserProfileS";
+import ChatS from "../screen/mainScreens/ChatS";
 
 const MainStack = createNativeStackNavigator()
 
@@ -36,6 +37,11 @@ const MainNavigation = ({navigation, route}) => {
                 options={{headerShown: false, animation: 'flip'}}
                 name={routerConstants.USER_PROFILE}
                 component={UserProfileS}
+            />
+            <MainStack.Screen
+                options={{headerShown: false, animation: 'flip'}}
+                name={routerConstants.CHAT}
+                component={ChatS}
             />
 
         </MainStack.Navigator>

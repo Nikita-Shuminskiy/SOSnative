@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, Image, Platform} from "react-native";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import ArrowBack from "../../components/ArrowBack";
@@ -8,9 +8,15 @@ import PeoplesWitchElements from "../../assets/images/people-witch-elements.png"
 import imgPeople from "../../assets/images/people2.png";
 import imgPeople2 from "../../assets/images/Ellipse47.png";
 import imgPeople3 from "../../assets/images/Ellipse48.png";
+import {routerConstants} from "../../constants/routerConstants";
 
 
 const SearchingVolunteerS = ({navigation}) => {
+    useEffect(() => {
+        setTimeout(() => {
+            navigation.navigate(routerConstants.CHAT)
+        }, 3000)
+    }, [])
     return (
         <BaseWrapperComponent isBackdrop={true} isKeyboardAwareScrollView={true} styleSafeArea={{marginTop: 0}}>
             <View style={{marginTop: Platform.OS === 'ios' ? 10 : 40, marginHorizontal: 30}}>

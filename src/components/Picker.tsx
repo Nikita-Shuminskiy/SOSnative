@@ -1,7 +1,11 @@
 import React, {useRef, useState} from 'react';
 import {Picker as Select} from '@react-native-picker/picker';
+import {colors} from "../assets/colors/colors";
 
-const Picker = () => {
+type PickerProps = {
+    selectStyles?: any
+}
+const Picker = ({selectStyles}: PickerProps) => {
     const [selectedLanguage, setSelectedLanguage] = useState()
     const pickerRef = useRef<any>();
 
@@ -14,13 +18,33 @@ const Picker = () => {
     }
 
     return <Select
+        mode={'dialog'}
+        style={{
+            ...selectStyles,
+            flex: 1
+        }}
+        dropdownIconColor={colors.blue}
+        shouldRasterizeIOS={true}
         ref={pickerRef}
         selectedValue={selectedLanguage}
         onValueChange={(itemValue, itemIndex) =>
             setSelectedLanguage(itemValue)
         }>
-        <Select.Item label="Java" value="java"/>
-        <Select.Item label="JavaScript" value="js"/>
+        <Select.Item fontFamily={'Onest-light'} style={ {
+            color: colors.blue,
+            fontSize: 18
+        }} label="English"
+        value="English"/>
+        <Select.Item fontFamily={'Onest-light'} style={ {
+            color: colors.blue,
+            fontSize: 18
+        }} label="English"
+                     value="English"/>
+        <Select.Item fontFamily={'Onest-light'} style={ {
+            color: colors.blue,
+            fontSize: 18
+        }} label="English"
+                     value="English"/>
     </Select>
 };
 

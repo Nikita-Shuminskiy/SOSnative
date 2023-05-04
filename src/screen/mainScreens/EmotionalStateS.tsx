@@ -85,7 +85,7 @@ const EmotionalStateS = ({navigation}) => {
         <BaseWrapperComponent>
             <ArrowBack goBackPress={() => navigation.goBack()}/>
             <View style={styles.container}>
-                <View style={{marginTop: 40, marginBottom: 50}}>
+                <View style={{marginTop: 30, marginBottom: 30}}>
                     <Text style={styles.text}>Evaluate your condition using this scale</Text>
                 </View>
 
@@ -100,7 +100,7 @@ const EmotionalStateS = ({navigation}) => {
 
                 <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
                     <ButtonGradient
-                        styleTouchable={{flex: 1, width: '100%'}}
+                        styleTouchable={{flex: 1, width: '100%' }}
                         styleGradient={styles.button}
                         styleText={styles.textBtn}
                         btnText={'Continue'}
