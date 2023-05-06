@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
-import {Image, StyleSheet, Text, View} from "react-native";
+import {Image, Pressable, StyleSheet, Text, View} from "react-native";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import bodyImg from '../../assets/images/Body.png'
+import checkBodyImg from '../../assets/images/checkBody.png'
+import checkBodyHeadImg from '../../assets/images/checkbodyHead.png'
+import checkBodyHeadFalse from '../../assets/images/checkBodyHeadFalse.png'
 import {colors} from "../../assets/colors/colors";
 import Backdrop from "../../components/backdrop";
-import Checkbox from 'expo-checkbox';
 import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
 import ArrowBack from "../../components/ArrowBack";
@@ -23,40 +25,89 @@ const EvaluationConditionS = ({navigation}) => {
                     <Image style={styles.img} source={bodyImg}/>
 
                     <View style={{marginTop: 10}}>
-                        <Checkbox
-                            style={[styles.checkbox, styles.checkboxHead]}
-                            value={isChecked}
-                            onValueChange={setChecked}
-                            color={isChecked ? colors.blue : undefined}
-                        />
-                        <Text style={[styles.textBody, styles.head]}>head</Text>
-                        <Text style={[styles.textBody, styles.heart]}>heart</Text>
-                        <Checkbox
-                            style={[styles.checkbox, styles.checkboxHeart]}
-                            value={isChecked}
-                            onValueChange={setChecked}
-                            color={isChecked ? colors.blue : undefined}
-                        />
-                        <Text style={[styles.textBody, styles.stomach]}>stomach</Text>
-                        <Checkbox
-                            style={[styles.checkbox, styles.checkboxStomach]}
-                            value={isChecked}
-                            onValueChange={setChecked}
-                            color={isChecked ? colors.blue : undefined}
-                        />
-                        <Text style={[styles.textBody, styles.hands]}>hands</Text>
-                        <Checkbox
-                            style={[styles.checkbox, styles.checkboxHandsLeft]}
-                            value={isChecked}
-                            onValueChange={setChecked}
-                            color={isChecked ? colors.blue : undefined}
-                        />
-                        <Checkbox
-                            style={[styles.checkbox, styles.checkboxHandsRight]}
-                            value={isChecked}
-                            onValueChange={setChecked}
-                            color={isChecked ? colors.blue : undefined}
-                        />
+
+                        <View>
+
+                            {
+                                isChecked ?
+                                    <Pressable onTouchEnd={() => setChecked(false)}>
+                                        <Image style={{position: 'absolute', ...styles.checkboxHead}}
+                                               source={checkBodyHeadImg}/>
+                                    </Pressable>
+                                    :
+                                    <Pressable onTouchEnd={() => setChecked(true)}>
+                                        <Image style={{position: 'absolute', ...styles.checkboxHead}}
+                                               source={checkBodyHeadFalse}/>
+                                    </Pressable>
+
+                            }
+                            <Text
+                                style={[styles.textBody, styles.head, {color: isChecked ? colors.green : colors.blue}]}>head</Text>
+                        </View>
+
+                        <View>
+
+                            {
+                                isChecked ?
+                                    <Pressable onTouchEnd={() => setChecked(false)}>
+                                        <Image style={{position: 'absolute', ...styles.checkboxHeart}}
+                                               source={checkBodyImg}/>
+                                    </Pressable>
+                                    :
+                                    <View onTouchEnd={() => setChecked(true)}
+                                          style={{position: 'absolute', ...styles.checkboxHeart, ...styles.checkbox}}/>
+
+                            }
+                            <Text
+                                style={[styles.textBody, styles.heart, {color: isChecked ? colors.green : colors.blue}]}>heart</Text>
+                        </View>
+
+
+                        <View>
+                            {
+                                isChecked ?
+                                    <Pressable onTouchEnd={() => setChecked(false)}>
+                                        <Image style={{position: 'absolute', ...styles.checkboxStomach}}
+                                               source={checkBodyImg}/>
+                                    </Pressable>
+                                    :
+                                    <View onTouchEnd={() => setChecked(true)}
+                                          style={{position: 'absolute', ...styles.checkboxStomach, ...styles.checkbox}}/>
+
+                            }
+                            <Text
+                                style={[styles.textBody, styles.stomach, {color: isChecked ? colors.green : colors.blue}]}>stomach</Text>
+                        </View>
+
+
+                        <View>
+                            <Text
+                                style={[styles.textBody, styles.hands, {color: isChecked ? colors.green : colors.blue}]}>hands</Text>
+
+                            {
+                                isChecked ?
+                                    <Pressable onTouchEnd={() => setChecked(false)}>
+                                        <Image style={{position: 'absolute', ...styles.checkboxHandsLeft}}
+                                               source={checkBodyImg}/>
+                                    </Pressable>
+                                    :
+                                    <View onTouchEnd={() => setChecked(true)}
+                                          style={{position: 'absolute', ...styles.checkboxHandsLeft, ...styles.checkbox}}/>
+
+                            }
+                            {
+                                isChecked ?
+                                    <Pressable onTouchEnd={() => setChecked(false)}>
+                                        <Image style={{position: 'absolute', ...styles.checkboxHandsRight}}
+                                               source={checkBodyImg}/>
+                                    </Pressable>
+                                    :
+                                    <View onTouchEnd={() => setChecked(true)}
+                                          style={{position: 'absolute', ...styles.checkboxHandsRight, ...styles.checkbox}}/>
+
+                            }
+
+                        </View>
                     </View>
                 </View>
                 <ButtonGradient
@@ -72,11 +123,14 @@ const EvaluationConditionS = ({navigation}) => {
     );
 };
 const styles = StyleSheet.create({
+    isChecked: {
+        backgroundColor: '#1F8298'
+    },
     checkbox: {
         position: 'absolute',
         borderWidth: 0,
         backgroundColor: '#C1D6FF',
-        borderRadius: 20,
+        borderRadius: 30,
     },
     checkboxHandsLeft: {
         width: 20,
@@ -99,8 +153,8 @@ const styles = StyleSheet.create({
     checkboxHead: {
         top: 0,
         right: 86,
-        width: 29,
-        height: 29,
+        width: 31,
+        height: 14,
     },
     checkboxHeart: {
         top: 100,

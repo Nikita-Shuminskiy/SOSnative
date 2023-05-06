@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     textNotification: {
+        fontFamily: 'Onest-light',
         color: colors.blue,
         fontSize: 18,
         fontWeight: '400',

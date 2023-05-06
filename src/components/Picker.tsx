@@ -1,12 +1,15 @@
 import React, {useRef, useState} from 'react';
 import {Picker as Select} from '@react-native-picker/picker';
 import {colors} from "../assets/colors/colors";
+import RNPickerSelect from 'react-native-picker-select-updated';
+import {Image, StyleSheet, View} from "react-native";
+import {AntDesign} from '@expo/vector-icons';
 
 type PickerProps = {
     selectStyles?: any
 }
 const Picker = ({selectStyles}: PickerProps) => {
-    const [selectedLanguage, setSelectedLanguage] = useState()
+    //const [selectedLanguage, setSelectedLanguage] = useState()
     const pickerRef = useRef<any>();
 
     function open() {
@@ -17,35 +20,50 @@ const Picker = ({selectStyles}: PickerProps) => {
         pickerRef.current.blur();
     }
 
-    return <Select
-        mode={'dialog'}
-        style={{
-            ...selectStyles,
-            flex: 1
-        }}
-        dropdownIconColor={colors.blue}
-        shouldRasterizeIOS={true}
-        ref={pickerRef}
-        selectedValue={selectedLanguage}
-        onValueChange={(itemValue, itemIndex) =>
-            setSelectedLanguage(itemValue)
-        }>
-        <Select.Item fontFamily={'Onest-light'} style={ {
-            color: colors.blue,
-            fontSize: 18
-        }} label="English"
-        value="English"/>
-        <Select.Item fontFamily={'Onest-light'} style={ {
-            color: colors.blue,
-            fontSize: 18
-        }} label="English"
-                     value="English"/>
-        <Select.Item fontFamily={'Onest-light'} style={ {
-            color: colors.blue,
-            fontSize: 18
-        }} label="English"
-                     value="English"/>
-    </Select>
-};
+    // @ts-ignore
 
+    return <View>
+
+        <RNPickerSelect
+            onValueChange={(value) => console.log(value)}
+            placeholder={{}}
+            useNativeAndroidPickerStyle={false}
+            fixAndroidTouchableBug={true}
+            value={{label: 'English ', value: 'English'}}
+            /**  @ts-ignore **/
+            Icon={(e) => {
+                // @ts-ignore
+                return <AntDesign name="caretdown" size={24} color={colors.blue}/>
+            }}
+            onUpArrow={() => {
+                // @ts-ignore
+                pickerRef.firstTextInput.focus();
+            }}
+            onDownArrow={() => {
+                // @ts-ignore
+                pickerRef.favSport1.togglePicker();
+            }}
+            ref={el => {
+                // @ts-ignore
+                pickerRef.favSport0 = el;
+            }}
+            style={{
+                inputAndroidContainer: {height: 67, justifyContent: 'center'},
+                viewContainer: styles.viewContainer,
+                placeholder: {color: colors.blue},
+                inputAndroid: styles.inputAndroid,
+            }}
+            items={[
+                {label: 'English ', value: 'English'},
+            ]}
+        />
+    </View>
+};
+const styles = StyleSheet.create({
+    inputAndroid: {
+        fontSize: 18, fontFamily: 'Onest-light',
+        color: colors.blue
+    },
+    viewContainer: {}
+})
 export default Picker;
