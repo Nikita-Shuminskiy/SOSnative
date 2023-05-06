@@ -11,6 +11,7 @@ import LoginS from "../screen/authScreens/LoginS";
 import * as SplashScreen from 'expo-splash-screen';
 import MainNavigation from "./MainNavigation";
 import RegisterS from "../screen/authScreens/RegisterS";
+import ResetPasswordS from "../screen/authScreens/ResetPasswordS";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -39,6 +40,11 @@ const RootNavigation = observer(() => {
                             options={{headerShown: false}}
                             name={routerConstants.REGISTRATION}
                             component={RegisterS}
+                        />
+                        <RootStack.Screen
+                            options={{headerShown: false}}
+                            name={routerConstants.RESET_PASSWORD}
+                            component={ResetPasswordS}
                         />
                     </React.Fragment>
 

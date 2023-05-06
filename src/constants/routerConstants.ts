@@ -8,5 +8,6 @@ export const routerConstants = {
     CHAT: 'chat',
 
     REGISTRATION: 'registration',
+    RESET_PASSWORD: 'reset-password',
     LOGIN: 'login',
 }

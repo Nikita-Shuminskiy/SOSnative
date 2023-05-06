@@ -154,8 +154,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     textBtn: {
-        fontFamily: 'Onest-light',
-        fontWeight: '500',
         fontSize: 18,
         color: colors.white,
     },

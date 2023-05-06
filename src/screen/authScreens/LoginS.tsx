@@ -67,7 +67,7 @@ const LoginS = ({navigation}: LoginSProps) => {
                     <View>
                         <TextInput placeholder={'Email Address'} style={styles.input}/>
                         <TextInput placeholder={'Password'} style={styles.input}/>
-                        <TouchableOpacity style={{marginTop: 20, marginBottom: 20, marginLeft: 10}}>
+                        <TouchableOpacity onPress={() => navigation.navigate(routerConstants.RESET_PASSWORD)} style={{marginTop: 20, marginBottom: 20, marginLeft: 10}}>
                             <Text style={{color: colors.blueMedium, fontSize: 18, fontFamily: 'Onest-light'}}>Forgot my
                                 password</Text>
                         </TouchableOpacity>

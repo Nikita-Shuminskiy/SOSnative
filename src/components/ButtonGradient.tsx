@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     },
 
     textBtn: {
-        fontFamily: 'Onest-light',
+        fontFamily: 'Onest-medium',
     },
 })
 export default ButtonGradient;
