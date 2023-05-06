@@ -5,10 +5,11 @@ import {StyleSheet} from "react-native";
 const Backdrop = () => {
     return (
         <LinearGradient
+            shouldRasterizeIOS={true}
             // Background Linear Gradient
-            colors={['rgba(255,255,255,0.04)','rgb(213,227,254)', '#d5e3fe']}
+            colors={['rgba(255,255,255,0.22)','rgb(213,227,254)']}
             //start={{ x: 1, y: 0.1 }}
-            locations={[0.14, 0.8, 2]}
+            locations={[0.14, 0.8]}
             start={{x: 0.4, y: 0.1}}
             //end={{x: 0, y: 1}}
             style={styles.background}

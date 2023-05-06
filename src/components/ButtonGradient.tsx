@@ -2,20 +2,31 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from "react-native";
 import {LinearGradient} from "expo-linear-gradient";
 import {colors} from "../assets/colors/colors";
+
 type ButtonGradientProps = {
     onPress: () => void
     btnText: string
     styleGradient?: any
     styleTouchable?: any
     styleText?: any
+    colorsGradient?: string[]
+    colorText?: string
 }
-const ButtonGradient = ({onPress, btnText, styleGradient, styleText, styleTouchable}: ButtonGradientProps) => {
+const ButtonGradient = ({
+                            onPress,
+                            btnText,
+                            styleGradient,
+                            styleText,
+                            styleTouchable,
+                            colorsGradient,
+                            colorText
+                        }: ButtonGradientProps) => {
     return (
         <TouchableOpacity style={{...styleTouchable}} onPress={onPress}>
             <LinearGradient
-                colors={['#89BDE7', '#7EA7D9']}
+                colors={colorsGradient ?? ['#89BDE7', '#7EA7D9']}
                 style={{...styles.button, ...styleGradient}}>
-                <Text style={{...styles.textBtn, ...styleText}}>{btnText}</Text>
+                <Text style={{...styles.textBtn, ...styleText, color: colorText ?? colors.white}}>{btnText}</Text>
             </LinearGradient>
         </TouchableOpacity>
     );
@@ -36,8 +47,7 @@ const styles = StyleSheet.create({
     },
 
     textBtn: {
-        color: colors.white,
-        fontFamily: 'Onest-medium',
+        fontFamily: 'Onest-light',
     },
 })
 export default ButtonGradient;

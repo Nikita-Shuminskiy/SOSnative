@@ -9,6 +9,8 @@ import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {LinearGradient} from "expo-linear-gradient";
 import {useFormik} from "formik";
 import AuthStore from "../../store/AuthStore/auth-store";
+import * as constants from "constants";
+import {routerConstants} from "../../constants/routerConstants";
 
 
 type LoginSProps = {
@@ -66,10 +68,10 @@ const LoginS = ({navigation}: LoginSProps) => {
                         <TextInput placeholder={'Email Address'} style={styles.input}/>
                         <TextInput placeholder={'Password'} style={styles.input}/>
                         <TouchableOpacity style={{marginTop: 20, marginBottom: 20, marginLeft: 10}}>
-                            <Text style={{color: colors.blueMedium, fontSize: 18, fontFamily: 'Onest-medium'}}>Forgot my
+                            <Text style={{color: colors.blueMedium, fontSize: 18, fontFamily: 'Onest-light'}}>Forgot my
                                 password</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() =>     setAuth(true)}>
+                        <TouchableOpacity onPress={() => setAuth(true)}>
 
                             <LinearGradient
                                 colors={['#89BDE7', '#7EA7D9']}
@@ -79,14 +81,14 @@ const LoginS = ({navigation}: LoginSProps) => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={{marginTop: 20, marginBottom: 20, marginLeft: 10, alignItems: 'center'}}>
-                            <Text style={{color: colors.blueMedium, fontSize: 18, fontFamily: 'Onest-medium'}}>
+                            <Text style={{color: colors.blueMedium, fontSize: 18, fontFamily: 'Onest-light'}}>
                                 You don’t have an account yet?</Text>
                         </TouchableOpacity>
                         <Button styleContainer={{borderWidth: 1, borderColor: colors.blue}} styleText={{
                             color: colors.blue, fontFamily: 'Onest-medium', fontSize: 18,
                             lineHeight: 21
                         }} title={'Create an account'} onPress={() => {
-
+                                navigation.navigate(routerConstants.REGISTRATION)
                         }}/>
                     </View>
                 </View>

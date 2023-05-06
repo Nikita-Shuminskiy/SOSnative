@@ -10,6 +10,7 @@ import {routerConstants} from '../constants/routerConstants';
 import LoginS from "../screen/authScreens/LoginS";
 import * as SplashScreen from 'expo-splash-screen';
 import MainNavigation from "./MainNavigation";
+import RegisterS from "../screen/authScreens/RegisterS";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -28,11 +29,19 @@ const RootNavigation = observer(() => {
                         component={MainNavigation}
                     />
                 ) : (
-                    <RootStack.Screen
-                        options={{headerShown: false}}
-                        name={routerConstants.LOGIN}
-                        component={LoginS}
-                    />
+                    <React.Fragment>
+                        <RootStack.Screen
+                            options={{headerShown: false}}
+                            name={routerConstants.LOGIN}
+                            component={LoginS}
+                        />
+                        <RootStack.Screen
+                            options={{headerShown: false}}
+                            name={routerConstants.REGISTRATION}
+                            component={RegisterS}
+                        />
+                    </React.Fragment>
+
                 )}
             </RootStack.Navigator>
         </NavigationContainer>

@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         padding: 20,
         width: 340,
         fontSize: 18,
-        fontFamily: 'Onest-medium',
+        fontFamily: 'Onest-light',
         color: colors.blue,
         height: 67,
         borderRadius: 8,

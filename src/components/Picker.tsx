@@ -43,7 +43,6 @@ const Picker = ({selectStyles}: PickerProps) => {
             style={{
                 inputAndroidContainer: {height: 67, justifyContent: 'center'},
                 inputIOSContainer: {height: 67, justifyContent: 'center'},
-                viewContainer: styles.viewContainer,
                 placeholder: {color: colors.blue},
                 inputAndroid: styles.inputAndroid,
                 inputIOS: styles.inputAndroid
@@ -58,7 +57,6 @@ const styles = StyleSheet.create({
     inputAndroid: {
         fontSize: 18, fontFamily: 'Onest-light',
         color: colors.blue
-    },
-    viewContainer: {}
+    }
 })
 export default Picker;

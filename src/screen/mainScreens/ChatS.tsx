@@ -35,7 +35,7 @@ const ChatS = ({navigation}) => {
                     </View>
                 </View>
                 <LinearGradient
-                    colors={['rgba(223,233,255,0.64)', '#D5E3FE']}
+                    colors={['rgba(223,233,255,0.87)', '#D5E3FE']}
                     locations={[0.14, 0.8]}
                     start={{x: 0.1, y: 0.2}}
                     //end={{x: 0, y: 1}}
