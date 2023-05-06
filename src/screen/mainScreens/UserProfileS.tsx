@@ -35,7 +35,7 @@ const UserProfileS = ({navigation}) => {
                     <Switch
                         thumbColor={colors.blue}
                         trackColor={{false: colors.white, true: colors.white}}
-                        style={{marginLeft: 165 /*width: 41, height: 26, borderWidth: 2*/}}
+                        style={{marginLeft: 0 /*width: 41, height: 26, borderWidth: 2*/}}
                         onValueChange={() => setNotifications(prevState => !prevState)}
                         value={notifications}
                     />
@@ -54,7 +54,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#D5E3FE',
         height: 67,
         width: 341,
-        paddingHorizontal: 20,
+        paddingRight: 20,
+        paddingLeft: 10,
         borderRadius: 8,
         marginBottom: 20,
     },
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
         fontWeight: '400',
     },
     notificationsBlock: {
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
         height: 67,
         width: 341,
         borderRadius: 8,

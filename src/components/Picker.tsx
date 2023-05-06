@@ -29,19 +29,12 @@ const Picker = ({selectStyles}: PickerProps) => {
             placeholder={{}}
             useNativeAndroidPickerStyle={false}
             fixAndroidTouchableBug={true}
+
             value={{label: 'English ', value: 'English'}}
             /**  @ts-ignore **/
             Icon={(e) => {
                 // @ts-ignore
                 return <AntDesign name="caretdown" size={24} color={colors.blue}/>
-            }}
-            onUpArrow={() => {
-                // @ts-ignore
-                pickerRef.firstTextInput.focus();
-            }}
-            onDownArrow={() => {
-                // @ts-ignore
-                pickerRef.favSport1.togglePicker();
             }}
             ref={el => {
                 // @ts-ignore
@@ -49,9 +42,11 @@ const Picker = ({selectStyles}: PickerProps) => {
             }}
             style={{
                 inputAndroidContainer: {height: 67, justifyContent: 'center'},
+                inputIOSContainer: {height: 67, justifyContent: 'center'},
                 viewContainer: styles.viewContainer,
                 placeholder: {color: colors.blue},
                 inputAndroid: styles.inputAndroid,
+                inputIOS: styles.inputAndroid
             }}
             items={[
                 {label: 'English ', value: 'English'},
