@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, View} from "react-native";
 import ArrowBack from "../../components/ArrowBack";
 import arrowLeftImg from "../../assets/images/arrow_left_white.png";
@@ -11,6 +11,7 @@ import ChatList from "../../components/list-viewer/ChatList";
 import {VirtualizedList} from "../../components/virtualized-list";
 import CurrentCondition from "../../components/CurrentCondition";
 import InputFieldsChat from "../../components/InputFieldsChat";
+import {routerConstants} from "../../constants/routerConstants";
 //D5E3FE
 
 const chatData = [
@@ -35,6 +36,11 @@ const ChatS = ({navigation}) => {
     const chatView = ({item}) => {
         return <ChatList key={item.id} data={item}/>
     }
+    useEffect(() => {
+        setTimeout(() => {
+            navigation.navigate(routerConstants.EVALUATION_CONDITION, {fromChat: true})
+        }, 3000)
+    }, [])
     return (
         <SafeAreaView style={{flex: 1}}>
             <LinearGradient

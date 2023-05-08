@@ -66,9 +66,9 @@ const Item = ({item, onPress, borderColor}: ItemProps) => (
     </TouchableOpacity>
 );
 
-const EmotionalStateS = ({navigation}) => {
+const EmotionalStateS = ({navigation, route}) => {
     const [selectedId, setSelectedId] = useState<string>();
-
+    console.log(route.params)
 
     const renderItem = ({item}: { item: ItemData }) => {
         const borderColor = item.id === selectedId ? colors.gray : '';

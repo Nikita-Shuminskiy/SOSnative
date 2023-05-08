@@ -1,29 +1,41 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from "react-native";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import bodyImg from '../../assets/images/Body.png'
 import checkBodyImg from '../../assets/images/checkBody.png'
 import checkBodyHeadImg from '../../assets/images/checkbodyHead.png'
 import checkBodyHeadFalse from '../../assets/images/checkBodyHeadFalse.png'
+import backgroundUserHeader from '../../assets/images/backgroundUserHeader.png'
+import userImg from '../../assets/images/people2.png'
 import {colors} from "../../assets/colors/colors";
 import Backdrop from "../../components/backdrop";
 import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
 import ArrowBack from "../../components/ArrowBack";
 
-const EvaluationConditionS = ({navigation}) => {
+const EvaluationConditionS = ({navigation, route}) => {
+    const isFromChat = route.params?.fromChat
     const [isChecked, setChecked] = useState(false);
+    console.log(isFromChat)
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-            <ArrowBack goBackPress={() => navigation.goBack()}/>
+            {!isFromChat && <ArrowBack goBackPress={() => navigation.goBack()}/>}
+            {
+                isFromChat && <View>
+                    <Image style={{width: 95, height: 170}} source={backgroundUserHeader}/>
+                    <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}} source={userImg}/>
+                </View>
+            }
             <View style={styles.container}>
-                <View style={{marginTop: 40}}>
-                    <Text style={styles.text}>Which part of your body is bothering you?</Text>
+                <View style={{marginTop: isFromChat ? 0 : 40}}>
+                    <Text style={styles.text}>
+                        {
+                            isFromChat ? 'Which part of your body is bothering you?' : 'Chat is over. How do you feel now?'
+                        }
+                    </Text>
                 </View>
                 <View style={styles.imageContainer}>
-
                     <Image style={styles.img} source={bodyImg}/>
-
                     <View style={{marginTop: 10}}>
 
                         <View>
@@ -114,8 +126,8 @@ const EvaluationConditionS = ({navigation}) => {
                     styleTouchable={{flex: 1, width: '100%'}}
                     styleGradient={styles.button}
                     styleText={styles.textBtn}
-                    btnText={'Continue'}
-                    onPress={() => navigation.navigate(routerConstants.EMOTIONAL_STATE)}
+                    btnText={!isFromChat ? 'Continue' : 'Next step'}
+                    onPress={() => navigation.navigate(routerConstants.EMOTIONAL_STATE, {fromChat: isFromChat ?? false})}
                 />
             </View>
             <Backdrop/>
