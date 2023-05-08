@@ -13,7 +13,7 @@ const MainStack = createNativeStackNavigator()
 const MainNavigation = ({navigation, route}) => {
     return (
         <MainStack.Navigator>
-            <MainStack.Screen
+          {/*  <MainStack.Screen
                 options={{headerShown: false, animation: 'flip'}}
                 name={routerConstants.NEED_HELP}
                 component={NeedHelpS}
@@ -37,7 +37,7 @@ const MainNavigation = ({navigation, route}) => {
                 options={{headerShown: false, animation: 'flip'}}
                 name={routerConstants.USER_PROFILE}
                 component={UserProfileS}
-            />
+            />*/}
             <MainStack.Screen
                 options={{headerShown: false, animation: 'flip'}}
                 name={routerConstants.CHAT}

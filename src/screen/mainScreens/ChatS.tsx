@@ -1,14 +1,39 @@
 import React from 'react';
-import {View, Text, StyleSheet, SafeAreaView, ImageBackground, Image} from "react-native";
-import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
+import {FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, View} from "react-native";
 import ArrowBack from "../../components/ArrowBack";
 import arrowLeftImg from "../../assets/images/arrow_left_white.png";
 import ovalImg from "../../assets/images/oval.png";
 import userImg from "../../assets/images/Ellipse48.png";
 import {LinearGradient} from "expo-linear-gradient";
 import {colors} from "../../assets/colors/colors";
+import ChatAvatar from "../../components/ChatAvatar";
+import ChatList from "../../components/list-viewer/ChatList";
+import {VirtualizedList} from "../../components/virtualized-list";
+import CurrentCondition from "../../components/CurrentCondition";
 //D5E3FE
+
+const chatData = [
+    {
+        isDoctor: true,
+        avatar: userImg,
+        id: 1,
+        text: 'I feel really bad because my parents are getting divorced. I haven\'t eaten anything for three days, I can only lie in my room and cry. I don\'t know how I can survive this...'
+    },
+    {isDoctor: false, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
+    {isDoctor: true, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
+    {isDoctor: false, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
+    {isDoctor: true, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
+    {isDoctor: false, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
+    {isDoctor: true, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
+    {isDoctor: false, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
+    {isDoctor: true, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
+    {isDoctor: false, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
+
+]
 const ChatS = ({navigation}) => {
+    const chatView = ({item}) => {
+        return <ChatList key={item.id} data={item}/>
+    }
     return (
         <SafeAreaView style={{flex: 1}}>
             <LinearGradient
@@ -35,18 +60,45 @@ const ChatS = ({navigation}) => {
                     </View>
                 </View>
                 <LinearGradient
-                    colors={['rgba(223,233,255,0.87)', '#D5E3FE']}
+                    colors={['rgba(213,227,254,0.71)', 'rgba(223,233,255,0.97)']}
                     locations={[0.14, 0.8]}
                     start={{x: 0.1, y: 0.2}}
                     //end={{x: 0, y: 1}}
                     style={{width: '100%', flex: 7}}>
+                    <VirtualizedList>
+                        <ScrollView contentContainerStyle={{paddingHorizontal: 20, marginBottom: 110}}>
+                            <ChatAvatar/>
+                            <FlatList
+                                data={chatData}
+                                renderItem={chatView}
+                                keyExtractor={(item, index) => index.toString()}
+                                style={{width: '100%'}}
+                                /*   ListEmptyComponent={renderEmptyContainer}*/
+                                contentContainerStyle={
+                                    {width: '100%', flex: 1}
+                                }
 
+                            />
+                        </ScrollView>
+                    </VirtualizedList>
+                    <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
+                        <Text style={styles.text}>Your current condition</Text>
+                        <CurrentCondition/>
+                    </View>
                 </LinearGradient>
+
+
             </LinearGradient>
         </SafeAreaView>
     );
 };
 const styles = StyleSheet.create({
+    text: {
+        color: '#9BB5E9',
+        fontFamily: 'Onest-light',
+        fontSize: 13,
+        textAlign: 'center'
+    },
     header: {width: '100%', flex: 1, flexDirection: 'row', justifyContent: 'space-between'},
     blockImgInfo: {width: '100%', flex: 1, flexDirection: 'row', marginRight: 25, marginTop: 15, alignItems: 'center'},
     userNameText: {

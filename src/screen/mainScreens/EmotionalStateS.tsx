@@ -14,13 +14,13 @@ import smileBad from '../../assets/images/smileBad.png'
 import smileVeryBad from '../../assets/images/smileVeryBad.png'
 
 
-type ItemData = {
+export type ItemData = {
     id: string;
     title: string;
     img: ImageSourcePropType;
 };
 
-const DATA: ItemData[] = [
+export const DATA: ItemData[] = [
     {
         id: '1',
         img: smileGood,

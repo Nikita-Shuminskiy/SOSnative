@@ -7,9 +7,7 @@ import {colors} from "../../assets/colors/colors";
 import Button from "../../components/Button";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {LinearGradient} from "expo-linear-gradient";
-import {useFormik} from "formik";
 import AuthStore from "../../store/AuthStore/auth-store";
-import * as constants from "constants";
 import {routerConstants} from "../../constants/routerConstants";
 
 
@@ -17,44 +15,11 @@ type LoginSProps = {
     navigation: NavigationProp<ParamListBase>
 }
 
-
 const LoginS = ({navigation}: LoginSProps) => {
-    const { setAuth } = AuthStore
-        const onSubmit = (values) => {
-            /*AuthStoreService.login({
-                email: values.login.trim(),
-                password: values.password,
-            })*/
-
-            setSubmitting(false)
-        }
-        const {handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, setSubmitting} =
-            useFormik({
-                initialValues: {
-                    login: '',
-                    password: '',
-                },
-                onSubmit: (values) => {
-                    onSubmit(values)
-                },
-                validateOnChange: false,
-                validateOnMount: false,
-                validateOnBlur: false,
-                validate: (values) => {
-                    const errors = {}
-                    if (!values.login) {
-                        errors['login'] = true
-                    }
-                    if (values.password.length <= 3) {
-                        errors['password'] = true
-                    }
-                    return errors
-                },
-            })
+    const {setAuth} = AuthStore
 
 
     return (
-
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <View style={styles.container}>
                 <View
@@ -67,7 +32,8 @@ const LoginS = ({navigation}: LoginSProps) => {
                     <View>
                         <TextInput placeholder={'Email Address'} style={styles.input}/>
                         <TextInput placeholder={'Password'} style={styles.input}/>
-                        <TouchableOpacity onPress={() => navigation.navigate(routerConstants.RESET_PASSWORD)} style={{marginTop: 20, marginBottom: 20, marginLeft: 10}}>
+                        <TouchableOpacity onPress={() => navigation.navigate(routerConstants.RESET_PASSWORD)}
+                                          style={{marginTop: 20, marginBottom: 20, marginLeft: 10}}>
                             <Text style={{color: colors.blueMedium, fontSize: 18, fontFamily: 'Onest-light'}}>Forgot my
                                 password</Text>
                         </TouchableOpacity>
@@ -88,7 +54,7 @@ const LoginS = ({navigation}: LoginSProps) => {
                             color: colors.blue, fontFamily: 'Onest-medium', fontSize: 18,
                             lineHeight: 21
                         }} title={'Create an account'} onPress={() => {
-                                navigation.navigate(routerConstants.REGISTRATION)
+                            navigation.navigate(routerConstants.REGISTRATION)
                         }}/>
                     </View>
                 </View>
@@ -136,3 +102,98 @@ const styles = StyleSheet.create({
 
 
 export default LoginS;
+
+
+/*
+const Test = () => {
+    const [recording, setRecording] = useState<Audio.Recording|null>(null);
+    const [fftData, setFftData] = useState<number[]>([]);
+
+    useEffect(() => {
+        (async () => {
+            const { status } = await Audio.requestPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access audio was denied');
+                return;
+            }
+            const recording = new Audio.Recording();
+            try {
+                await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+                await recording.startAsync();
+                setRecording(recording);
+                const interval = setInterval(async () => {
+
+                    const data = await recording.getTransformDataAsync(Audio.FFT_SIZE_MEDIUM);
+                    setFftData(data);
+                }, 100);
+                return () => clearInterval(interval);
+            } catch (error) {
+                console.log('Error starting recording:', error);
+            }
+        })();
+    }, []);
+
+    const stopRecording = async () => {
+        try {
+            await recording?.stopAndUnloadAsync();
+            setRecording(null);
+        } catch (error) {
+            console.log('Error stopping recording:', error);
+        }
+    };
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>Audio Frequency Plot</Text>
+            <View style={styles.graph}>
+                {fftData.map((value, index) => (
+                    <View key={index} style={[styles.bar, { height: value * 100 }]} />
+                ))}
+            </View>
+            {recording && (
+                <TouchableOpacity onPress={stopRecording} style={styles.button}>
+                    <Text style={styles.buttonText}>Stop Recording</Text>
+                </TouchableOpacity>
+            )}
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'red',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    graph: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        width: '80%',
+        height: '50%',
+        backgroundColor: '#EEE',
+        padding: 10,
+    },
+    bar: {
+        width: 2,
+        backgroundColor: 'blue',
+    },
+    button: {
+
+        backgroundColor: 'red',
+        padding: 10,
+        marginTop: 90,
+        borderRadius: 10,
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
+});
+*/

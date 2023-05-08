@@ -8,6 +8,9 @@ export const FontsWrapper = ({children}) => {
         'Onest-medium': require('../assets/font/TTF/Onest-Medium.ttf'),
         'Onest-bold': require('../assets/font/TTF/Onest-Bold.ttf'),
         'Onest-light': require('../assets/font/TTF/Onest-Light.ttf'),
+        'Inter-black': require('../assets/font/Inter-Black.otf'),
+        "Inter-SemiBoldItalic":
+            "https://rsms.me/inter/font-files/Inter-SemiBoldItalic.otf?v=3.12",
     });
     const onLayoutRootView = useCallback(async () => {
         if (fontsLoaded) {
