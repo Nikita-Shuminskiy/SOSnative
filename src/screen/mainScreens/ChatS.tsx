@@ -10,6 +10,7 @@ import ChatAvatar from "../../components/ChatAvatar";
 import ChatList from "../../components/list-viewer/ChatList";
 import {VirtualizedList} from "../../components/virtualized-list";
 import CurrentCondition from "../../components/CurrentCondition";
+import InputFieldsChat from "../../components/InputFieldsChat";
 //D5E3FE
 
 const chatData = [
@@ -19,15 +20,15 @@ const chatData = [
         id: 1,
         text: 'I feel really bad because my parents are getting divorced. I haven\'t eaten anything for three days, I can only lie in my room and cry. I don\'t know how I can survive this...'
     },
-    {isDoctor: false, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
-    {isDoctor: true, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
-    {isDoctor: false, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
-    {isDoctor: true, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
-    {isDoctor: false, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
-    {isDoctor: true, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
-    {isDoctor: false, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
-    {isDoctor: true, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
-    {isDoctor: false, avatar: userImg, id: 2, text: '. I don\'t know how I can survive this...'},
+    {isDoctor: false, avatar: userImg, id: 2, text: '.I don\'t know how I can survive this...'},
+    {isDoctor: true, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
+    {isDoctor: false, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
+    {isDoctor: true, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
+    {isDoctor: false, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
+    {isDoctor: true, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
+    {isDoctor: false, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
+    {isDoctor: true, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
+
 
 ]
 const ChatS = ({navigation}) => {
@@ -59,14 +60,18 @@ const ChatS = ({navigation}) => {
                         <Image style={styles.userImgBackground} source={ovalImg}/>
                     </View>
                 </View>
+            </LinearGradient>
+
+
+            <View style={{flex : 1}}>
                 <LinearGradient
                     colors={['rgba(213,227,254,0.71)', 'rgba(223,233,255,0.97)']}
                     locations={[0.14, 0.8]}
                     start={{x: 0.1, y: 0.2}}
                     //end={{x: 0, y: 1}}
-                    style={{width: '100%', flex: 7}}>
+                >
                     <VirtualizedList>
-                        <ScrollView contentContainerStyle={{paddingHorizontal: 20, marginBottom: 110}}>
+                        <ScrollView contentContainerStyle={{paddingHorizontal: 20, marginBottom: 190}}>
                             <ChatAvatar/>
                             <FlatList
                                 data={chatData}
@@ -81,14 +86,14 @@ const ChatS = ({navigation}) => {
                             />
                         </ScrollView>
                     </VirtualizedList>
-                    <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
-                        <Text style={styles.text}>Your current condition</Text>
-                        <CurrentCondition/>
-                    </View>
                 </LinearGradient>
 
-
-            </LinearGradient>
+                <View style={{position: 'absolute', bottom: 0}}>
+                    <Text style={styles.text}>Your current condition</Text>
+                    <CurrentCondition/>
+                    <InputFieldsChat/>
+                </View>
+            </View>
         </SafeAreaView>
     );
 };
@@ -126,8 +131,7 @@ const styles = StyleSheet.create({
     headerContainer: {
         paddingTop: 30,
         width: '100%',
-        height: 126,
-        flex: 1
+        minHeight: 126
     },
     arrowBack: {},
 })

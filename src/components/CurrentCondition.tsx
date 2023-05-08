@@ -47,6 +47,7 @@ const CurrentCondition = () => {
 };
 const styles = StyleSheet.create({
     container: {
+        paddingHorizontal: 30,
         marginTop: 10,
         flex: 1,
         width: '100%',

@@ -1,12 +1,16 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput as Input, TextInputProps} from "react-native";
 import {colors} from "../assets/colors/colors";
+import {StyleProp} from "react-native/Libraries/StyleSheet/StyleSheet";
+import {TextStyle} from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 
-type TextInputPropsType = TextInputProps & {}
-const TextInput = ({style, ...rest}: TextInputPropsType) => {
+type TextInputPropsType = TextInputProps & {
+    styleContainer?: StyleProp<TextStyle>
+}
+const TextInput = ({style, styleContainer, ...rest}: TextInputPropsType) => {
     const [userName, setUserName] = useState('');
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, styleContainer]}>
             <Input
                 value={userName}
                 onChangeText={(userName) => setUserName(userName)}

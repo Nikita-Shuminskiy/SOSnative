@@ -6,7 +6,7 @@ const ChatList = ({data}) => {
 
     return (
         <View style={{ alignItems: data.isDoctor ? 'flex-start': 'flex-end', marginLeft: 10 }}>
-            <View style={styles.container}>
+            <View style={{...styles.container, backgroundColor: data.isDoctor ? '#4DB8D5' : '#7EA7D9'}}>
                 <Text style={styles.text}>{data.text}</Text>
                 <Image style={{...styles.avatar, left: data.isDoctor ? -10 : null }} source={data.avatar}/>
             </View>
@@ -17,7 +17,6 @@ const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 24,
         paddingVertical: 10,
-        backgroundColor: '#7EA7D9',
         borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
