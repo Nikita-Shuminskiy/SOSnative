@@ -39,7 +39,7 @@ const ChatS = ({navigation}) => {
     useEffect(() => {
         setTimeout(() => {
             navigation.navigate(routerConstants.EVALUATION_CONDITION, {fromChat: true})
-        }, 3000)
+        }, 30000)
     }, [])
     return (
         <SafeAreaView style={{flex: 1}}>

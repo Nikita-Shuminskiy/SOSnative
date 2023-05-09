@@ -6,6 +6,7 @@ export const routerConstants = {
     SEARCHING_VOLUNTEER: 'searching-volunteer',
     USER_PROFILE: 'user-profile',
     CHAT: 'chat',
+    GOODBYE: 'goodbye',
 
     REGISTRATION: 'registration',
     RESET_PASSWORD: 'reset-password',

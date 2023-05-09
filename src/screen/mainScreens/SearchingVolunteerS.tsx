@@ -15,7 +15,7 @@ const SearchingVolunteerS = ({navigation}) => {
     useEffect(() => {
         setTimeout(() => {
             navigation.navigate(routerConstants.CHAT)
-        }, 3000)
+        }, 2000)
     }, [])
     return (
         <BaseWrapperComponent isBackdrop={true} isKeyboardAwareScrollView={true} styleSafeArea={{marginTop: 0}}>

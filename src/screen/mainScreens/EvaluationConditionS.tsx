@@ -16,7 +16,7 @@ import ArrowBack from "../../components/ArrowBack";
 const EvaluationConditionS = ({navigation, route}) => {
     const isFromChat = route.params?.fromChat
     const [isChecked, setChecked] = useState(false);
-    console.log(isFromChat)
+
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             {!isFromChat && <ArrowBack goBackPress={() => navigation.goBack()}/>}
