@@ -121,8 +121,8 @@ const EmotionalStateS = ({navigation, route}) => {
                 <View style={{position: 'absolute', bottom: 0, width: '90%'}}>
                     <ButtonGradient
                         styleTouchable={{
-                            flex: 1, width: '100%', marginRight: 20,
-                            marginLeft: 20, marginBottom: 20, marginTop: 20
+                            flex: 1, width: '100%',
+                            marginHorizontal: 20, marginVertical: 20
                         }}
                         styleGradient={styles.button}
                         styleText={styles.textBtn}
