@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "SOSnative",
-    "slug": "SOSnative",
+    "slug": "sos",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -31,8 +31,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "ba114943-c65e-44ab-a903-af6bacd4d894"
+        "projectId": "a07842e7-b2bd-48ce-9355-0799be4aebf1"
       }
-    }
+    },
+    "owner": "nick11111"
   }
 }

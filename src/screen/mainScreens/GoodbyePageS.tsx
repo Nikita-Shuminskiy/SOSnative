@@ -11,27 +11,26 @@ import {routerConstants} from "../../constants/routerConstants";
 const GoodbyePageS = ({navigation}) => {
     return (
         <BaseWrapperComponent isBackdrop={true} isKeyboardAwareScrollView={true} styleSafeArea={{marginTop: 0}}>
-            <View style={{marginTop: Platform.OS === 'ios' ? 10 : 40, marginHorizontal: 30}}>
+            <View style={{marginTop: Platform.OS === 'ios' ? 10 : 30, marginHorizontal: 30}}>
                 <View style={{marginBottom: 100}}>
                     <ArrowBack styleTouchable={styles.arrowBack} img={arrowLeftImg}
                                goBackPress={() => navigation.goBack()}/>
                 </View>
-                <View>
+                <View style={{justifyContent: 'space-between'}}>
                     <Text style={styles.textHeader}>Thank you!</Text>
                     <Text style={styles.text}>We've been through this together. Come back when you feel bad
                         again.</Text>
 
-                    <View style={{marginTop: 60}}>
+                    <View style={{ alignItems: 'center'}}>
 
                         <Image style={styles.imgPeople} source={PeoplesWitchElements}/>
 
                     </View>
-                    <Button styleContainer={{borderWidth: 1, borderColor: colors.white, marginTop: 60}} styleText={{
-                        color: colors.white, fontFamily: 'Onest-light', fontSize: 18
+                    <Button styleContainer={{borderWidth: 1, borderColor: colors.white, marginTop: 40}} styleText={{
+                        color: colors.white, fontFamily: 'Onest-medium', fontSize: 18
                     }} title={'Ok, thanks'} onPress={() => {
                         navigation.navigate(routerConstants.NEED_HELP)
                     }}/>
-
 
                 </View>
             </View>

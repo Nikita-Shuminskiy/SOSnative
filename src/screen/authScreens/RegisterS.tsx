@@ -10,7 +10,7 @@ import {Checkbox} from "expo-checkbox";
 import ButtonGradient from "../../components/ButtonGradient";
 
 const RegisterS = ({navigation}) => {
-const [isVolunteer, setIsVolunteer] = useState(true)
+const [isVolunteer, setIsVolunteer] = useState(false)
 
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
@@ -20,7 +20,7 @@ const [isVolunteer, setIsVolunteer] = useState(true)
                 <View
                     style={{justifyContent: 'center', flex: 1, alignItems: 'center',}}>
                     <Text style={styles.textHeader}>Create an account</Text>
-                    <View style={{flexDirection: 'row', marginHorizontal: 25}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 15}}>
                         <ButtonGradient
                             styleTouchable={{flex: 1, width: '100%'}}
                             styleGradient={styles.button}

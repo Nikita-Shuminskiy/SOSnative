@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
-import {StyleSheet, Text, View, Image, FlatList, TouchableOpacity, ImageSourcePropType} from "react-native";
+import {StyleSheet, Text, View, Image, FlatList, TouchableOpacity, ImageSourcePropType, ScrollView} from "react-native";
 import Backdrop from "../../components/backdrop";
 import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
@@ -14,6 +14,7 @@ import smileOk from '../../assets/images/smileOk.png'
 import smileAverage from '../../assets/images/smileAverage.png'
 import smileBad from '../../assets/images/smileBad.png'
 import smileVeryBad from '../../assets/images/smileVeryBad.png'
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 
 export type ItemData = {
@@ -84,31 +85,45 @@ const EmotionalStateS = ({navigation, route}) => {
         );
     };
     return (
-        <BaseWrapperComponent>
-            {!isFromChat && <ArrowBack goBackPress={() => navigation.goBack()}/>}
-            {
-                isFromChat && <View>
-                    <Image style={{width: 95, height: 170}} source={backgroundUserHeader}/>
-                    <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}} source={userImg}/>
-                </View>
-            }
-            <View style={styles.container}>
-                <View style={{marginTop: isFromChat ? 0 : 30, marginBottom: 30}}>
-                    <Text style={styles.text}>Evaluate your condition using this scale</Text>
-                </View>
+        <>
+            <KeyboardAwareScrollView enableOnAndroid={true}
+                                     keyboardShouldPersistTaps={'handled'}
+                                     contentContainerStyle={{
+                                         paddingTop: 30,
+                                         flexGrow: 1,
+                                         marginBottom: 10,
+                                         width: '100%',
+                                     }}>
+                {!isFromChat && <ArrowBack goBackPress={() => navigation.goBack()}/>}
+                {
+                    isFromChat && <View>
+                        <Image style={{width: 95, height: 170}} source={backgroundUserHeader}/>
+                        <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}} source={userImg}/>
+                    </View>
+                }
+                <View style={{...styles.container, marginTop: isFromChat ? 0 : 30}}>
+                    <View style={{marginBottom: 30}}>
+                        <Text style={styles.text}>Evaluate your condition using this scale</Text>
+                    </View>
 
-                <View>
-                    <FlatList
-                        data={DATA}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id}
-                        extraData={selectedId}
-                    />
-                </View>
+                    <View style={{flex: 1, marginBottom: 30}}>
+                        <FlatList
+                            data={DATA}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.id}
+                            extraData={selectedId}
+                            scrollEnabled={false}
+                            contentContainerStyle={{flex: 1, justifyContent: 'flex-start'}}
+                        />
+                    </View>
 
-                <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
+                </View>
+                <View style={{position: 'absolute', bottom: 0, width: '90%'}}>
                     <ButtonGradient
-                        styleTouchable={{flex: 1, width: '100%'}}
+                        styleTouchable={{
+                            flex: 1, width: '100%', marginRight: 20,
+                            marginLeft: 20, marginBottom: 20, marginTop: 20
+                        }}
                         styleGradient={styles.button}
                         styleText={styles.textBtn}
                         btnText={isFromChat ? 'It’s ok' : 'Continue'}
@@ -117,9 +132,9 @@ const EmotionalStateS = ({navigation, route}) => {
                         }}
                     />
                 </View>
-            </View>
+            </KeyboardAwareScrollView>
             <Backdrop/>
-        </BaseWrapperComponent>
+        </>
     );
 };
 const styles = StyleSheet.create({
@@ -150,11 +165,12 @@ const styles = StyleSheet.create({
         color: colors.blue,
     },
     container: {
-        flex: 1,
+        flexGrow: 1,
         marginRight: 20,
         marginLeft: 20,
-        marginBottom: 20,
-        alignItems: 'center'
+        marginBottom: 70,
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
     button: {
         padding: 15,

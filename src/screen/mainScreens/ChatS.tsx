@@ -25,10 +25,6 @@ const chatData = [
     {isDoctor: true, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
     {isDoctor: false, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
     {isDoctor: true, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
-    {isDoctor: false, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
-    {isDoctor: true, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
-    {isDoctor: false, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
-    {isDoctor: true, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
 
 
 ]
@@ -39,7 +35,7 @@ const ChatS = ({navigation}) => {
     useEffect(() => {
         setTimeout(() => {
             navigation.navigate(routerConstants.EVALUATION_CONDITION, {fromChat: true})
-        }, 30000)
+        }, 2000)
     }, [])
     return (
         <SafeAreaView style={{flex: 1}}>
