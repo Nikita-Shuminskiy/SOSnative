@@ -7,14 +7,17 @@ type ButtonProps = {
     styleText?: StyleProp<any>
     title: string
 }
-const Button = ({title, onPress, styleText, styleContainer}) => {
+const Button = ({title, onPress, styleText, onPressIn, onPressOut, activeOpacity, styleContainer}: any) => {
     return (
-        <TouchableOpacity style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 8,
-            height: 66, ...styleContainer
-        }} onPress={onPress}>
+        <TouchableOpacity onPressIn={onPressIn}
+                          onPressOut={onPressOut}
+                          style={{
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              borderRadius: 8,
+                              height: 66, ...styleContainer
+                          }} activeOpacity={activeOpacity ?? 1}
+                          onPress={onPress}>
             <Text style={{
                 ...styleText
             }}>{title}</Text>

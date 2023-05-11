@@ -37,7 +37,6 @@ const EvaluationConditionS = ({navigation, route}) => {
                 <View style={styles.imageContainer}>
                     <Image style={styles.img} source={bodyImg}/>
                     <View style={{marginTop: 10}}>
-
                         <View>
 
                             {
@@ -56,7 +55,6 @@ const EvaluationConditionS = ({navigation, route}) => {
                             <Text
                                 style={[styles.textBody, styles.head, {color: isChecked ? colors.green : colors.blue}]}>head</Text>
                         </View>
-
                         <View>
 
                             {
@@ -73,8 +71,6 @@ const EvaluationConditionS = ({navigation, route}) => {
                             <Text
                                 style={[styles.textBody, styles.heart, {color: isChecked ? colors.green : colors.blue}]}>heart</Text>
                         </View>
-
-
                         <View>
                             {
                                 isChecked ?
@@ -90,8 +86,6 @@ const EvaluationConditionS = ({navigation, route}) => {
                             <Text
                                 style={[styles.textBody, styles.stomach, {color: isChecked ? colors.green : colors.blue}]}>stomach</Text>
                         </View>
-
-
                         <View>
                             <Text
                                 style={[styles.textBody, styles.hands, {color: isChecked ? colors.green : colors.blue}]}>hands</Text>

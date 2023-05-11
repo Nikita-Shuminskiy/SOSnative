@@ -1,6 +1,16 @@
 import React, {useState} from 'react';
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
-import {StyleSheet, Text, View, Image, FlatList, TouchableOpacity, ImageSourcePropType, ScrollView} from "react-native";
+import {
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    FlatList,
+    TouchableOpacity,
+    ImageSourcePropType,
+    ScrollView,
+    SafeAreaView, Platform
+} from "react-native";
 import Backdrop from "../../components/backdrop";
 import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
@@ -44,11 +54,26 @@ export const DATA: ItemData[] = [
         img: smileBad,
         title: 'I feel bad',
     },
-    {
+   /* {
         id: '5',
-        img: smileVeryBad,
-        title: 'I feel very bad',
+        img: smileAverage,
+        title: 'Average',
     },
+    {
+        id: '6',
+        img: smileBad,
+        title: 'I feel bad',
+    },
+    {
+        id: '7',
+        img: smileAverage,
+        title: 'Average',
+    },
+    {
+        id: '8',
+        img: smileBad,
+        title: 'I feel bad',
+    }*/
 ];
 
 type ItemProps = {
@@ -85,59 +110,53 @@ const EmotionalStateS = ({navigation, route}) => {
         );
     };
     return (
-        <>
-            <KeyboardAwareScrollView enableOnAndroid={true}
-                                     keyboardShouldPersistTaps={'handled'}
-                                     contentContainerStyle={{
-                                         paddingTop: 30,
-                                         flexGrow: 1,
-                                         marginBottom: 10,
-                                         width: '100%',
-                                     }}>
-                {!isFromChat && <ArrowBack goBackPress={() => navigation.goBack()}/>}
-                {
-                    isFromChat && <View>
-                        <Image style={{width: 95, height: 170}} source={backgroundUserHeader}/>
-                        <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}} source={userImg}/>
-                    </View>
-                }
-                <View style={{...styles.container, marginTop: isFromChat ? 0 : 30}}>
-                    <View style={{marginBottom: 30}}>
-                        <Text style={styles.text}>Evaluate your condition using this scale</Text>
-                    </View>
+       <SafeAreaView style={{flex: 1, marginTop: Platform.OS === 'ios' ? 10 : 40,}}>
+           {!isFromChat && <ArrowBack goBackPress={() => navigation.goBack()}/>}
+           {
+               isFromChat && <View>
+                   <Image style={{width: 95, height: 170}} source={backgroundUserHeader}/>
+                   <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}} source={userImg}/>
+               </View>
+           }
+           <View style={styles.container}>
+               <View style={{marginTop: isFromChat ? 0 : 50}}>
+                   <Text style={styles.text}>Evaluate your condition using this scale</Text>
+               </View>
+               <View style={{flex: 1, marginBottom: 10, marginTop: 50}}>
+                   <FlatList
+                       data={DATA}
+                       renderItem={renderItem}
+                       keyExtractor={item => item.id}
+                       extraData={selectedId}
+                   //    style={{flex:1, height: '100%', width: '100%'}}
+                       contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', height: 'auto'}}
+                   />
+               </View>
+               <ButtonGradient
+                   styleTouchable={{marginBottom: 20}}
+                   styleGradient={styles.button}
+                   styleText={styles.textBtn}
+                   btnText={isFromChat ? 'It’s ok' : 'Continue'}
+                   onPress={() => {
+                       navigation.navigate(isFromChat ? routerConstants.GOODBYE : routerConstants.SEARCHING_VOLUNTEER)
+                   }}
+               />
+           </View>
+       </SafeAreaView>
+        /*<>
 
-                    <View style={{flex: 1, marginBottom: 30}}>
-                        <FlatList
-                            data={DATA}
-                            renderItem={renderItem}
-                            keyExtractor={item => item.id}
-                            extraData={selectedId}
-                            scrollEnabled={false}
-                            contentContainerStyle={{flex: 1, justifyContent: 'flex-start'}}
-                        />
-                    </View>
-
-                </View>
-                <View style={{position: 'absolute', bottom: 0, width: '90%'}}>
-                    <ButtonGradient
-                        styleTouchable={{
-                            flex: 1, width: '100%',
-                            marginHorizontal: 20, marginVertical: 20
-                        }}
-                        styleGradient={styles.button}
-                        styleText={styles.textBtn}
-                        btnText={isFromChat ? 'It’s ok' : 'Continue'}
-                        onPress={() => {
-                            navigation.navigate(isFromChat ? routerConstants.GOODBYE : routerConstants.SEARCHING_VOLUNTEER)
-                        }}
-                    />
-                </View>
-            </KeyboardAwareScrollView>
             <Backdrop/>
-        </>
+        </>*/
     );
 };
 const styles = StyleSheet.create({
+    bodyContainer:{
+        flex: 1,
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
     item: {
         flexDirection: "row",
         alignItems: 'center',
@@ -165,11 +184,8 @@ const styles = StyleSheet.create({
         color: colors.blue,
     },
     container: {
-        flexGrow: 1,
-        marginRight: 20,
-        marginLeft: 20,
-        marginBottom: 70,
-        alignItems: 'center',
+        paddingHorizontal: 20,
+        flex:1,
         justifyContent: 'space-between'
     },
     button: {

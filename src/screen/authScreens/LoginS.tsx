@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import logo from '../../assets/images/logoWitchWiFi.png'
@@ -16,6 +16,7 @@ type LoginSProps = {
 }
 
 const LoginS = ({navigation}: LoginSProps) => {
+    const [activeBtn, setActiveBtn] = useState(false)
     const {setAuth} = AuthStore
 
 
@@ -50,10 +51,15 @@ const LoginS = ({navigation}: LoginSProps) => {
                             <Text style={{color: colors.blueMedium, fontSize: 18, fontFamily: 'Onest-light'}}>
                                 You don’t have an account yet?</Text>
                         </TouchableOpacity>
-                        <Button styleContainer={{borderWidth: 1, borderColor: colors.blue}} styleText={{
+                        <Button
+                            onPressIn={() => setActiveBtn(true)}
+                            onPressOut={() => setActiveBtn(false)}
+                            styleContainer={{borderWidth: 1, borderColor: colors.blue, backgroundColor: activeBtn ? '#D5E3FE' : ''}}
+                            styleText={{
                             color: colors.blue, fontFamily: 'Onest-medium', fontSize: 18,
                             lineHeight: 21
-                        }} title={'Create an account'} onPress={() => {
+                        }}
+                            title={'Create an account'} onPress={() => {
                             navigation.navigate(routerConstants.REGISTRATION)
                         }}/>
                     </View>

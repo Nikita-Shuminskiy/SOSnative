@@ -1,21 +1,22 @@
-import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useState} from 'react';
+import {Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import userImages from '../../assets/images/user.png'
+import btnBack from '../../assets/images/btnBackground.png'
 import {colors} from "../../assets/colors/colors";
 import TextInput from "../../components/TextInput";
-import {LinearGradient} from "expo-linear-gradient";
-import * as Constants from "constants";
 import {routerConstants} from "../../constants/routerConstants";
 import Backdrop from "../../components/backdrop";
 import ButtonGradient from "../../components/ButtonGradient";
 
 const NeedHelpS = ({navigation}) => {
+
     return (
         <>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>
                 <View style={styles.container}>
-                    <TouchableOpacity onPress={() => navigation.navigate(routerConstants.USER_PROFILE)} style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.navigate(routerConstants.USER_PROFILE)}
+                                      style={styles.header}>
                         <Text style={styles.nameUser}>Michael</Text>
                         <Image source={userImages} style={styles.logo}/>
                     </TouchableOpacity>
@@ -31,6 +32,7 @@ const NeedHelpS = ({navigation}) => {
                         <View style={{flex: 1, alignItems: 'center'}}>
                             <TextInput style={styles.input} placeholder={'I feel depressed...'}/>
                             <ButtonGradient
+                                backgroundImage={btnBack}
                                 styleGradient={{
                                     width: 265,
                                     height: 160,
@@ -55,6 +57,17 @@ const styles = StyleSheet.create({
         marginRight: 20,
         marginLeft: 20,
 
+    },
+    activeBtn: {
+        shadowColor: "#85B9E3",
+        shadowOffset: {
+            width: 0,
+            height: 12,
+        },
+        shadowOpacity: 0.23,
+        shadowRadius: 12.81,
+        elevation: 16,
+        borderRadius: 18
     },
 
     description: {
