@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Pressable, StyleProp, StyleSheet, Text, TouchableOpacity} from "react-native";
 
 type ButtonProps = {
@@ -7,11 +7,13 @@ type ButtonProps = {
     styleText?: StyleProp<any>
     title: string
 }
-const Button = ({title, onPress, styleText, onPressIn, onPressOut, activeOpacity, styleContainer}: any) => {
+const Button = ({title, onPress, styleText, onPressIn, onPressOut, activeOpacity, styleContainer, activeHover}: any) => {
+    const [activeBtn, setActiveBtn] = useState(false)
     return (
-        <TouchableOpacity onPressIn={onPressIn}
-                          onPressOut={onPressOut}
+        <TouchableOpacity     onPressIn={() => setActiveBtn(true)}
+                              onPressOut={() => setActiveBtn(false)}
                           style={{
+                              backgroundColor:  activeHover && activeBtn ? '#D5E3FE' : 'rgba(213,227,254,0)',
                               alignItems: 'center',
                               justifyContent: 'center',
                               borderRadius: 8,

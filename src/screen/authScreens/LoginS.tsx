@@ -16,9 +16,8 @@ type LoginSProps = {
 }
 
 const LoginS = ({navigation}: LoginSProps) => {
-    const [activeBtn, setActiveBtn] = useState(false)
-    const {setAuth} = AuthStore
 
+    const {setAuth} = AuthStore
 
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
@@ -52,9 +51,8 @@ const LoginS = ({navigation}: LoginSProps) => {
                                 You don’t have an account yet?</Text>
                         </TouchableOpacity>
                         <Button
-                            onPressIn={() => setActiveBtn(true)}
-                            onPressOut={() => setActiveBtn(false)}
-                            styleContainer={{borderWidth: 1, borderColor: colors.blue, backgroundColor: activeBtn ? '#D5E3FE' : ''}}
+                            activeHover={true}
+                            styleContainer={{borderWidth: 1, borderColor: colors.blue}}
                             styleText={{
                             color: colors.blue, fontFamily: 'Onest-medium', fontSize: 18,
                             lineHeight: 21

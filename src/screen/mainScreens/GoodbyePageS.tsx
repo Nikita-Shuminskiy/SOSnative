@@ -11,42 +11,41 @@ import {LinearGradient} from "expo-linear-gradient";
 
 const GoodbyePageS = ({navigation}) => {
     return (
-        <>
-            <LinearGradient
-                colors={['#89BDE7', '#7EA7D9']}
-                style={{flex: 1, width: '100%'}}>
+        <LinearGradient
+            colors={['#89BDE7', '#7EA7D9']}
+            style={{flex: 1, width: '100%'}}>
+            <BaseWrapperComponent isKeyboardAwareScrollView={true}>
+                <ArrowBack  img={arrowLeftImg}
+                           goBackPress={() => navigation.goBack()}/>
 
-                <View style={{marginTop: Platform.OS === 'ios' ? 10 : 40, marginHorizontal: 30, flex: 1,
-                    alignItems: 'center'}}>
-                    <View style={{ flex: 1, width: '100%' }}>
-                        <ArrowBack styleTouchable={styles.arrowBack} img={arrowLeftImg}
-                                   goBackPress={() => navigation.goBack()}/>
+                <View style={{
+                    flex: 1,
+                    marginHorizontal: 20,
+                    marginVertical: 20,
+                    alignItems: 'center',
+                }}>
+
+
+                    <View style={{flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', marginBottom: 80}}>
+
+                        <View style={{marginBottom: 30}}>
+                            <Text style={styles.textHeader}>Thank you!</Text>
+                            <Text style={styles.text}>We've been through this together. Come back when you feel bad
+                                again.</Text>
+                        </View>
+
+                        <Image style={styles.imgPeople} source={PeoplesWitchElements}/>
+
                     </View>
-
-                   <View  style={{ flex: 8, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-
-                       <View style={{marginBottom: 30}}>
-                           <Text style={styles.textHeader}>Thank you!</Text>
-                           <Text style={styles.text}>We've been through this together. Come back when you feel bad
-                               again.</Text>
-                       </View>
-
-                       <View style={{alignItems: 'center', flex: 1, justifyContent: 'space-between'}}>
-                           <Image style={styles.imgPeople} source={PeoplesWitchElements}/>
-
-
-                       </View>
-
-
-                   </View>
-                    <Button styleText={styles.textBtn} styleContainer={styles.btnContainer} title={'Ok, thanks'} onPress={() => {
-                        navigation.navigate(routerConstants.NEED_HELP)
-                    }}/>
+                    <Button  styleText={styles.textBtn} styleContainer={styles.btnContainer} title={'Ok, thanks'}
+                            onPress={() => {
+                                navigation.navigate(routerConstants.NEED_HELP)
+                            }}/>
                 </View>
-            </LinearGradient>
 
 
-        </>
+            </BaseWrapperComponent>
+        </LinearGradient>
     );
 };
 
@@ -55,7 +54,8 @@ const styles = StyleSheet.create({
         width: '100%',
         flex: 1,
         borderWidth: 1,
-        borderColor: colors.white, marginHorizontal: 20, marginVertical: 20},
+        borderColor: colors.white, marginHorizontal: 20, marginVertical: 20
+    },
     textBtn: {
         textAlign: 'center',
         color: colors.white, fontFamily: 'Onest-medium', fontSize: 18, width: '100%'

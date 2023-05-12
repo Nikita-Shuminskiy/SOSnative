@@ -10,69 +10,75 @@ import {Checkbox} from "expo-checkbox";
 import ButtonGradient from "../../components/ButtonGradient";
 
 const RegisterS = ({navigation}) => {
-const [isVolunteer, setIsVolunteer] = useState(false)
+    const [isVolunteer, setIsVolunteer] = useState(false)
 
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <ArrowBack goBackPress={() => navigation.goBack()}/>
 
             <View style={styles.container}>
-                <View
-                    style={{justifyContent: 'center', flex: 1, alignItems: 'center',}}>
+                <View style={{justifyContent: 'center', flex: 1}}>
                     <Text style={styles.textHeader}>Create an account</Text>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 15}}>
-                        <ButtonGradient
-                            styleTouchable={{flex: 1, width: '100%'}}
-                            styleGradient={styles.button}
-                            colorsGradient={isVolunteer ? ['#D5E3FE', '#D5E3FE'] : null}
-                            styleText={styles.textBtn}
-                            colorText={isVolunteer ? colors.gray : colors.white}
-                            btnText={'I need help'}
-                            onPress={() => setIsVolunteer(false)}
-                        />
-                        <ButtonGradient
-                            styleTouchable={{flex: 1, width: '100%'}}
-                            styleGradient={styles.button}
-                            colorsGradient={!isVolunteer ? ['#D5E3FE', '#D5E3FE'] : null}
-                            styleText={styles.textBtn}
-                            colorText={!isVolunteer ? colors.gray : colors.white}
-                            btnText={'I am a volunteer'}
-                            onPress={() => setIsVolunteer(true)}
-                        />
-                    </View>
                 </View>
 
                 <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
+                    <View style={{marginHorizontal: 10, flex: 1, width: '100%'}}>
+                       <View style={{flexDirection: 'row', justifyContent: 'center', flex: 1}}>
+                           <ButtonGradient
+                               styleTouchable={{marginRight: 10}}
+                               styleGradient={styles.button}
+                               colorsGradient={isVolunteer ? ['#D5E3FE', '#D5E3FE'] : null}
+                               styleText={styles.textBtn}
+                               colorText={isVolunteer ? colors.gray : colors.white}
+                               btnText={'I need help'}
+                               onPress={() => setIsVolunteer(false)}
+                           />
+                           <ButtonGradient
+
+                               styleGradient={styles.button}
+                               colorsGradient={!isVolunteer ? ['#D5E3FE', '#D5E3FE'] : null}
+                               styleText={styles.textBtn}
+                               colorText={!isVolunteer ? colors.gray : colors.white}
+                               btnText={'I am a volunteer'}
+                               onPress={() => setIsVolunteer(true)}
+                           />
+                       </View>
+                    </View>
                     <View>
                         <TextInput placeholder={'Your name'} style={styles.input}/>
-                        <Text style={styles.textAnyName} >You can use any name you want to stay {"\n"} anonymous.</Text>
+                        <Text style={styles.textAnyName}>You can use any name you want to stay {"\n"} anonymous.</Text>
 
-                        <TextInput placeholder={'Email Adress'} style={styles.input}/>
+                        <TextInput placeholder={'Email Address'} style={styles.input}/>
                         <TextInput placeholder={'Password'} style={styles.input}/>
                         <TextInput placeholder={'Confirm password'} style={styles.input}/>
                         <View style={styles.blockPicker}>
                             <Picker/>
                         </View>
 
-                      <View style={{flexDirection: 'row', alignItems: 'center', marginLeft: 10}}>
-                          <Checkbox value={true} color={colors.blue} style={{borderColor: colors.blue, borderRadius: 8}} />
+                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
+                            <Checkbox value={true} color={colors.blue}
+                                      style={{borderColor: colors.blue, borderRadius: 8}}/>
 
-                          <View style={{marginTop: 20, marginBottom: 20, marginLeft: 10, flexDirection: 'row'}}>
-                              <Text style={[styles.textAgree]}>
-                                  I agree with{' '}
-                              </Text>
+                            <View style={{marginTop: 20, marginBottom: 20, marginLeft: 10, flexDirection: 'row'}}>
+                                <Text style={[styles.textAgree]}>
+                                    I agree with{' '}
+                                </Text>
 
-                              <TouchableOpacity style={{borderBottomWidth: 1, borderColor: colors.blue}}>
-                                  <Text style={styles.textAgree}>Terms and Conditions</Text>
-                              </TouchableOpacity>
-                          </View>
+                                <TouchableOpacity style={{borderBottomWidth: 1, borderColor: colors.blue}}>
+                                    <Text style={styles.textAgree}>Terms and Conditions</Text>
+                                </TouchableOpacity>
+                            </View>
 
-                      </View>
+                        </View>
 
-                        <TouchableOpacity >
+                        <TouchableOpacity>
                             <LinearGradient
                                 colors={['#89BDE7', '#7EA7D9']}
-                                style={[styles.button, {width: '100%', height: 67}]}>
+                                style={[{
+                                    width: '100%', height: 67, alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 8,
+                                }]}>
                                 <Text style={styles.text}>Log in</Text>
                             </LinearGradient>
                         </TouchableOpacity>
@@ -83,7 +89,7 @@ const [isVolunteer, setIsVolunteer] = useState(false)
     );
 };
 const styles = StyleSheet.create({
-    textAgree:{color: colors.blue, fontSize: 18, fontFamily: 'Onest-light'},
+    textAgree: {color: colors.blue, fontSize: 18, fontFamily: 'Onest-light'},
     textBtn: {
         fontFamily: 'Onest-light',
         fontWeight: '500',
@@ -104,15 +110,14 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         color: '#909597',
         fontSize: 14,
-
         fontFamily: 'Onest-light'
     },
     button: {
         alignItems: 'center',
         justifyContent: 'center',
+        borderRadius: 8,
         height: 53,
         width: 162,
-        borderRadius: 8,
     },
     text: {
         fontFamily: 'Onest-medium',
@@ -124,10 +129,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 40
+        marginBottom: 40,
+        marginHorizontal: 20
     },
-    input: {
-    },
+    input: {},
     textHeader: {
         fontFamily: 'Onest-medium',
         textAlign: 'center',
@@ -138,5 +143,5 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 30
     },
-} )
+})
 export default RegisterS;

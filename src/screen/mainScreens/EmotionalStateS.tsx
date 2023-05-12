@@ -54,26 +54,11 @@ export const DATA: ItemData[] = [
         img: smileBad,
         title: 'I feel bad',
     },
-   /* {
+    {
         id: '5',
-        img: smileAverage,
-        title: 'Average',
-    },
-    {
-        id: '6',
-        img: smileBad,
-        title: 'I feel bad',
-    },
-    {
-        id: '7',
-        img: smileAverage,
-        title: 'Average',
-    },
-    {
-        id: '8',
-        img: smileBad,
-        title: 'I feel bad',
-    }*/
+        img: smileVeryBad,
+        title: 'I feel very bad',
+    }
 ];
 
 type ItemProps = {
