@@ -7,12 +7,15 @@ import {colors} from "../../assets/colors/colors";
 import Backdrop from "../../components/backdrop";
 import Picker from "../../components/Picker";
 import logoutImages from '../../assets/images/logout.png'
+import * as Localization from "expo-localization";
+import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
 
 const UserProfileS = ({navigation}) => {
+    const checkLanguage = Localization.locale.includes('he')
     const [notifications, setNotifications] = useState(false)
     return (
         <BaseWrapperComponent>
-            <ArrowBack goBackPress={() => navigation.goBack()}/>
+            <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
             <View style={styles.blockUserInfo}>
                 <Image style={styles.img} source={userImages}/>
                 <View style={styles.blockUserText}>
@@ -30,7 +33,7 @@ const UserProfileS = ({navigation}) => {
                         height: 67
                     }}/>
                 </View>
-                <View style={styles.notificationsBlock}>
+                <View style={[styles.notificationsBlock, {flexDirection: checkLanguage ? 'row-reverse' : 'row'}]}>
                     <Text style={styles.textNotification}>Notifications</Text>
                     <Switch
                         thumbColor={colors.blue}
@@ -40,7 +43,7 @@ const UserProfileS = ({navigation}) => {
                         value={notifications}
                     />
                 </View>
-                <TouchableOpacity style={{...styles.notificationsBlock, position: 'absolute', bottom: 80}}>
+                <TouchableOpacity style={{...styles.notificationsBlock, position: 'absolute', bottom: 80, flexDirection: checkLanguage ? 'row-reverse' : 'row'}}>
                     <Text style={styles.textNotification}>Logout</Text>
                     <Image source={logoutImages}/>
                 </TouchableOpacity>

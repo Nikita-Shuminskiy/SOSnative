@@ -10,9 +10,9 @@ const InputFieldsChat = () => {
     return (
         <View style={styles.container}>
             <TextInput styleContainer={styles.styleInputContainer} style={styles.input}/>
-            <TouchableOpacity>
+            {/*<TouchableOpacity>
                 <Image style={{...styles.img, marginRight: 5}} source={microImg}/>
-            </TouchableOpacity>
+            </TouchableOpacity>*/}
             <TouchableOpacity>
                 <Image style={styles.img} source={ArrowUpImage}/>
             </TouchableOpacity>
@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     styleInputContainer: {marginTop: 0, height: 37, marginRight: 5},
     container: {
         flex: 1,
+        width: '100%',
         flexDirection: 'row',
         backgroundColor: colors.white,
         alignItems: 'center',

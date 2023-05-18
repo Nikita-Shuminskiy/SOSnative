@@ -34,6 +34,9 @@
         "projectId": "a07842e7-b2bd-48ce-9355-0799be4aebf1"
       }
     },
-    "owner": "nick11111"
+    "owner": "nick11111",
+    "plugins": [
+      "expo-localization"
+    ]
   }
 }

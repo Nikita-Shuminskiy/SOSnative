@@ -9,6 +9,7 @@ import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {LinearGradient} from "expo-linear-gradient";
 import AuthStore from "../../store/AuthStore/auth-store";
 import {routerConstants} from "../../constants/routerConstants";
+import * as Localization from "expo-localization";
 
 
 type LoginSProps = {
@@ -16,14 +17,14 @@ type LoginSProps = {
 }
 
 const LoginS = ({navigation}: LoginSProps) => {
-
+    const checkLanguage = Localization.locale.includes('he')
     const {setAuth} = AuthStore
 
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <View style={styles.container}>
                 <View
-                    style={{justifyContent: 'center', flex: 1, alignItems: 'center', marginTop: 10, marginBottom: 30}}>
+                    style={{justifyContent: 'center', flex: 1, alignItems: checkLanguage ? 'flex-start' : 'center', marginTop: 10, marginBottom: 30}}>
                     <Image style={styles.logo} source={logo}/>
                     <Text style={styles.textHeader}>Welcome!{"\n"}
                         Log in to your account</Text>

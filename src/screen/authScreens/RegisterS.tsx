@@ -5,48 +5,54 @@ import {colors} from "../../assets/colors/colors";
 import TextInput from "../../components/TextInput";
 import {LinearGradient} from "expo-linear-gradient";
 import ArrowBack from "../../components/ArrowBack";
+import arrowBack from "../../assets/images/keyboard_arrow_left-He.png"
 import Picker from "../../components/Picker";
 import {Checkbox} from "expo-checkbox";
 import ButtonGradient from "../../components/ButtonGradient";
+import * as Localization from 'expo-localization';
 
 const RegisterS = ({navigation}) => {
     const [isVolunteer, setIsVolunteer] = useState(false)
+    const checkLanguage = Localization.locale.includes('he')
 
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-            <ArrowBack goBackPress={() => navigation.goBack()}/>
+            <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
 
             <View style={styles.container}>
                 <View style={{justifyContent: 'center', flex: 1}}>
                     <Text style={styles.textHeader}>Create an account</Text>
                 </View>
 
-                <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
-                    <View style={{marginHorizontal: 10, flex: 1, width: '100%'}}>
-                       <View style={{flexDirection: 'row', justifyContent: 'center', flex: 1}}>
-                           <ButtonGradient
-                               styleTouchable={{marginRight: 10}}
-                               styleGradient={styles.button}
-                               colorsGradient={isVolunteer ? ['#D5E3FE', '#D5E3FE'] : null}
-                               styleText={styles.textBtn}
-                               colorText={isVolunteer ? colors.gray : colors.white}
-                               btnText={'I need help'}
-                               onPress={() => setIsVolunteer(false)}
-                           />
-                           <ButtonGradient
+                <View
+                    style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between', paddingHorizontal: 20}}>
+                    <View style={{flex: 1, width: '100%'}}>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1}}>
+                            <ButtonGradient
+                                styleTouchable={{marginRight: 10}}
+                                styleGradient={styles.button}
+                                colorsGradient={isVolunteer ? ['#D5E3FE', '#D5E3FE'] : null}
+                                styleText={styles.textBtn}
+                                colorText={isVolunteer ? colors.gray : colors.white}
+                                btnText={'I need help'}
+                                onPress={() => setIsVolunteer(false)}
+                            />
+                            <ButtonGradient
 
-                               styleGradient={styles.button}
-                               colorsGradient={!isVolunteer ? ['#D5E3FE', '#D5E3FE'] : null}
-                               styleText={styles.textBtn}
-                               colorText={!isVolunteer ? colors.gray : colors.white}
-                               btnText={'I am a volunteer'}
-                               onPress={() => setIsVolunteer(true)}
-                           />
-                       </View>
+                                styleGradient={styles.button}
+                                colorsGradient={!isVolunteer ? ['#D5E3FE', '#D5E3FE'] : null}
+                                styleText={styles.textBtn}
+                                colorText={!isVolunteer ? colors.gray : colors.white}
+                                btnText={'I am a volunteer'}
+                                onPress={() => setIsVolunteer(true)}
+                            />
+                        </View>
                     </View>
+
                     <View>
                         <TextInput placeholder={'Your name'} style={styles.input}/>
-                        <Text style={styles.textAnyName}>You can use any name you want to stay {"\n"} anonymous.</Text>
+                        <Text style={[styles.textAnyName]}>You can use any name you want to
+                            stay {"\n"} anonymous.</Text>
 
                         <TextInput placeholder={'Email Address'} style={styles.input}/>
                         <TextInput placeholder={'Password'} style={styles.input}/>
@@ -55,11 +61,16 @@ const RegisterS = ({navigation}) => {
                             <Picker/>
                         </View>
 
-                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
+                        <View style={{
+                            flexDirection: checkLanguage ? 'row-reverse' : 'row',
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                        }}>
                             <Checkbox value={true} color={colors.blue}
-                                      style={{borderColor: colors.blue, borderRadius: 8}}/>
+                                      style={{borderColor: colors.blue, borderRadius: 8, marginRight: 15}}/>
 
-                            <View style={{marginTop: 20, marginBottom: 20, marginLeft: 10, flexDirection: 'row'}}>
+                            <View style={{marginTop: 20, marginBottom: 20, marginLeft: 10,
+                                flexDirection: checkLanguage ? 'row-reverse' : 'row'}}>
                                 <Text style={[styles.textAgree]}>
                                     I agree with{' '}
                                 </Text>

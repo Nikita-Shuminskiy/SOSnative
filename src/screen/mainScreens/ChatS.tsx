@@ -12,6 +12,8 @@ import {VirtualizedList} from "../../components/virtualized-list";
 import CurrentCondition from "../../components/CurrentCondition";
 import InputFieldsChat from "../../components/InputFieldsChat";
 import {routerConstants} from "../../constants/routerConstants";
+import * as Localization from "expo-localization";
+import arrowBack from "../../assets/images/keyboard_arrow_left-white.png";
 //D5E3FE
 
 const chatData = [
@@ -25,18 +27,17 @@ const chatData = [
     {isDoctor: true, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
     {isDoctor: false, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
     {isDoctor: true, avatar: userImg, id: 2, text: ' I don\'t know how I can survive this...'},
-
-
 ]
 const ChatS = ({navigation}) => {
+    const checkLanguage = Localization.locale.includes('he')
     const chatView = ({item}) => {
         return <ChatList key={item.id} data={item}/>
     }
-    useEffect(() => {
+   /* useEffect(() => {
         setTimeout(() => {
             navigation.navigate(routerConstants.EVALUATION_CONDITION, {fromChat: true})
         }, 10000)
-    }, [])
+    }, [])*/
     return (
         <SafeAreaView style={{flex: 1}}>
             <LinearGradient
@@ -44,8 +45,21 @@ const ChatS = ({navigation}) => {
                 locations={[0.14, 0.8]}
                 start={{x: 0.3, y: 0.2}}
                 style={styles.headerContainer}>
-
-                <View style={styles.header}>
+                {
+                    checkLanguage && <View style={{ flexDirection: 'row-reverse' }}>
+                        <ArrowBack styleTouchable={styles.arrowBack} img={arrowLeftImg}
+                                   goBackPress={() => navigation.goBack()}/>
+                        <Text style={[styles.textHeader, {position: 'absolute', left: 0, top: 40}]}>
+                            Chat with
+                        </Text>
+                        <View style={styles.blockImgInfo}>
+                            <Image style={[styles.userImg, {marginLeft: 20}]} source={userImg}/>
+                            <Text style={[styles.userNameText, {marginLeft: 10}]}>Jenny</Text>
+                        </View>
+                        <Image style={styles.userImgBackground} source={ovalImg}/>
+                    </View>
+                }
+                {!checkLanguage && <View style={[styles.header]}>
                     <View style={{width: '100%', flex: 1}}>
                         <ArrowBack styleTouchable={styles.arrowBack} img={arrowLeftImg}
                                    goBackPress={() => navigation.goBack()}/>
@@ -61,7 +75,7 @@ const ChatS = ({navigation}) => {
                         </View>
                         <Image style={styles.userImgBackground} source={ovalImg}/>
                     </View>
-                </View>
+                </View>}
             </LinearGradient>
 
 
@@ -90,7 +104,7 @@ const ChatS = ({navigation}) => {
                     </VirtualizedList>
                 </LinearGradient>
 
-                <View style={{position: 'absolute', bottom: 0}}>
+                <View style={{position: 'absolute', bottom: 0,    width: '100%'}}>
                     <Text style={styles.text}>Your current condition</Text>
                     <CurrentCondition/>
                     <InputFieldsChat/>
@@ -133,9 +147,10 @@ const styles = StyleSheet.create({
     headerContainer: {
         paddingTop: 30,
         width: '100%',
-        minHeight: 126
+        minHeight: 126,
     },
-    arrowBack: {},
+    arrowBack: {
+    },
 })
 
 export default ChatS;

@@ -4,18 +4,21 @@ import {colors} from "../../assets/colors/colors";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import ArrowBack from "../../components/ArrowBack";
 import arrowLeftImg from "../../assets/images/arrow_left_white.png";
+import arrowLeftImgHe from "../../assets/images/keyboard_arrow_left-white.png";
 import PeoplesWitchElements from "../../assets/images/manWitchBrain.png";
 import Button from "../../components/Button";
 import {routerConstants} from "../../constants/routerConstants";
 import {LinearGradient} from "expo-linear-gradient";
+import * as Localization from "expo-localization";
 
 const GoodbyePageS = ({navigation}) => {
+    const checkLanguage = Localization.locale.includes('he')
     return (
         <LinearGradient
             colors={['#89BDE7', '#7EA7D9']}
             style={{flex: 1, width: '100%'}}>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-                <ArrowBack  img={arrowLeftImg}
+                <ArrowBack  img={checkLanguage ? arrowLeftImgHe : arrowLeftImg}
                            goBackPress={() => navigation.goBack()}/>
 
                 <View style={{

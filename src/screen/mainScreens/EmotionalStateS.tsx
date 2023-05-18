@@ -16,8 +16,8 @@ import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
 import {colors} from "../../assets/colors/colors";
 import ArrowBack from "../../components/ArrowBack";
-
 import backgroundUserHeader from '../../assets/images/backgroundUserHeader.png'
+import backgroundUserHeaderHe from '../../assets/images/backgroundUserHeader-He.png'
 import userImg from '../../assets/images/people2.png'
 import smileGood from '../../assets/images/smileGood.png'
 import smileOk from '../../assets/images/smileOk.png'
@@ -25,6 +25,8 @@ import smileAverage from '../../assets/images/smileAverage.png'
 import smileBad from '../../assets/images/smileBad.png'
 import smileVeryBad from '../../assets/images/smileVeryBad.png'
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
+import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
+import * as Localization from "expo-localization";
 
 
 export type ItemData = {
@@ -65,14 +67,17 @@ type ItemProps = {
     item: ItemData;
     onPress: () => void;
     borderColor: string;
+    checkLanguage: boolean;
 };
 
-const Item = ({item, onPress, borderColor}: ItemProps) => (
+const Item = ({item, onPress, borderColor, checkLanguage}: ItemProps) => (
     <TouchableOpacity onPress={onPress} style={[styles.item, {
         borderColor: borderColor,
         borderWidth: borderColor ? 1 : 0,
         borderRadius: borderColor ? 9 : 0,
-        width: 264, height: 78
+        width: 264, height: 78,
+        flexDirection: checkLanguage ? 'row-reverse' : 'row'
+
     }]}>
         <Image style={styles.img} source={item.img}/>
         <Text style={[styles.textImg]}>{item.title}</Text>
@@ -80,6 +85,7 @@ const Item = ({item, onPress, borderColor}: ItemProps) => (
 );
 
 const EmotionalStateS = ({navigation, route}) => {
+    const checkLanguage = Localization.locale.includes('he')
     const [selectedId, setSelectedId] = useState<string>();
     const isFromChat = route.params?.fromChat
 
@@ -88,6 +94,7 @@ const EmotionalStateS = ({navigation, route}) => {
 
         return (
             <Item
+                checkLanguage={checkLanguage}
                 item={item}
                 onPress={() => setSelectedId(item.id)}
                 borderColor={borderColor}
@@ -96,10 +103,10 @@ const EmotionalStateS = ({navigation, route}) => {
     };
     return (
        <SafeAreaView style={{flex: 1, marginTop: Platform.OS === 'ios' ? 10 : 40,}}>
-           {!isFromChat && <ArrowBack goBackPress={() => navigation.goBack()}/>}
+           {!isFromChat && <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
            {
                isFromChat && <View>
-                   <Image style={{width: 95, height: 170}} source={backgroundUserHeader}/>
+                   <Image style={{width: 95, height: 170}} source={checkLanguage ? backgroundUserHeaderHe : backgroundUserHeader}/>
                    <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}} source={userImg}/>
                </View>
            }
@@ -143,7 +150,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     item: {
-        flexDirection: "row",
         alignItems: 'center',
         paddingHorizontal: 30,
         //justifyContent: 'center'
@@ -159,6 +165,7 @@ const styles = StyleSheet.create({
         marginRight: 20
     },
     textImg: {
+        marginRight: 20,
         fontFamily: 'Onest-light',
         color: colors.blue,
         fontSize: 16

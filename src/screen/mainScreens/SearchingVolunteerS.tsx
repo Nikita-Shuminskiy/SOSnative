@@ -9,9 +9,12 @@ import imgPeople from "../../assets/images/people2.png";
 import imgPeople2 from "../../assets/images/Ellipse47.png";
 import imgPeople3 from "../../assets/images/Ellipse48.png";
 import {routerConstants} from "../../constants/routerConstants";
+import * as Localization from "expo-localization";
+import arrowBack from "../../assets/images/keyboard_arrow_left-white.png";
 
 
 const SearchingVolunteerS = ({navigation}) => {
+    const checkLanguage = Localization.locale.includes('he')
     useEffect(() => {
         setTimeout(() => {
             navigation.navigate(routerConstants.CHAT)
@@ -21,8 +24,7 @@ const SearchingVolunteerS = ({navigation}) => {
         <BaseWrapperComponent isBackdrop={true} isKeyboardAwareScrollView={true} styleSafeArea={{marginTop: 0}}>
             <View style={{marginTop: Platform.OS === 'ios' ? 10 : 40, marginHorizontal: 30}}>
                 <View style={{marginBottom: 70}}>
-                    <ArrowBack styleTouchable={styles.arrowBack} img={arrowLeftImg}
-                               goBackPress={() => navigation.goBack()}/>
+                    <ArrowBack styleTouchable={styles.arrowBack} img={checkLanguage ? arrowBack : arrowLeftImg} goBackPress={() => navigation.goBack()}/>
                 </View>
 
                 <View>

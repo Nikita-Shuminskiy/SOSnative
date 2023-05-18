@@ -8,15 +8,16 @@ import TextInput from "../../components/TextInput";
 import {routerConstants} from "../../constants/routerConstants";
 import Backdrop from "../../components/backdrop";
 import ButtonGradient from "../../components/ButtonGradient";
-
+import * as Localization from 'expo-localization';
 const NeedHelpS = ({navigation}) => {
-
+    const checkLanguage = Localization.locale.includes('he')
     return (
         <>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>
                 <View style={styles.container}>
                     <TouchableOpacity onPress={() => navigation.navigate(routerConstants.USER_PROFILE)}
-                                      style={styles.header}>
+                                      style={[styles.header, {
+                                          justifyContent: checkLanguage ? 'flex-start' : 'flex-end'}]}>
                         <Text style={styles.nameUser}>Michael</Text>
                         <Image source={userImages} style={styles.logo}/>
                     </TouchableOpacity>

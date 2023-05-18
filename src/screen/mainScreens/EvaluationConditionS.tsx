@@ -6,23 +6,27 @@ import checkBodyImg from '../../assets/images/checkBody.png'
 import checkBodyHeadImg from '../../assets/images/checkbodyHead.png'
 import checkBodyHeadFalse from '../../assets/images/checkBodyHeadFalse.png'
 import backgroundUserHeader from '../../assets/images/backgroundUserHeader.png'
+import backgroundUserHeaderHe from '../../assets/images/backgroundUserHeader-He.png'
 import userImg from '../../assets/images/people2.png'
 import {colors} from "../../assets/colors/colors";
 import Backdrop from "../../components/backdrop";
 import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
 import ArrowBack from "../../components/ArrowBack";
+import * as Localization from "expo-localization";
+import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
 
 const EvaluationConditionS = ({navigation, route}) => {
+    const checkLanguage = Localization.locale.includes('he')
     const isFromChat = route.params?.fromChat
     const [isChecked, setChecked] = useState(false);
 
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-            {!isFromChat && <ArrowBack goBackPress={() => navigation.goBack()}/>}
+            {!isFromChat &&  <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
             {
                 isFromChat && <View>
-                    <Image style={{width: 95, height: 170}} source={backgroundUserHeader}/>
+                    <Image style={{width: 95, height: 170}} source={ checkLanguage ? backgroundUserHeaderHe : backgroundUserHeader}/>
                     <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}} source={userImg}/>
                 </View>
             }
@@ -42,12 +46,12 @@ const EvaluationConditionS = ({navigation, route}) => {
                             {
                                 isChecked ?
                                     <Pressable onTouchEnd={() => setChecked(false)}>
-                                        <Image style={{position: 'absolute', ...styles.checkboxHead}}
+                                        <Image style={{position: 'absolute', ...styles.checkboxHead, right:checkLanguage ? 84 : 86 }}
                                                source={checkBodyHeadImg}/>
                                     </Pressable>
                                     :
                                     <Pressable onTouchEnd={() => setChecked(true)}>
-                                        <Image style={{position: 'absolute', ...styles.checkboxHead}}
+                                        <Image style={{position: 'absolute', ...styles.checkboxHead, right:checkLanguage ? 84 : 86}}
                                                source={checkBodyHeadFalse}/>
                                     </Pressable>
 
@@ -60,12 +64,12 @@ const EvaluationConditionS = ({navigation, route}) => {
                             {
                                 isChecked ?
                                     <Pressable onTouchEnd={() => setChecked(false)}>
-                                        <Image style={{position: 'absolute', ...styles.checkboxHeart}}
+                                        <Image style={{position: 'absolute', ...styles.checkboxHeart, right:checkLanguage ? 110 : 60}}
                                                source={checkBodyImg}/>
                                     </Pressable>
                                     :
                                     <View onTouchEnd={() => setChecked(true)}
-                                          style={{position: 'absolute', ...styles.checkboxHeart, ...styles.checkbox}}/>
+                                          style={{position: 'absolute', ...styles.checkboxHeart, ...styles.checkbox, right:checkLanguage ? 110 : 60}}/>
 
                             }
                             <Text
@@ -75,12 +79,12 @@ const EvaluationConditionS = ({navigation, route}) => {
                             {
                                 isChecked ?
                                     <Pressable onTouchEnd={() => setChecked(false)}>
-                                        <Image style={{position: 'absolute', ...styles.checkboxStomach}}
+                                        <Image style={{position: 'absolute', ...styles.checkboxStomach, right:checkLanguage ? 90 : 60}}
                                                source={checkBodyImg}/>
                                     </Pressable>
                                     :
                                     <View onTouchEnd={() => setChecked(true)}
-                                          style={{position: 'absolute', ...styles.checkboxStomach, ...styles.checkbox}}/>
+                                          style={{position: 'absolute', ...styles.checkboxStomach, ...styles.checkbox, right:checkLanguage ? 90 : 60}}/>
 
                             }
                             <Text

@@ -4,12 +4,13 @@ import {colors} from "../assets/colors/colors";
 import RNPickerSelect from 'react-native-picker-select-updated';
 import {Image, StyleSheet, View} from "react-native";
 import {AntDesign} from '@expo/vector-icons';
-
+import * as Localization from 'expo-localization';
 type PickerProps = {
     selectStyles?: any
 }
 const Picker = ({selectStyles}: PickerProps) => {
     //const [selectedLanguage, setSelectedLanguage] = useState()
+    const checkLanguage = Localization.locale.includes('he')
     const pickerRef = useRef<any>();
 
     function open() {
@@ -41,7 +42,7 @@ const Picker = ({selectStyles}: PickerProps) => {
                 pickerRef.favSport0 = el;
             }}
             style={{
-                inputAndroidContainer: {height: 67, justifyContent: 'center'},
+                inputAndroidContainer: {height: 67, alignItems: 'center', flexDirection: checkLanguage ? 'row-reverse' : 'row'},
                 inputIOSContainer: {height: 67, justifyContent: 'center'},
                 placeholder: {color: colors.blue},
                 inputAndroid: styles.inputAndroid,
