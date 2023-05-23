@@ -8,6 +8,7 @@ import SearchingVolunteerS from "../screen/mainScreens/SearchingVolunteerS";
 import UserProfileS from "../screen/mainScreens/UserProfileS";
 import ChatS from "../screen/mainScreens/ChatS";
 import GoodbyePageS from "../screen/mainScreens/GoodbyePageS";
+import DashboardS from "../screen/volounerScreens/DashboardS";
 
 const MainStack = createNativeStackNavigator()
 
@@ -49,6 +50,8 @@ const MainNavigation = ({navigation, route}) => {
                 name={routerConstants.GOODBYE}
                 component={GoodbyePageS}
             />
+
+
 
         </MainStack.Navigator>
     )

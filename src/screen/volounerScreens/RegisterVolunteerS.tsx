@@ -1,3 +1,4 @@
+/*
 import React, {useState} from 'react';
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
@@ -10,9 +11,8 @@ import Picker from "../../components/Picker";
 import {Checkbox} from "expo-checkbox";
 import ButtonGradient from "../../components/ButtonGradient";
 import * as Localization from 'expo-localization';
-import {routerConstants} from "../../constants/routerConstants";
 
-const RegisterS = ({navigation}) => {
+const RegisterVolunteerS = ({navigation}) => {
     const [isVolunteer, setIsVolunteer] = useState(false)
     const checkLanguage = Localization.locale.includes('he')
 
@@ -45,7 +45,7 @@ const RegisterS = ({navigation}) => {
                                 styleText={styles.textBtn}
                                 colorText={!isVolunteer ? colors.gray : colors.white}
                                 btnText={'I am a volunteer'}
-                                onPress={() => navigation.navigate(routerConstants.DASHBOARD)}
+                                onPress={() => setIsVolunteer(true)}
                             />
                         </View>
                     </View>
@@ -156,4 +156,4 @@ const styles = StyleSheet.create({
         marginBottom: 30
     },
 })
-export default RegisterS;
+export default RegisterVolunteerS;*/

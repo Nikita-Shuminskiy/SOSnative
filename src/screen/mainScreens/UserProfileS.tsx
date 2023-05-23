@@ -16,7 +16,7 @@ const UserProfileS = ({navigation}) => {
     return (
         <BaseWrapperComponent>
             <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
-            <View style={styles.blockUserInfo}>
+            <View style={styles.blockHeader}>
                 <Image style={styles.img} source={userImages}/>
                 <View style={styles.blockUserText}>
                     <Text style={styles.textNameUser}>Michael</Text>
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     blockUserText: {
         marginLeft: 15
     },
-    blockUserInfo: {
+    blockHeader: {
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'flex-start',

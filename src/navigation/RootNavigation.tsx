@@ -12,6 +12,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import MainNavigation from "./MainNavigation";
 import RegisterS from "../screen/authScreens/RegisterS";
 import ResetPasswordS from "../screen/authScreens/ResetPasswordS";
+import DashboardS from "../screen/volounerScreens/DashboardS";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -45,6 +46,14 @@ const RootNavigation = observer(() => {
                             options={{headerShown: false}}
                             name={routerConstants.RESET_PASSWORD}
                             component={ResetPasswordS}
+                        />
+
+                        {/*Volunteer navigation*/}
+
+                        <RootStack.Screen
+                            options={{headerShown: false, animation: 'flip'}}
+                            name={routerConstants.DASHBOARD}
+                            component={DashboardS}
                         />
                     </React.Fragment>
 
