@@ -12,5 +12,8 @@ export const routerConstants = {
     RESET_PASSWORD: 'reset-password',
     LOGIN: 'login',
 
-    DASHBOARD: 'dashboard'
+
+    //volunteer
+    DASHBOARD: 'dashboard',
+    VOLUNTEER_PROFILE: 'volunteer-profile'
 }

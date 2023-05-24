@@ -13,6 +13,7 @@ import MainNavigation from "./MainNavigation";
 import RegisterS from "../screen/authScreens/RegisterS";
 import ResetPasswordS from "../screen/authScreens/ResetPasswordS";
 import DashboardS from "../screen/volounerScreens/DashboardS";
+import VolunteerProfileS from "../screen/volounerScreens/VolunteerProfileS";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -54,6 +55,11 @@ const RootNavigation = observer(() => {
                             options={{headerShown: false, animation: 'flip'}}
                             name={routerConstants.DASHBOARD}
                             component={DashboardS}
+                        />
+                        <RootStack.Screen
+                            options={{headerShown: false, animation: 'flip'}}
+                            name={routerConstants.VOLUNTEER_PROFILE}
+                            component={VolunteerProfileS}
                         />
                     </React.Fragment>
 

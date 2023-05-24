@@ -12,6 +12,7 @@ import {LinearGradient} from "expo-linear-gradient";
 import * as Localization from "expo-localization";
 import smileGood from "../../assets/images/smileGood.png";
 import {VirtualizedList} from "../../components/virtualized-list";
+import {routerConstants} from "../../constants/routerConstants";
 
 type ItemProps = {
     item: any;
@@ -70,7 +71,7 @@ const Item = ({item, checkLanguage}: ItemProps) => (
         </ImageBackground>
     </TouchableOpacity>
 );
-const DashboardS = () => {
+const DashboardS = ({navigation}) => {
     const checkLanguage = Localization.locale.includes('he')
     const renderItem = ({item}: { item: any }) => {
         return (
@@ -83,7 +84,7 @@ const DashboardS = () => {
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <View style={{paddingHorizontal: 20}}>
-                <View style={{
+                <TouchableOpacity onPress={() => navigation.navigate(routerConstants.VOLUNTEER_PROFILE)} style={{
                     flex: 1,
                     justifyContent: 'flex-end',
                     flexDirection: 'row',
@@ -94,7 +95,7 @@ const DashboardS = () => {
                         <Text style={styles.textNameUser}>Jenny</Text>
                     </View>
                     <Image style={styles.img} source={userImages}/>
-                </View>
+                </TouchableOpacity>
                 <View style={styles.blockHeader}>
                     <Image source={indicatorUsers}/>
                     <Text style={styles.textNameUser}>Go on!{'\n'}
