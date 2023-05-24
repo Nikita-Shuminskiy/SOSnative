@@ -11,6 +11,7 @@ import {colors} from "../../assets/colors/colors";
 import {LinearGradient} from "expo-linear-gradient";
 import * as Localization from "expo-localization";
 import smileGood from "../../assets/images/smileGood.png";
+import {VirtualizedList} from "../../components/virtualized-list";
 
 type ItemProps = {
     item: any;
@@ -27,40 +28,46 @@ const DATA = [
 ];
 const Item = ({item, checkLanguage}: ItemProps) => (
     <TouchableOpacity style={[{
-        padding: 10,
+        padding: 20,
         backgroundColor: '#D5E3FE',
         borderRadius: 15,
         width: '100%',
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: checkLanguage ? 'row-reverse'  :'row',
         justifyContent: 'space-between'
     }]}>
-        <View>
-            <View  style={{flexDirection: checkLanguage ? 'row-reverse' : 'row',  marginTop: 20}}>
-                <Text style={{color: colors.blue, fontFamily: 'Onest-medium'}}>{item.title}</Text>
-                <Text style={{color: '#1F8298', fontFamily: 'Onest-medium', marginLeft: 10}}>{item.time}</Text>
-            </View>
-
-            <View style={{ maxWidth: '80%' }}>
+        <View style={{ flexDirection:  checkLanguage ? 'row-reverse'  :'row', justifyContent: 'space-between'}}>
+            <View  style={{flexDirection: 'column',  marginTop: 20}}>
+              <View style={{flexDirection:  checkLanguage ? 'row-reverse'  :'row'}}>
+                  <Text style={{color: colors.blue, fontFamily: 'Onest-medium'}}>{item.title}</Text>
+                  <Text style={{color: '#1F8298', fontFamily: 'Onest-medium', marginRight: checkLanguage ? 10 : 0, marginLeft: checkLanguage ? 0 : 10}}>{item.time}</Text>
+              </View>
                 <Text style={{
-                    marginTop: 20,
+                    textAlign: 'right',
+                    marginTop: 10,
                     color: '#1F8298',
                     fontFamily: 'Onest-medium',
                     fontWeight: '500',
-                    fontSize: 21,
+                    fontSize: 18,
+                    maxWidth: '91%'
                 }}>{item.description}</Text>
             </View>
+
+
         </View>
 
-       <View>
-           <Image source={manWhite}/>
-           <ImageBackground
-               source={circle}
-               style={{width: 68, height: 68, position: 'absolute', right: -20, bottom: -15, alignItems: 'center', justifyContent: 'center'}}
-           >
-               <Image style={{width: 38, height: 38}} source={smileOk}/>
-           </ImageBackground>
-       </View>
+        <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{ position: 'absolute', right:checkLanguage ? -70 : 10, top: 0, flexDirection: checkLanguage ? 'row-reverse'  :'row', alignItems: 'center' }}>
+                <Image  source={manWhite}/>
+                <Text style={{paddingLeft: 10, color: '#1F8298', fontFamily: 'Onest-medium',}}>Heart</Text>
+            </View>
+        </View>
+        <ImageBackground
+            source={circle}
+            style={{width: 68, height: 68, alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: -10, right: -5}}
+        >
+            <Image style={{width: 38, height: 38}} source={smileOk}/>
+        </ImageBackground>
     </TouchableOpacity>
 );
 const DashboardS = () => {
@@ -89,7 +96,7 @@ const DashboardS = () => {
                     <Image style={styles.img} source={userImages}/>
                 </View>
                 <View style={styles.blockHeader}>
-                    <Image style={{marginRight: 20}} source={indicatorUsers}/>
+                    <Image source={indicatorUsers}/>
                     <Text style={styles.textNameUser}>Go on!{'\n'}
                         You’ve helped 15 people this week.</Text>
                 </View>
@@ -98,12 +105,12 @@ const DashboardS = () => {
                         <Text style={[styles.textNameUser, {color: '#1F8298', fontWeight: '500'}]}>Need your help!</Text>
                     </View>
                     <View style={{flex: 1, marginBottom: 10, marginTop: 20, width: '100%'}}>
-                        <FlatList
-                            data={DATA}
-                            renderItem={renderItem}
-                            keyExtractor={item => item.id}
-                            style={{flex:1, height: '100%', width: '100%'}}
-                        />
+                            <FlatList
+                                data={DATA}
+                                renderItem={renderItem}
+                                keyExtractor={item => item.id}
+                                style={{flex:1, height: '100%', width: '100%'}}
+                            />
                     </View>
                     <View style={{flex: 1, width: '100%'}}>
                         <TouchableOpacity>
@@ -139,10 +146,10 @@ const styles = StyleSheet.create({
     },
     blockHeader: {
         flexDirection: 'row',
-        alignItems: 'flex-end',
-        justifyContent: 'flex-end',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexGrow: 1,
         marginTop: 8,
-        marginLeft: 50,
         marginBottom: 50
     },
     textNameUser: {
