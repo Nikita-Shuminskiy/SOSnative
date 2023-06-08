@@ -12,8 +12,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import MainNavigation from "./MainNavigation";
 import RegisterS from "../screen/authScreens/RegisterS";
 import ResetPasswordS from "../screen/authScreens/ResetPasswordS";
-import DashboardS from "../screen/volounerScreens/DashboardS";
-import VolunteerProfileS from "../screen/volounerScreens/VolunteerProfileS";
+import DashboardS from "../screen/volounterScreens/DashboardS";
+import VolunteerProfileS from "../screen/volounterScreens/VolunteerProfileS";
 
 SplashScreen.preventAutoHideAsync();
 

@@ -103,7 +103,7 @@ const ChatS = ({navigation}) => {
                            />
                        </View>
                    </LinearGradient>
-                   
+
                </View>
            </BaseWrapperComponent>
            <View style={{position: 'absolute', bottom: 0,    width: '100%'}}>

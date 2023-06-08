@@ -8,7 +8,7 @@ import SearchingVolunteerS from "../screen/mainScreens/SearchingVolunteerS";
 import UserProfileS from "../screen/mainScreens/UserProfileS";
 import ChatS from "../screen/mainScreens/ChatS";
 import GoodbyePageS from "../screen/mainScreens/GoodbyePageS";
-import DashboardS from "../screen/volounerScreens/DashboardS";
+import DashboardS from "../screen/volounterScreens/DashboardS";
 
 const MainStack = createNativeStackNavigator()
 
