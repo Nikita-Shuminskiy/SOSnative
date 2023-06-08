@@ -14,6 +14,7 @@ import InputFieldsChat from "../../components/InputFieldsChat";
 import {routerConstants} from "../../constants/routerConstants";
 import * as Localization from "expo-localization";
 import arrowBack from "../../assets/images/keyboard_arrow_left-white.png";
+import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 //D5E3FE
 
 const chatData = [
@@ -39,78 +40,78 @@ const ChatS = ({navigation}) => {
         }, 10000)
     }, [])*/
     return (
-        <SafeAreaView style={{flex: 1}}>
-            <LinearGradient
-                colors={['#89BDE7', '#7EA7D9']}
-                locations={[0.14, 0.8]}
-                start={{x: 0.3, y: 0.2}}
-                style={styles.headerContainer}>
-                {
-                    checkLanguage && <View style={{ flexDirection: 'row-reverse' }}>
-                        <ArrowBack styleTouchable={styles.arrowBack} img={arrowLeftImg}
-                                   goBackPress={() => navigation.goBack()}/>
-                        <Text style={[styles.textHeader, {position: 'absolute', left: 0, top: 40}]}>
-                            Chat with
-                        </Text>
-                        <View style={styles.blockImgInfo}>
-                            <Image style={[styles.userImg, {marginLeft: 20}]} source={userImg}/>
-                            <Text style={[styles.userNameText, {marginLeft: 10}]}>Jenny</Text>
-                        </View>
-                        <Image style={styles.userImgBackground} source={ovalImg}/>
-                    </View>
-                }
-                {!checkLanguage && <View style={[styles.header]}>
-                    <View style={{width: '100%', flex: 1}}>
-                        <ArrowBack styleTouchable={styles.arrowBack} img={arrowLeftImg}
-                                   goBackPress={() => navigation.goBack()}/>
-                        <Text style={styles.textHeader}>
-                            Chat with
-                        </Text>
-                    </View>
+       <>
+           <BaseWrapperComponent isKeyboardAwareScrollView={true}>
+               <LinearGradient
+                   colors={['#89BDE7', '#7EA7D9']}
+                   locations={[0.14, 0.8]}
+                   start={{x: 0.3, y: 0.2}}
+                   style={styles.headerContainer}>
+                   {
+                       checkLanguage && <View style={{ flexDirection: 'row-reverse' }}>
+                           <ArrowBack styleTouchable={styles.arrowBack} img={arrowLeftImg}
+                                      goBackPress={() => navigation.goBack()}/>
+                           <Text style={[styles.textHeader, {position: 'absolute', left: 0, top: 40}]}>
+                               Chat with
+                           </Text>
+                           <View style={styles.blockImgInfo}>
+                               <Image style={[styles.userImg, {marginLeft: 20}]} source={userImg}/>
+                               <Text style={[styles.userNameText, {marginLeft: 10}]}>Jenny</Text>
+                           </View>
+                           <Image style={styles.userImgBackground} source={ovalImg}/>
+                       </View>
+                   }
+                   {!checkLanguage && <View style={[styles.header]}>
+                       <View style={{width: '100%', flex: 1}}>
+                           <ArrowBack styleTouchable={styles.arrowBack} img={arrowLeftImg}
+                                      goBackPress={() => navigation.goBack()}/>
+                           <Text style={styles.textHeader}>
+                               Chat with
+                           </Text>
+                       </View>
 
-                    <View>
-                        <View style={styles.blockImgInfo}>
-                            <Text style={styles.userNameText}>Jenny</Text>
-                            <Image style={styles.userImg} source={userImg}/>
-                        </View>
-                        <Image style={styles.userImgBackground} source={ovalImg}/>
-                    </View>
-                </View>}
-            </LinearGradient>
+                       <View>
+                           <View style={styles.blockImgInfo}>
+                               <Text style={styles.userNameText}>Jenny</Text>
+                               <Image style={styles.userImg} source={userImg}/>
+                           </View>
+                           <Image style={styles.userImgBackground} source={ovalImg}/>
+                       </View>
+                   </View>}
+               </LinearGradient>
 
 
-            <View style={{flex : 1}}>
-                <LinearGradient
-                    colors={['rgba(213,227,254,0.71)', 'rgba(223,233,255,0.97)']}
-                    locations={[0.14, 0.8]}
-                    start={{x: 0.1, y: 0.2}}
-                    //end={{x: 0, y: 1}}
-                >
-                    <VirtualizedList>
-                        <ScrollView contentContainerStyle={{paddingHorizontal: 20, marginBottom: 190}}>
-                            <ChatAvatar/>
-                            <FlatList
-                                data={chatData}
-                                renderItem={chatView}
-                                keyExtractor={(item, index) => index.toString()}
-                                style={{width: '100%'}}
-                                /*   ListEmptyComponent={renderEmptyContainer}*/
-                                contentContainerStyle={
-                                    {width: '100%', flex: 1}
-                                }
+               <View style={{flex : 1}}>
+                   <LinearGradient
+                       colors={['rgba(213,227,254,0.71)', 'rgba(223,233,255,0.97)']}
+                       locations={[0.14, 0.8]}
+                       start={{x: 0.1, y: 0.2}}
+                       //end={{x: 0, y: 1}}
+                   >
+                       <View style={{paddingHorizontal: 20, marginBottom: 190}}>
+                           <ChatAvatar/>
+                           <FlatList
+                               data={chatData}
+                               renderItem={chatView}
+                               keyExtractor={(item, index) => index.toString()}
+                               style={{width: '100%'}}
+                               /*   ListEmptyComponent={renderEmptyContainer}*/
+                               contentContainerStyle={
+                                   {width: '100%', flex: 1}
+                               }
 
-                            />
-                        </ScrollView>
-                    </VirtualizedList>
-                </LinearGradient>
-
-                <View style={{position: 'absolute', bottom: 0,    width: '100%'}}>
-                    <Text style={styles.text}>Your current condition</Text>
-                    <CurrentCondition/>
-                    <InputFieldsChat/>
-                </View>
-            </View>
-        </SafeAreaView>
+                           />
+                       </View>
+                   </LinearGradient>
+                   
+               </View>
+           </BaseWrapperComponent>
+           <View style={{position: 'absolute', bottom: 0,    width: '100%'}}>
+               <Text style={styles.text}>Your current condition</Text>
+               <CurrentCondition/>
+               <InputFieldsChat/>
+           </View>
+       </>
     );
 };
 const styles = StyleSheet.create({
