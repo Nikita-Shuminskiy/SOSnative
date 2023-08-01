@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import logo from '../../assets/images/logoWitchWiFi.png'
@@ -10,6 +10,9 @@ import {LinearGradient} from "expo-linear-gradient";
 import AuthStore from "../../store/AuthStore/auth-store";
 import {routerConstants} from "../../constants/routerConstants";
 import * as Localization from "expo-localization";
+import {useFormik} from "formik";
+import rootStore from "../../store/RootStore";
+import {validateEmail} from "../../utils/utils";
 
 
 type LoginSProps = {
@@ -17,33 +20,82 @@ type LoginSProps = {
 }
 
 const LoginS = ({navigation}: LoginSProps) => {
+    const {AuthStoreService} = rootStore
     const checkLanguage = Localization.locale.includes('he')
     const {setAuth} = AuthStore
+    const {handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, setSubmitting} =
+        useFormik({
+            initialValues: {
+                email: '2@mail.ru',
+                password: '11111111',
+            },
+            onSubmit: (values) => {
+                onPressLogin(values)
+            },
+            validateOnChange: false,
+            validateOnMount: false,
+            validateOnBlur: false,
+            validate: (values) => {
+                const errors = {}
+                if (!validateEmail(values.email)) {
+                    errors['email'] = true
+                }
+                if (values.password.length <= 7) {
+                    errors['password'] = true
+                }
+                return errors
+            },
+        })
+    const onPressLogin = (values) => {
+        AuthStoreService.login({
+            email: values.email?.trim(),
+            password: values.password,
+        })
+        setSubmitting(false)
+    }
+    const isDisabledBtn = () => !!(errors.email && !validateEmail(values.email.trim())) ||
+        !!(errors.password && values.password.length <= 7) ||
+        isSubmitting
 
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <View style={styles.container}>
                 <View
-                    style={{justifyContent: 'center', flex: 1, alignItems: checkLanguage ? 'flex-start' : 'center', marginTop: 10, marginBottom: 30}}>
+                    style={{
+                        justifyContent: 'center',
+                        flex: 1,
+                        alignItems: checkLanguage ? 'flex-start' : 'center',
+                        marginTop: 10,
+                        marginBottom: 30
+                    }}>
                     <Image style={styles.logo} source={logo}/>
                     <Text style={styles.textHeader}>Welcome!{"\n"}
                         Log in to your account</Text>
                 </View>
                 <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
                     <View>
-                        <TextInput placeholder={'Email Address'} style={styles.input}/>
-                        <TextInput placeholder={'Password'} style={styles.input}/>
+                        <TextInput errorText={'Email entered incorrectly'}
+                                   error={!!(!validateEmail(values.email.trim()) && errors.email)} onBlur={handleBlur('email')} onChangeText={handleChange('email')}
+                                   value={values.email} placeholder={'Email Address'} style={styles.input}/>
+                        <TextInput onBlur={handleBlur('password')} onChangeText={handleChange('password')}
+                                   value={values.password}
+                                   secureTextEntry={true}
+                                   error={!!(!!errors.password &&
+                                       values.password.length <= 7)}
+                                   errorText={'Password must contain at least 8 characters'}
+                                   placeholder={'Password'} style={styles.input}/>
+
                         <TouchableOpacity onPress={() => navigation.navigate(routerConstants.RESET_PASSWORD)}
                                           style={{marginTop: 20, marginBottom: 20, marginLeft: 10}}>
                             <Text style={{color: colors.blueMedium, fontSize: 18, fontFamily: 'Onest-light'}}>Forgot my
                                 password</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setAuth(true)}>
-
+                        {/*// @ts-ignore */}
+                        <TouchableOpacity onPress={handleSubmit} disabled={isDisabledBtn()}>
                             <LinearGradient
                                 colors={['#89BDE7', '#7EA7D9']}
                                 style={styles.button}>
-                                <Text style={styles.text}>Log in</Text>
+                                <Text style={[styles.text, {color: isDisabledBtn() ? 'red' : 'white'}]}>Log in</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -55,9 +107,9 @@ const LoginS = ({navigation}: LoginSProps) => {
                             activeHover={true}
                             styleContainer={{borderWidth: 1, borderColor: colors.blue}}
                             styleText={{
-                            color: colors.blue, fontFamily: 'Onest-medium', fontSize: 18,
-                            lineHeight: 21
-                        }}
+                                color: colors.blue, fontFamily: 'Onest-medium', fontSize: 18,
+                                lineHeight: 21
+                            }}
                             title={'Create an account'} onPress={() => {
                             navigation.navigate(routerConstants.REGISTRATION)
                         }}/>

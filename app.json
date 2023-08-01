@@ -31,10 +31,10 @@
     },
     "extra": {
       "eas": {
-        "projectId": "a07842e7-b2bd-48ce-9355-0799be4aebf1"
+        "projectId": "ba114943-c65e-44ab-a903-af6bacd4d894"
       }
     },
-    "owner": "nick11111",
+    "owner": "nick_1995",
     "plugins": [
       "expo-localization"
     ]

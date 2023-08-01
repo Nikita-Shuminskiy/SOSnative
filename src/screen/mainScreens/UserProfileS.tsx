@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity, Switch} from "react-native";
+import {Image, StyleSheet, Switch, Text, TouchableOpacity, View} from "react-native";
 import {BaseWrapperComponent,} from "../../components/baseWrapperComponent";
 import ArrowBack from "../../components/ArrowBack";
 import userImages from '../../assets/images/user.png'
@@ -9,17 +9,22 @@ import Picker from "../../components/Picker";
 import logoutImages from '../../assets/images/logout.png'
 import * as Localization from "expo-localization";
 import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
+import AuthStore from "../../store/AuthStore/auth-store";
 
 const UserProfileS = ({navigation}) => {
     const checkLanguage = Localization.locale.includes('he')
+    const {user} = AuthStore
     const [notifications, setNotifications] = useState(false)
+    const onPressLogOut = () => {
+        AuthStore.logout()
+    }
     return (
         <BaseWrapperComponent>
             <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
             <View style={styles.blockHeader}>
                 <Image style={styles.img} source={userImages}/>
                 <View style={styles.blockUserText}>
-                    <Text style={styles.textNameUser}>Michael</Text>
+                    <Text style={styles.textNameUser}>{user?.name}</Text>
                     <TouchableOpacity>
                         <Text style={styles.textChange}>change</Text>
                     </TouchableOpacity>
@@ -43,7 +48,12 @@ const UserProfileS = ({navigation}) => {
                         value={notifications}
                     />
                 </View>
-                <TouchableOpacity style={{...styles.notificationsBlock, position: 'absolute', bottom: 80, flexDirection: checkLanguage ? 'row-reverse' : 'row'}}>
+                <TouchableOpacity onPress={onPressLogOut} style={{
+                    ...styles.notificationsBlock,
+                    position: 'absolute',
+                    bottom: 80,
+                    flexDirection: checkLanguage ? 'row-reverse' : 'row'
+                }}>
                     <Text style={styles.textNotification}>Logout</Text>
                     <Image source={logoutImages}/>
                 </TouchableOpacity>

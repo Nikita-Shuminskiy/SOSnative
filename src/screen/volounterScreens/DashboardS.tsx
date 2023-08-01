@@ -1,86 +1,79 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
-import {FlatList, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import userImages from "../../assets/images/user.png";
 import indicatorUsers from "../../assets/images/indicatorUsers.png";
-import manWhite from "../../assets/images/manWhite.png";
-import smileOk from "../../assets/images/smileOk.png";
-import circle from "../../assets/images/circle.png";
 import {colors} from "../../assets/colors/colors";
 
 import {LinearGradient} from "expo-linear-gradient";
 import * as Localization from "expo-localization";
-import smileGood from "../../assets/images/smileGood.png";
-import {VirtualizedList} from "../../components/virtualized-list";
 import {routerConstants} from "../../constants/routerConstants";
-
-type ItemProps = {
-    item: any;
-    checkLanguage: boolean;
-};
-const DATA = [
-    {
-        id: '1',
-        img: smileGood,
-        title: 'Michael wrote',
-        time: '10 minutes ago',
-        description: 'I feel bad about my parents’ divorce.',
-    },
-];
-const Item = ({item, checkLanguage}: ItemProps) => (
-    <TouchableOpacity style={[{
-        padding: 20,
-        backgroundColor: '#D5E3FE',
-        borderRadius: 15,
-        width: '100%',
-        flex: 1,
-        flexDirection: checkLanguage ? 'row-reverse'  :'row',
-        justifyContent: 'space-between'
-    }]}>
-        <View style={{ flexDirection:  checkLanguage ? 'row-reverse'  :'row', justifyContent: 'space-between'}}>
-            <View  style={{flexDirection: 'column',  marginTop: 20}}>
-              <View style={{flexDirection:  checkLanguage ? 'row-reverse'  :'row'}}>
-                  <Text style={{color: colors.blue, fontFamily: 'Onest-medium'}}>{item.title}</Text>
-                  <Text style={{color: '#1F8298', fontFamily: 'Onest-medium', marginRight: checkLanguage ? 10 : 0, marginLeft: checkLanguage ? 0 : 10}}>{item.time}</Text>
-              </View>
-                <Text style={{
-                    textAlign: 'right',
-                    marginTop: 10,
-                    color: '#1F8298',
-                    fontFamily: 'Onest-medium',
-                    fontWeight: '500',
-                    fontSize: 18,
-                    maxWidth: '91%'
-                }}>{item.description}</Text>
-            </View>
+import rootStore from "../../store/RootStore/root-store";
+import AuthStore from "../../store/AuthStore/auth-store";
+import {observer} from "mobx-react-lite";
+import {NavigationProp, ParamListBase} from "@react-navigation/native";
+import {RoomType} from "../../api/api";
+import {Patient} from "../../components/list-viewer/Patient";
+import EmptyList from "../../components/empty-list";
+import CircularProgressBar from "../../components/CircularProgressBar";
 
 
-        </View>
+type DashboardSType = {
+    navigation: NavigationProp<ParamListBase>
+}
 
-        <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-            <View style={{ position: 'absolute', right:checkLanguage ? -70 : 10, top: 0, flexDirection: checkLanguage ? 'row-reverse'  :'row', alignItems: 'center' }}>
-                <Image  source={manWhite}/>
-                <Text style={{paddingLeft: 10, color: '#1F8298', fontFamily: 'Onest-medium',}}>Heart</Text>
-            </View>
-        </View>
-        <ImageBackground
-            source={circle}
-            style={{width: 68, height: 68, alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: -10, right: -5}}
-        >
-            <Image style={{width: 38, height: 38}} source={smileOk}/>
-        </ImageBackground>
-    </TouchableOpacity>
-);
-const DashboardS = ({navigation}) => {
+const DashboardS = observer(({navigation}: DashboardSType) => {
     const checkLanguage = Localization.locale.includes('he')
-    const renderItem = ({item}: { item: any }) => {
+    const {rooms, donePatients} = AuthStore
+    const [selectedPatientRoomId, setSelectedPatientRoomId] = useState('')
+
+    const {AuthStoreService} = rootStore
+
+    const renderItem = ({item}: { item: RoomType }) => {
+        const onPressPatientHandler = () => {
+            setSelectedPatientRoomId(item.id)
+        }
+
         return (
-            <Item
+            <Patient
+                onPress={onPressPatientHandler}
                 checkLanguage={checkLanguage}
-                item={item}
+                selectedPatient={selectedPatientRoomId}
+                patient={item}
             />
         );
     };
+
+    const onPressTakePatient = () => {
+        AuthStoreService.joinRoom(selectedPatientRoomId).then((data) => {
+            if (data) {
+                navigation.navigate(routerConstants.CHAT)
+            }
+        })
+    }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await AuthStoreService.findRooms();
+        };
+        fetchData();
+        const intervalId = setInterval(fetchData, 3000);
+        AuthStoreService.getDonePatients()
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, []);
+    const renderEmptyContainer = (height, text) => {
+        const onPressLink = () => {
+
+        }
+        return (
+            <EmptyList
+                text={text}
+                onPressLink={onPressLink}
+            />
+        )
+    }
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <View style={{paddingHorizontal: 20}}>
@@ -97,24 +90,32 @@ const DashboardS = ({navigation}) => {
                     <Image style={styles.img} source={userImages}/>
                 </TouchableOpacity>
                 <View style={styles.blockHeader}>
-                    <Image source={indicatorUsers}/>
+                    <CircularProgressBar donePatients={donePatients}/>
                     <Text style={styles.textNameUser}>Go on!{'\n'}
-                        You’ve helped 15 people this week.</Text>
+                        You’ve helped {donePatients} people this week.</Text>
                 </View>
                 <View style={styles.blockBody}>
                     <View>
-                        <Text style={[styles.textNameUser, {color: '#1F8298', fontWeight: '500'}]}>Need your help!</Text>
+                        <Text style={[styles.textNameUser, {color: '#1F8298', fontWeight: '500'}]}>Need your
+                            help!</Text>
                     </View>
                     <View style={{flex: 1, marginBottom: 10, marginTop: 20, width: '100%'}}>
-                            <FlatList
-                                data={DATA}
-                                renderItem={renderItem}
-                                keyExtractor={item => item.id}
-                                style={{flex:1, height: '100%', width: '100%'}}
-                            />
+                        <FlatList
+                            data={rooms ?? []}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.id}
+                            contentContainerStyle={
+                                !rooms?.length && styles.contentContainerStyle
+                            }
+                            ListEmptyComponent={() => renderEmptyContainer(0, '')}
+                            horizontal={false}
+                            showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}
+                            style={{flex: 1, height: '100%', width: '100%'}}
+                        />
                     </View>
                     <View style={{flex: 1, width: '100%'}}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={onPressTakePatient}>
                             <LinearGradient
                                 colors={['#89BDE7', '#7EA7D9']}
                                 style={[{
@@ -130,8 +131,14 @@ const DashboardS = ({navigation}) => {
             </View>
         </BaseWrapperComponent>
     );
-}
+})
 const styles = StyleSheet.create({
+    contentContainerStyle: {
+        flex: 1,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     text: {
         fontFamily: 'Onest-medium',
         fontWeight: '500',
@@ -148,7 +155,7 @@ const styles = StyleSheet.create({
     blockHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'space-evenly',
         flexGrow: 1,
         marginTop: 8,
         marginBottom: 50

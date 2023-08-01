@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import userImages from '../../assets/images/user.png'
 import btnBack from '../../assets/images/btnBackground.png'
@@ -9,16 +9,27 @@ import {routerConstants} from "../../constants/routerConstants";
 import Backdrop from "../../components/backdrop";
 import ButtonGradient from "../../components/ButtonGradient";
 import * as Localization from 'expo-localization';
+import AuthStore from "../../store/AuthStore/auth-store";
+
 const NeedHelpS = ({navigation}) => {
     const checkLanguage = Localization.locale.includes('he')
+    const {user, setDataPatient} = AuthStore
+    const [description, setDescription] = useState('')
+
+    const onPressHandler = () => {
+        if (!description) return
+        navigation.navigate(routerConstants.EVALUATION_CONDITION)
+        setDataPatient(description, 'description')
+    }
     return (
         <>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>
                 <View style={styles.container}>
                     <TouchableOpacity onPress={() => navigation.navigate(routerConstants.USER_PROFILE)}
                                       style={[styles.header, {
-                                          justifyContent: checkLanguage ? 'flex-start' : 'flex-end'}]}>
-                        <Text style={styles.nameUser}>Michael</Text>
+                                          justifyContent: checkLanguage ? 'flex-start' : 'flex-end'
+                                      }]}>
+                        <Text style={styles.nameUser}>{user?.name}</Text>
                         <Image source={userImages} style={styles.logo}/>
                     </TouchableOpacity>
                     <View style={styles.description}>
@@ -26,12 +37,13 @@ const NeedHelpS = ({navigation}) => {
                             alignItems: 'flex-start',
                             flex: 1
                         }}>
-                            <Text style={styles.textHi}>Hi, Michael!</Text>
+                            <Text style={styles.textHi}>Hi, {user?.name}!</Text>
                             <Text style={styles.text}>Don’t worry, we’re here to help you cope with any situation.
                                 Describe the problem and press the button below.</Text>
                         </View>
                         <View style={{flex: 1, alignItems: 'center'}}>
-                            <TextInput style={styles.input} placeholder={'I feel depressed...'}/>
+                            <TextInput value={description} onChangeText={setDescription} style={styles.input}
+                                       placeholder={'I feel depressed...'}/>
                             <ButtonGradient
                                 backgroundImage={btnBack}
                                 styleGradient={{
@@ -41,7 +53,7 @@ const NeedHelpS = ({navigation}) => {
                                 }}
                                 styleText={{fontSize: 24}}
                                 btnText={'I need help!'}
-                                onPress={() => navigation.navigate(routerConstants.EVALUATION_CONDITION)}
+                                onPress={onPressHandler}
                             />
 
                         </View>

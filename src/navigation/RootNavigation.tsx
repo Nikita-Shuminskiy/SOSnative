@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {observer} from "mobx-react-lite";
 import AuthStore from "../store/AuthStore";
@@ -9,28 +9,58 @@ import Loading from "../components/Loading";
 import {routerConstants} from '../constants/routerConstants';
 import LoginS from "../screen/authScreens/LoginS";
 import * as SplashScreen from 'expo-splash-screen';
-import MainNavigation from "./MainNavigation";
+import MainPatientNavigation from "./MainPatientNavigation";
 import RegisterS from "../screen/authScreens/RegisterS";
 import ResetPasswordS from "../screen/authScreens/ResetPasswordS";
-import DashboardS from "../screen/volounterScreens/DashboardS";
-import VolunteerProfileS from "../screen/volounterScreens/VolunteerProfileS";
+import MainVolunteerNavigation from "./MainVolunteerNavigation";
+import * as Notifications from 'expo-notifications';
+import {authApi} from "../api/api";
 
 SplashScreen.preventAutoHideAsync();
 
+/*const registerForPushNotifications = async () => {
+    useEffect(() => {
+        const registerForPush = async () => {
+            try {
+                // Запрашиваем разрешение на отправку уведомлений
+                const { status } = await Notifications.getPermissionsAsync();
+                if (status !== 'granted') {
+                    await Notifications.requestPermissionsAsync();
+                }
+
+                // Получаем токен устройства
+                const tokenData = await Notifications.getExpoPushTokenAsync();
+                const token = tokenData.data;
+                console.log('Device Token:', token);
+            } catch (error) {
+                console.log('Error registering for push notifications:', error);
+            }
+        };
+
+        registerForPush();
+    }, []);
+};*/
 const RootStack = createNativeStackNavigator()
 const RootNavigation = observer(() => {
     const {isLoading} = NotificationStore
-    const {isAuth} = AuthStore
+    const {isAuth, user} = AuthStore
+
     return (
         <NavigationContainer>
             {isLoading === LoadingEnum.fetching && <Loading visible={true}/>}
             <RootStack.Navigator>
-                {isAuth ? (
-                    <RootStack.Screen
-                        options={{headerShown: false}}
-                        name={routerConstants.MAIN}
-                        component={MainNavigation}
-                    />
+                {isAuth || user?.name ? (
+                    user.role === 'volunteer' ?
+                        <RootStack.Screen
+                            options={{headerShown: false}}
+                            name={routerConstants.MAIN}
+                            component={MainVolunteerNavigation}
+                        /> : <RootStack.Screen
+                            options={{headerShown: false}}
+                            name={routerConstants.MAIN}
+                            component={MainPatientNavigation}
+                        />
+
                 ) : (
                     <React.Fragment>
                         <RootStack.Screen
@@ -49,18 +79,6 @@ const RootNavigation = observer(() => {
                             component={ResetPasswordS}
                         />
 
-                        {/*Volunteer navigation*/}
-
-                        <RootStack.Screen
-                            options={{headerShown: false, animation: 'flip'}}
-                            name={routerConstants.DASHBOARD}
-                            component={DashboardS}
-                        />
-                        <RootStack.Screen
-                            options={{headerShown: false, animation: 'flip'}}
-                            name={routerConstants.VOLUNTEER_PROFILE}
-                            component={VolunteerProfileS}
-                        />
                     </React.Fragment>
 
                 )}

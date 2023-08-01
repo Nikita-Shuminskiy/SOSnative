@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, View, Image, Platform} from "react-native";
+import {Image, Platform, StyleSheet, Text, View} from "react-native";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import ArrowBack from "../../components/ArrowBack";
 import {colors} from "../../assets/colors/colors";
@@ -8,23 +8,26 @@ import PeoplesWitchElements from "../../assets/images/people-witch-elements.png"
 import imgPeople from "../../assets/images/people2.png";
 import imgPeople2 from "../../assets/images/Ellipse47.png";
 import imgPeople3 from "../../assets/images/Ellipse48.png";
-import {routerConstants} from "../../constants/routerConstants";
 import * as Localization from "expo-localization";
 import arrowBack from "../../assets/images/keyboard_arrow_left-white.png";
-
+import {io} from 'socket.io-client';
+import {instance} from "../../api/config";
+import AuthStore from "../../store/AuthStore/auth-store";
+import {routerConstants} from "../../constants/routerConstants";
 
 const SearchingVolunteerS = ({navigation}) => {
     const checkLanguage = Localization.locale.includes('he')
+
     useEffect(() => {
         setTimeout(() => {
             navigation.navigate(routerConstants.CHAT)
         }, 2000)
-    }, [])
+    }, []);
     return (
         <BaseWrapperComponent isBackdrop={true} isKeyboardAwareScrollView={true} styleSafeArea={{marginTop: 0}}>
             <View style={{marginTop: Platform.OS === 'ios' ? 10 : 40, marginHorizontal: 30}}>
                 <View style={{marginBottom: 70}}>
-                    <ArrowBack styleTouchable={styles.arrowBack} img={checkLanguage ? arrowBack : arrowLeftImg} goBackPress={() => navigation.goBack()}/>
+                    <ArrowBack styleTouchable={styles.right} img={checkLanguage ? arrowBack : arrowLeftImg} goBackPress={() => navigation.goBack()}/>
                 </View>
 
                 <View>
@@ -67,7 +70,7 @@ const styles = StyleSheet.create({
         width: 334,
         height: 326
     },
-    arrowBack: {
+    right: {
         marginTop: 0,
         marginLeft: 0,
         position: 'absolute',

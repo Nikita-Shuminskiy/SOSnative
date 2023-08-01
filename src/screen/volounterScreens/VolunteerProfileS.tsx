@@ -9,19 +9,24 @@ import Picker from "../../components/Picker";
 import {colors} from "../../assets/colors/colors";
 import logoutImages from "../../assets/images/logout.png";
 import Backdrop from "../../components/backdrop";
+import {routerConstants} from "../../constants/routerConstants";
+import AuthStore from "../../store/AuthStore/auth-store";
 
 const VolunteerProfileS = ({navigation}) => {
 
     const [notifications, setNotifications] = useState(false)
     const checkLanguage = Localization.locale.includes('he')
-
+    const {user} = AuthStore
+    const onPressLogOut = () => {
+        AuthStore.logout()
+    }
     return (
         <BaseWrapperComponent>
             <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
             <View style={styles.blockHeader}>
                 <Image style={styles.img} source={userImages}/>
                 <View style={styles.blockUserText}>
-                    <Text style={styles.textNameUser}>Jenny</Text>
+                    <Text style={styles.textNameUser}>{user?.name}</Text>
                     <TouchableOpacity>
                         <Text style={styles.textChange}>change</Text>
                     </TouchableOpacity>
@@ -53,7 +58,7 @@ const VolunteerProfileS = ({navigation}) => {
                         fontWeight: '500',
                         fontSize: 18,}}>Situations in which a person feels bad can happen at any moment. Turn on notifications to see when they appear.</Text>
                 </View>
-                <TouchableOpacity style={{...styles.notificationsBlock, position: 'absolute', bottom: 80, flexDirection: checkLanguage ? 'row-reverse' : 'row'}}>
+                <TouchableOpacity onPress={onPressLogOut} style={{...styles.notificationsBlock, position: 'absolute', bottom: 80, flexDirection: checkLanguage ? 'row-reverse' : 'row'}}>
                     <Text style={styles.textNotification}>Logout</Text>
                     <Image source={logoutImages}/>
                 </TouchableOpacity>

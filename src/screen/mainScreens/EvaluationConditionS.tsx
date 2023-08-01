@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from "react-native";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import bodyImg from '../../assets/images/Body.png'
@@ -15,18 +15,54 @@ import {routerConstants} from "../../constants/routerConstants";
 import ArrowBack from "../../components/ArrowBack";
 import * as Localization from "expo-localization";
 import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
+import AuthStore, {afflictionType} from "../../store/AuthStore/auth-store";
+import SocketStore from "../../store/SocketStore/socket-store";
 
-const EvaluationConditionS = ({navigation, route}) => {
+const EvaluationConditionS = ({navigation, route}: any) => {
     const checkLanguage = Localization.locale.includes('he')
+    const {setDataPatient} = AuthStore
     const isFromChat = route.params?.fromChat
-    const [isChecked, setChecked] = useState(false);
+    const {
+        setDataScoresAfterChat
+    } = SocketStore
+    const [isChecked, setChecked] = useState({
+        head: false,
+        heart: false,
+        stomach: false,
+        leftHand: false,
+        rightHand: false
+    });
+    const getCheckedFields = () => {
+        return Object.entries(isChecked)
+            .filter(([key, value]) => value === true)
+            .map(([key]: any) => key);
+    };
+
+    const onPressBtnHandler = () => {
+        const currentActiveFields: afflictionType[] = getCheckedFields()
+        if (isFromChat) {
+            setDataScoresAfterChat<afflictionType[]>(currentActiveFields, 'resultAffliction')
+        } else {
+            setDataPatient<afflictionType[]>(currentActiveFields, 'affliction')
+        }
+        navigation.navigate(routerConstants.EMOTIONAL_STATE, {fromChat: isFromChat ?? false})
+    }
+    const onTouchEndCheckedHandler = (key: keyof typeof isChecked) => {
+        setChecked((prevState) => {
+            return {
+                ...isChecked,
+                [key]: !prevState[key]
+            }
+        })
+    }
 
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-            {!isFromChat &&  <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
+            {!isFromChat && <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
             {
                 isFromChat && <View>
-                    <Image style={{width: 95, height: 170}} source={ checkLanguage ? backgroundUserHeaderHe : backgroundUserHeader}/>
+                    <Image style={{width: 95, height: 170}}
+                           source={checkLanguage ? backgroundUserHeaderHe : backgroundUserHeader}/>
                     <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}} source={userImg}/>
                 </View>
             }
@@ -34,7 +70,7 @@ const EvaluationConditionS = ({navigation, route}) => {
                 <View style={{marginTop: isFromChat ? 0 : 40}}>
                     <Text style={styles.text}>
                         {
-                            isFromChat ? 'Which part of your body is bothering you?' : 'Chat is over. How do you feel now?'
+                            isFromChat ? 'Chat is over. How do you feel now?' : 'Which part of your body is bothering you?'
                         }
                     </Text>
                 </View>
@@ -44,14 +80,20 @@ const EvaluationConditionS = ({navigation, route}) => {
                         <View>
 
                             {
-                                isChecked ?
-                                    <Pressable onTouchEnd={() => setChecked(false)}>
-                                        <Image style={{position: 'absolute', ...styles.checkboxHead, right:checkLanguage ? 84 : 86 }}
+                                isChecked.head ?
+                                    <Pressable onTouchEnd={() => onTouchEndCheckedHandler('head')}>
+                                        <Image style={{
+                                            position: 'absolute', ...styles.checkboxHead,
+                                            right: checkLanguage ? 84 : 86
+                                        }}
                                                source={checkBodyHeadImg}/>
                                     </Pressable>
                                     :
-                                    <Pressable onTouchEnd={() => setChecked(true)}>
-                                        <Image style={{position: 'absolute', ...styles.checkboxHead, right:checkLanguage ? 84 : 86}}
+                                    <Pressable onTouchEnd={() => onTouchEndCheckedHandler('head')}>
+                                        <Image style={{
+                                            position: 'absolute', ...styles.checkboxHead,
+                                            right: checkLanguage ? 84 : 86
+                                        }}
                                                source={checkBodyHeadFalse}/>
                                     </Pressable>
 
@@ -62,14 +104,20 @@ const EvaluationConditionS = ({navigation, route}) => {
                         <View>
 
                             {
-                                isChecked ?
-                                    <Pressable onTouchEnd={() => setChecked(false)}>
-                                        <Image style={{position: 'absolute', ...styles.checkboxHeart, right:checkLanguage ? 110 : 60}}
+                                isChecked.heart ?
+                                    <Pressable onTouchEnd={() => onTouchEndCheckedHandler('heart')}>
+                                        <Image style={{
+                                            position: 'absolute', ...styles.checkboxHeart,
+                                            right: checkLanguage ? 110 : 60
+                                        }}
                                                source={checkBodyImg}/>
                                     </Pressable>
                                     :
-                                    <View onTouchEnd={() => setChecked(true)}
-                                          style={{position: 'absolute', ...styles.checkboxHeart, ...styles.checkbox, right:checkLanguage ? 110 : 60}}/>
+                                    <View onTouchEnd={() => onTouchEndCheckedHandler('heart')}
+                                          style={{
+                                              position: 'absolute', ...styles.checkboxHeart, ...styles.checkbox,
+                                              right: checkLanguage ? 110 : 60
+                                          }}/>
 
                             }
                             <Text
@@ -77,14 +125,20 @@ const EvaluationConditionS = ({navigation, route}) => {
                         </View>
                         <View>
                             {
-                                isChecked ?
-                                    <Pressable onTouchEnd={() => setChecked(false)}>
-                                        <Image style={{position: 'absolute', ...styles.checkboxStomach, right:checkLanguage ? 90 : 60}}
+                                isChecked.stomach ?
+                                    <Pressable onTouchEnd={() => onTouchEndCheckedHandler('stomach')}>
+                                        <Image style={{
+                                            position: 'absolute', ...styles.checkboxStomach,
+                                            right: checkLanguage ? 90 : 60
+                                        }}
                                                source={checkBodyImg}/>
                                     </Pressable>
                                     :
-                                    <View onTouchEnd={() => setChecked(true)}
-                                          style={{position: 'absolute', ...styles.checkboxStomach, ...styles.checkbox, right:checkLanguage ? 90 : 60}}/>
+                                    <View onTouchEnd={() => onTouchEndCheckedHandler('stomach')}
+                                          style={{
+                                              position: 'absolute', ...styles.checkboxStomach, ...styles.checkbox,
+                                              right: checkLanguage ? 90 : 60
+                                          }}/>
 
                             }
                             <Text
@@ -95,24 +149,24 @@ const EvaluationConditionS = ({navigation, route}) => {
                                 style={[styles.textBody, styles.hands, {color: isChecked ? colors.green : colors.blue}]}>hands</Text>
 
                             {
-                                isChecked ?
-                                    <Pressable onTouchEnd={() => setChecked(false)}>
+                                isChecked.leftHand ?
+                                    <Pressable onTouchEnd={() => onTouchEndCheckedHandler('leftHand')}>
                                         <Image style={{position: 'absolute', ...styles.checkboxHandsLeft}}
                                                source={checkBodyImg}/>
                                     </Pressable>
                                     :
-                                    <View onTouchEnd={() => setChecked(true)}
+                                    <View onTouchEnd={() => onTouchEndCheckedHandler('leftHand')}
                                           style={{position: 'absolute', ...styles.checkboxHandsLeft, ...styles.checkbox}}/>
 
                             }
                             {
-                                isChecked ?
-                                    <Pressable onTouchEnd={() => setChecked(false)}>
+                                isChecked.rightHand ?
+                                    <Pressable onTouchEnd={() => onTouchEndCheckedHandler('rightHand')}>
                                         <Image style={{position: 'absolute', ...styles.checkboxHandsRight}}
                                                source={checkBodyImg}/>
                                     </Pressable>
                                     :
-                                    <View onTouchEnd={() => setChecked(true)}
+                                    <View onTouchEnd={() => onTouchEndCheckedHandler('rightHand')}
                                           style={{position: 'absolute', ...styles.checkboxHandsRight, ...styles.checkbox}}/>
 
                             }
@@ -125,13 +179,15 @@ const EvaluationConditionS = ({navigation, route}) => {
                     styleGradient={styles.button}
                     styleText={styles.textBtn}
                     btnText={!isFromChat ? 'Continue' : 'Next step'}
-                    onPress={() => navigation.navigate(routerConstants.EMOTIONAL_STATE, {fromChat: isFromChat ?? false})}
+                    onPress={onPressBtnHandler}
                 />
             </View>
             <Backdrop/>
         </BaseWrapperComponent>
     );
-};
+}
+
+
 const styles = StyleSheet.create({
     isChecked: {
         backgroundColor: '#1F8298'

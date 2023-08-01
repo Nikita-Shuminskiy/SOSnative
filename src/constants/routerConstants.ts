@@ -1,3 +1,5 @@
+import ResultWorkS from "../screen/volounterScreens/ResultWorkS";
+
 export const routerConstants = {
     MAIN: 'main',
     NEED_HELP: 'need-help',
@@ -15,5 +17,6 @@ export const routerConstants = {
 
     //volunteer
     DASHBOARD: 'dashboard',
+    RESULT_WORK: 'ResultWork',
     VOLUNTEER_PROFILE: 'volunteer-profile'
 }

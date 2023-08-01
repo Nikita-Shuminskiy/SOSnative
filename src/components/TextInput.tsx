@@ -6,9 +6,12 @@ import {TextStyle} from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 
 type TextInputPropsType = TextInputProps & {
     styleContainer?: StyleProp<TextStyle>
+    error?:boolean
+    errorText?:string
 }
-const TextInput = ({style, styleContainer, ...rest}: TextInputPropsType) => {
+const TextInput = ({style, styleContainer, error,errorText, ...rest}: TextInputPropsType) => {
     const [userName, setUserName] = useState('');
+
     return (
         <View style={[styles.container, styleContainer]}>
             <Input
@@ -18,6 +21,9 @@ const TextInput = ({style, styleContainer, ...rest}: TextInputPropsType) => {
                 style={[styles.input, style]}
                 {...rest}
             />
+            {
+                error && <Text style={{color: 'gray', fontSize: 12}}>{errorText}</Text>
+            }
         </View>
     );
 };

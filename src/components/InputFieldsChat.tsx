@@ -1,27 +1,53 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from "react-native";
 import TextInput from "./TextInput";
 import {colors} from "../assets/colors/colors";
 import microImg from '../assets/images/microWitchBackground.png'
 import ArrowUpImage from '../assets/images/arrowUpWitchBacground.png'
+import {TypingUserType} from "../store/SocketStore/socket-store";
 
+type InputFieldsChatProps = {
+    onSendMessage: (message: string) => void
+    onTypingHandler: () => void
+    setCurrentUserTyping: (data: TypingUserType) => void
+}
+const InputFieldsChat = ({onSendMessage, onTypingHandler, setCurrentUserTyping}:InputFieldsChatProps) => {
+    const [textInput, setTextInput] = useState<string>('')
+    const onChangeText = (text) => {
+        setTextInput(text)
+        if(!text) {
+            setCurrentUserTyping(null)
+            return
+        }else {
+            onTypingHandler()
+        }
 
-const InputFieldsChat = () => {
+    }
+    const onPressSend = () => {
+        onSendMessage(textInput)
+        setCurrentUserTyping(null)
+        setTextInput('')
+    }
     return (
         <View style={styles.container}>
-            <TextInput styleContainer={styles.styleInputContainer} style={styles.input}/>
+            <TextInput value={textInput} onChangeText={onChangeText} styleContainer={styles.styleInputContainer} style={styles.input}/>
             {/*<TouchableOpacity>
                 <Image style={{...styles.img, marginRight: 5}} source={microImg}/>
             </TouchableOpacity>*/}
-            <TouchableOpacity>
+            <TouchableOpacity style={styles.styleBtn} onPress={onPressSend}>
                 <Image style={styles.img} source={ArrowUpImage}/>
             </TouchableOpacity>
         </View>
     );
 };
 const styles = StyleSheet.create({
+    styleBtn: {
+        zIndex: 9999,
+        margin: 10
+    },
     styleInputContainer: {marginTop: 0, height: 37, marginRight: 5},
     container: {
+        zIndex: 9999,
         flex: 1,
         width: '100%',
         flexDirection: 'row',
@@ -29,11 +55,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         height: 70,
-        paddingHorizontal: 30
-
     },
     img: {
-        margin: 2
+        width: 40,
+        height: 40
     },
     input: {
         padding: 10,

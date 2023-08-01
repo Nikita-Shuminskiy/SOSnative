@@ -2,6 +2,7 @@ import React from 'react'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {Dimensions, GestureResponderEvent, Platform, SafeAreaView, View} from 'react-native'
 import {LinearGradient} from 'expo-linear-gradient'
+import {VirtualizedList} from "./virtualized-list";
 
 type BaseWrapperComponentType = {
     children: JSX.Element | JSX.Element[]
@@ -39,18 +40,20 @@ export const BaseWrapperComponent = ({
                     {children}
                 </KeyboardAwareScrollView>
             </LinearGradient> : (
-                <KeyboardAwareScrollView
-                    enableOnAndroid={true}
-                    keyboardShouldPersistTaps={'handled'}
-                    contentContainerStyle={{
-                        marginBottom: 10,
-                        width: '100%',
-                    }}
-                    onTouchStart={onTouchStart}
-                    onTouchEnd={onTouchEnd}
-                >
-                    {children}
-                </KeyboardAwareScrollView>
+                <VirtualizedList>
+                    <KeyboardAwareScrollView
+                        enableOnAndroid={true}
+                        keyboardShouldPersistTaps={'handled'}
+                        contentContainerStyle={{
+                            marginBottom: 10,
+                            width: '100%',
+                        }}
+                        onTouchStart={onTouchStart}
+                        onTouchEnd={onTouchEnd}
+                    >
+                        {children}
+                    </KeyboardAwareScrollView>
+                </VirtualizedList>
             )
         )
     }

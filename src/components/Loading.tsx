@@ -1,15 +1,13 @@
 import React from 'react'
-import {Modal} from "react-native";
+import {Modal, View} from "react-native";
+import Loaders from 'react-native-pure-loaders';
 
 const Loading = ({ visible }) => {
     return (
-        <Modal visible={visible}>
-            {/*<HStack space={2} justifyContent={'center'}>
-                <Spinner accessibilityLabel={'Loading posts'} size={'lg'} color={'warning.500'} />
-                <Heading color={'white'} fontSize={'md'}>
-                    Loading
-                </Heading>
-            </HStack>*/}
+        <Modal transparent={true} visible={visible}>
+           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+               <Loaders.Ellipses color={'blue'} />
+           </View>
         </Modal>
     )
 }

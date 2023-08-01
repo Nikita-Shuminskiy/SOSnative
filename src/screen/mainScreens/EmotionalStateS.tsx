@@ -1,17 +1,15 @@
 import React, {useState} from 'react';
-import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {
+    FlatList,
+    Image,
+    ImageSourcePropType,
+    Platform,
+    SafeAreaView,
     StyleSheet,
     Text,
-    View,
-    Image,
-    FlatList,
     TouchableOpacity,
-    ImageSourcePropType,
-    ScrollView,
-    SafeAreaView, Platform
+    View
 } from "react-native";
-import Backdrop from "../../components/backdrop";
 import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
 import {colors} from "../../assets/colors/colors";
@@ -19,49 +17,20 @@ import ArrowBack from "../../components/ArrowBack";
 import backgroundUserHeader from '../../assets/images/backgroundUserHeader.png'
 import backgroundUserHeaderHe from '../../assets/images/backgroundUserHeader-He.png'
 import userImg from '../../assets/images/people2.png'
-import smileGood from '../../assets/images/smileGood.png'
-import smileOk from '../../assets/images/smileOk.png'
-import smileAverage from '../../assets/images/smileAverage.png'
-import smileBad from '../../assets/images/smileBad.png'
-import smileVeryBad from '../../assets/images/smileVeryBad.png'
-import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
 import * as Localization from "expo-localization";
+import AuthStore from "../../store/AuthStore/auth-store";
+import rootStore from "../../store/RootStore/root-store";
+import {ConditionRateData} from "../../utils/utils";
+import SocketStore from "../../store/SocketStore/socket-store";
 
 
 export type ItemData = {
-    id: string;
+    id: number;
     title: string;
     img: ImageSourcePropType;
 };
 
-export const DATA: ItemData[] = [
-    {
-        id: '1',
-        img: smileGood,
-        title: 'I’m good',
-    },
-    {
-        id: '2',
-        img: smileOk,
-        title: 'I’m ok',
-    },
-    {
-        id: '3',
-        img: smileAverage,
-        title: 'Average',
-    },
-    {
-        id: '4',
-        img: smileBad,
-        title: 'I feel bad',
-    },
-    {
-        id: '5',
-        img: smileVeryBad,
-        title: 'I feel very bad',
-    }
-];
 
 type ItemProps = {
     item: ItemData;
@@ -84,65 +53,89 @@ const Item = ({item, onPress, borderColor, checkLanguage}: ItemProps) => (
     </TouchableOpacity>
 );
 
-const EmotionalStateS = ({navigation, route}) => {
+const EmotionalStateS = ({navigation, route}: any) => {
     const checkLanguage = Localization.locale.includes('he')
-    const [selectedId, setSelectedId] = useState<string>();
+    const [selectedState, setSelectedState] = useState<number>(1);
+    const {setDataPatient, dataPatient, user} = AuthStore
+    const {AuthStoreService} = rootStore
     const isFromChat = route.params?.fromChat
+    const {
+        setDataScoresAfterChat,
+        setVolunteerEvaluation
+    } = SocketStore
 
     const renderItem = ({item}: { item: ItemData }) => {
-        const borderColor = item.id === selectedId ? colors.gray : '';
+        const borderColor = item.id === selectedState ? colors.gray : '';
+        if (isFromChat) {
+            setDataScoresAfterChat(selectedState, 'resultConditionRate')
+        } else {
+            setDataPatient(selectedState, 'conditionRate')
+        }
 
         return (
             <Item
                 checkLanguage={checkLanguage}
                 item={item}
-                onPress={() => setSelectedId(item.id)}
+                onPress={() => setSelectedState(item.id)}
                 borderColor={borderColor}
             />
         );
     };
+    const onPressBtnHandler = () => {
+        if (!selectedState) return
+        if (isFromChat) {
+            setVolunteerEvaluation(user?.id)
+            navigation.navigate(routerConstants.GOODBYE)
+            return
+        } else {
+            AuthStoreService.createRoom(dataPatient).then((data) => {
+                if (data) {
+                    navigation.navigate(routerConstants.SEARCHING_VOLUNTEER)
+                }
+            })
+        }
+    }
     return (
-       <SafeAreaView style={{flex: 1, marginTop: Platform.OS === 'ios' ? 10 : 40,}}>
-           {!isFromChat && <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
-           {
-               isFromChat && <View>
-                   <Image style={{width: 95, height: 170}} source={checkLanguage ? backgroundUserHeaderHe : backgroundUserHeader}/>
-                   <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}} source={userImg}/>
-               </View>
-           }
-           <View style={styles.container}>
-               <View style={{marginTop: isFromChat ? 0 : 50}}>
-                   <Text style={styles.text}>Evaluate your condition using this scale</Text>
-               </View>
-               <View style={{flex: 1, marginBottom: 10, marginTop: 50}}>
-                   <FlatList
-                       data={DATA}
-                       renderItem={renderItem}
-                       keyExtractor={item => item.id}
-                       extraData={selectedId}
-                   //    style={{flex:1, height: '100%', width: '100%'}}
-                       contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', height: 'auto'}}
-                   />
-               </View>
-               <ButtonGradient
-                   styleTouchable={{marginBottom: 20}}
-                   styleGradient={styles.button}
-                   styleText={styles.textBtn}
-                   btnText={isFromChat ? 'It’s ok' : 'Continue'}
-                   onPress={() => {
-                       navigation.navigate(isFromChat ? routerConstants.GOODBYE : routerConstants.SEARCHING_VOLUNTEER)
-                   }}
-               />
-           </View>
-       </SafeAreaView>
+        <SafeAreaView style={{flex: 1, marginTop: Platform.OS === 'ios' ? 10 : 40,}}>
+            {!isFromChat && <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
+            {
+                isFromChat && <View>
+                    <Image style={{width: 95, height: 170}}
+                           source={checkLanguage ? backgroundUserHeaderHe : backgroundUserHeader}/>
+                    <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}} source={userImg}/>
+                </View>
+            }
+            <View style={styles.container}>
+                <View style={{marginTop: isFromChat ? 0 : 50}}>
+                    <Text style={styles.text}>Evaluate your condition using this scale</Text>
+                </View>
+                <View style={{flex: 1, marginBottom: 10, marginTop: 50}}>
+                    <FlatList
+                        data={ConditionRateData}
+                        renderItem={renderItem}
+                        keyExtractor={item => String(item.id)}
+                        extraData={selectedState}
+                        //    style={{flex:1, height: '100%', width: '100%'}}
+                        contentContainerStyle={{justifyContent: 'center', alignItems: 'center', height: 'auto'}}
+                    />
+                </View>
+                <ButtonGradient
+                    styleTouchable={{marginBottom: 20}}
+                    styleGradient={styles.button}
+                    styleText={styles.textBtn}
+                    btnText={isFromChat ? 'It’s ok' : 'Continue'}
+                    onPress={onPressBtnHandler}
+                />
+            </View>
+        </SafeAreaView>
         /*<>
 
             <Backdrop/>
         </>*/
     );
-};
+}
 const styles = StyleSheet.create({
-    bodyContainer:{
+    bodyContainer: {
         flex: 1,
         width: '100%',
         height: '100%',
@@ -177,7 +170,7 @@ const styles = StyleSheet.create({
     },
     container: {
         paddingHorizontal: 20,
-        flex:1,
+        flex: 1,
         justifyContent: 'space-between'
     },
     button: {

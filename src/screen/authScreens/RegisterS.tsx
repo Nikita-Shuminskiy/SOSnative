@@ -11,11 +11,73 @@ import {Checkbox} from "expo-checkbox";
 import ButtonGradient from "../../components/ButtonGradient";
 import * as Localization from 'expo-localization';
 import {routerConstants} from "../../constants/routerConstants";
+import {useFormik} from "formik";
+import {validateEmail} from "../../utils/utils";
+import rootStore from "../../store/RootStore";
+import {DataSignUpType} from "../../api/api";
+
 
 const RegisterS = ({navigation}) => {
-    const [isVolunteer, setIsVolunteer] = useState(false)
+    const [role, setRole] = useState<'patient' | 'volunteer'>('patient')
     const checkLanguage = Localization.locale.includes('he')
+    const {AuthStoreService} = rootStore
 
+    const {handleChange, handleBlur, handleSubmit, touched, values, errors, isSubmitting, setSubmitting} =
+        useFormik({
+            initialValues: {
+                email: '',
+                password: '',
+                name: '',
+                role: 'patient',
+                preferredLang: 'ru',
+                confirmPassword: '',
+            },
+            onSubmit: (values) => {
+                onPressLogin(values as DataSignUpType)
+            },
+            validateOnChange: false,
+            validateOnMount: false,
+            validateOnBlur: false,
+            validate: (values) => {
+                const errors = {}
+                if (!validateEmail(values.email)) {
+                    errors['email'] = true
+                }
+                if (values.password.length <= 7) {
+                    errors['password'] = true
+                }
+                if (!values.name) {
+                    errors['name'] = true
+                }
+                if (!values.role) {
+                    errors['role'] = true
+                }
+                if (!values.preferredLang) {
+                    errors['preferredLang'] = true
+                }
+                if (values.password !== values.confirmPassword) {
+                    errors['confirmPassword'] = true
+                }
+                return errors
+            },
+        })
+    const onPressLogin = (values: DataSignUpType) => {
+        const {name, password, preferredLang, email} = values
+        AuthStoreService.register({
+            name: name.trim(),
+            password: password.trim(),
+            preferredLang,
+            email: email.trim(),
+            role: role
+        })
+        setSubmitting(false)
+    }
+    const isDisabledBtn = () => isSubmitting ||
+        !!(errors.confirmPassword && !values.confirmPassword) ||
+        !!(errors.name && !values.name.trim()) ||
+        !!(errors.email && !validateEmail(values.email.trim())) ||
+        !!(errors.password && values.password.length <= 7) ||
+        !!(errors.password && !values.password)
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
@@ -32,34 +94,47 @@ const RegisterS = ({navigation}) => {
                             <ButtonGradient
                                 styleTouchable={{marginRight: 10}}
                                 styleGradient={styles.button}
-                                colorsGradient={isVolunteer ? ['#D5E3FE', '#D5E3FE'] : null}
+                                colorsGradient={role == 'volunteer' ? ['#D5E3FE', '#D5E3FE'] : null}
                                 styleText={styles.textBtn}
-                                colorText={isVolunteer ? colors.gray : colors.white}
+                                colorText={role === 'volunteer' ? colors.gray : colors.white}
                                 btnText={'I need help'}
-                                onPress={() => setIsVolunteer(false)}
+                                onPress={() => setRole('patient')}
                             />
                             <ButtonGradient
-
                                 styleGradient={styles.button}
-                                colorsGradient={!isVolunteer ? ['#D5E3FE', '#D5E3FE'] : null}
+                                colorsGradient={role === 'patient' ? ['#D5E3FE', '#D5E3FE'] : null}
                                 styleText={styles.textBtn}
-                                colorText={!isVolunteer ? colors.gray : colors.white}
+                                colorText={role === 'patient' ? colors.gray : colors.white}
                                 btnText={'I am a volunteer'}
-                                onPress={() => navigation.navigate(routerConstants.DASHBOARD)}
+                                onPress={() => setRole('volunteer')}
                             />
                         </View>
                     </View>
 
                     <View>
-                        <TextInput placeholder={'Your name'} style={styles.input}/>
+                        <TextInput errorText={'Enter a name'} error={!!(!values.name.trim() && errors.name)}
+                                   onBlur={handleBlur('name')} onChangeText={handleChange('name')}
+                                   value={values.name} placeholder={'Your name'} style={styles.input}/>
                         <Text style={[styles.textAnyName]}>You can use any name you want to
                             stay {"\n"} anonymous.</Text>
 
-                        <TextInput placeholder={'Email Address'} style={styles.input}/>
-                        <TextInput placeholder={'Password'} style={styles.input}/>
-                        <TextInput placeholder={'Confirm password'} style={styles.input}/>
+                        <TextInput errorText={'Email entered incorrectly'}
+                                   error={!!(!validateEmail(values.email.trim()) && errors.email)}
+                                   onBlur={handleBlur('email')} onChangeText={handleChange('email')}
+                                   value={values.email} placeholder={'Email Address'} style={styles.input}/>
+                        <TextInput errorText={'Password must contain at least 8 characters'}
+                                   error={!!(!!errors.password &&
+                                       values.password.length < 8)} onBlur={handleBlur('password')}
+                                   onChangeText={handleChange('password')}
+                                   value={values.password} placeholder={'Password'} style={styles.input}/>
+                        <TextInput
+                            errorText={'Passwords do not match'}
+                            error={!!(touched.confirmPassword && errors.confirmPassword && !values.confirmPassword) ||
+                                (values.confirmPassword !== values.password && touched.confirmPassword)}
+                            onBlur={handleBlur('confirmPassword')} onChangeText={handleChange('confirmPassword')}
+                            value={values.confirmPassword} placeholder={'Confirm password'} style={styles.input}/>
                         <View style={styles.blockPicker}>
-                            <Picker/>
+                            <Picker onValueChange={handleChange('preferredLang')}/>
                         </View>
 
                         <View style={{
@@ -70,8 +145,10 @@ const RegisterS = ({navigation}) => {
                             <Checkbox value={true} color={colors.blue}
                                       style={{borderColor: colors.blue, borderRadius: 8, marginRight: 15}}/>
 
-                            <View style={{marginTop: 20, marginBottom: 20, marginLeft: 10,
-                                flexDirection: checkLanguage ? 'row-reverse' : 'row'}}>
+                            <View style={{
+                                marginTop: 20, marginBottom: 20, marginLeft: 10,
+                                flexDirection: checkLanguage ? 'row-reverse' : 'row'
+                            }}>
                                 <Text style={[styles.textAgree]}>
                                     I agree with{' '}
                                 </Text>
@@ -82,8 +159,8 @@ const RegisterS = ({navigation}) => {
                             </View>
 
                         </View>
-
-                        <TouchableOpacity>
+                        {/*// @ts-ignore */}
+                        <TouchableOpacity disabled={isDisabledBtn()} onPress={handleSubmit}>
                             <LinearGradient
                                 colors={['#89BDE7', '#7EA7D9']}
                                 style={[{
@@ -91,7 +168,7 @@ const RegisterS = ({navigation}) => {
                                     justifyContent: 'center',
                                     borderRadius: 8,
                                 }]}>
-                                <Text style={styles.text}>Log in</Text>
+                                <Text style={[styles.text, {color: isDisabledBtn() ? 'red' : 'white'}]}>Log in</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                     </View>

@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
         width: 334,
         height: 326
     },
-    arrowBack: {
+    right: {
         marginTop: 0,
         marginLeft: 0,
         position: 'absolute',

@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import {FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {colors} from "../assets/colors/colors";
-import {DATA, ItemData} from "../screen/mainScreens/EmotionalStateS";
+import {FlatList, Image, StyleSheet, TouchableOpacity, View} from "react-native";
+import {ItemData} from "../screen/mainScreens/EmotionalStateS";
+import {ConditionRateData} from "../utils/utils";
+import {RoomType} from "../api/api";
 
 const Item = ({item, onPress, borderColor}) => (
     <TouchableOpacity onPress={onPress} style={[{
@@ -15,11 +16,15 @@ const Item = ({item, onPress, borderColor}) => (
         <Image style={styles.img} source={item.img}/>
     </TouchableOpacity>
 );
+type CurrentConditionType = {
+    dataRoom: RoomType
+}
+const CurrentCondition = ({dataRoom}:CurrentConditionType ) => {
+    const conditionRate = ConditionRateData[dataRoom.conditionRate]?.id
+    const [selectedId, setSelectedId] = useState<number>(conditionRate);
 
-const CurrentCondition = () => {
-    const [selectedId, setSelectedId] = useState<string>();
     const renderItem = ({item}: { item: ItemData }) => {
-        const borderColor = item.id === selectedId ? '#7EA7D9' : '';
+        const borderColor =  item.id === selectedId ? '#7EA7D9' : '';
 
         return (
             <Item
@@ -30,24 +35,29 @@ const CurrentCondition = () => {
         );
     };
     return (
-       <>
+        <>
 
-           <View style={styles.container}>
+            <View style={styles.container}>
 
-               <FlatList
-                   data={DATA}
-                   renderItem={renderItem}
-                   keyExtractor={item => item.id}
-                   extraData={selectedId}
-                   contentContainerStyle={{flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', flex: 1}}
-               />
-           </View>
-       </>
+                <FlatList
+                    data={ConditionRateData}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id.toString()}
+                    extraData={selectedId}
+                    contentContainerStyle={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-around',
+                        alignItems: 'center',
+                        flex: 1
+                    }}
+                />
+            </View>
+        </>
     );
 };
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: 30,
+        paddingHorizontal: 20,
         marginTop: 10,
         flex: 1,
         width: '100%',

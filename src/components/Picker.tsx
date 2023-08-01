@@ -7,8 +7,9 @@ import {AntDesign} from '@expo/vector-icons';
 import * as Localization from 'expo-localization';
 type PickerProps = {
     selectStyles?: any
+    onValueChange?: any
 }
-const Picker = ({selectStyles}: PickerProps) => {
+const Picker = ({selectStyles, onValueChange}: PickerProps) => {
     //const [selectedLanguage, setSelectedLanguage] = useState()
     const checkLanguage = Localization.locale.includes('he')
     const pickerRef = useRef<any>();
@@ -26,7 +27,7 @@ const Picker = ({selectStyles}: PickerProps) => {
     return <View>
 
         <RNPickerSelect
-            onValueChange={(value) => console.log(value)}
+            onValueChange={onValueChange}
             placeholder={{}}
             useNativeAndroidPickerStyle={false}
             fixAndroidTouchableBug={true}
