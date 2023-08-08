@@ -15,6 +15,7 @@ import {useFormik} from "formik";
 import {validateEmail} from "../../utils/utils";
 import rootStore from "../../store/RootStore";
 import {DataSignUpType} from "../../api/api";
+import {AntDesign} from "@expo/vector-icons";
 
 
 const RegisterS = ({navigation}) => {
@@ -87,10 +88,9 @@ const RegisterS = ({navigation}) => {
                     <Text style={styles.textHeader}>Create an account</Text>
                 </View>
 
-                <View
-                    style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between', paddingHorizontal: 20}}>
-                    <View style={{flex: 1, width: '100%'}}>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1}}>
+                <View>
+                    <View>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             <ButtonGradient
                                 styleTouchable={{marginRight: 10}}
                                 styleGradient={styles.button}
@@ -111,28 +111,30 @@ const RegisterS = ({navigation}) => {
                         </View>
                     </View>
 
-                    <View>
+                    <View style={{alignItems: 'center', width: '100%'}}>
                         <TextInput errorText={'Enter a name'} error={!!(!values.name.trim() && errors.name)}
                                    onBlur={handleBlur('name')} onChangeText={handleChange('name')}
-                                   value={values.name} placeholder={'Your name'} style={styles.input}/>
+                                   value={values.name} placeholder={'Your name'} />
                         <Text style={[styles.textAnyName]}>You can use any name you want to
                             stay {"\n"} anonymous.</Text>
 
-                        <TextInput errorText={'Email entered incorrectly'}
-                                   error={!!(!validateEmail(values.email.trim()) && errors.email)}
-                                   onBlur={handleBlur('email')} onChangeText={handleChange('email')}
-                                   value={values.email} placeholder={'Email Address'} style={styles.input}/>
-                        <TextInput errorText={'Password must contain at least 8 characters'}
+                        <TextInput
+                            errorText={'Email entered incorrectly'}
+                            error={!!(!validateEmail(values.email.trim()) && errors.email)}
+                            onBlur={handleBlur('email')} onChangeText={handleChange('email')}
+                            value={values.email} placeholder={'Email Address'}/>
+                        <TextInput isPassword={true} errorText={'Password must contain at least 8 characters'}
                                    error={!!(!!errors.password &&
                                        values.password.length < 8)} onBlur={handleBlur('password')}
                                    onChangeText={handleChange('password')}
-                                   value={values.password} placeholder={'Password'} style={styles.input}/>
+                                   value={values.password} placeholder={'Password'}/>
                         <TextInput
+                            isPassword={true}
                             errorText={'Passwords do not match'}
                             error={!!(touched.confirmPassword && errors.confirmPassword && !values.confirmPassword) ||
                                 (values.confirmPassword !== values.password && touched.confirmPassword)}
                             onBlur={handleBlur('confirmPassword')} onChangeText={handleChange('confirmPassword')}
-                            value={values.confirmPassword} placeholder={'Confirm password'} style={styles.input}/>
+                            value={values.confirmPassword} placeholder={'Confirm password'}/>
                         <View style={styles.blockPicker}>
                             <Picker onValueChange={handleChange('preferredLang')}/>
                         </View>
@@ -140,7 +142,6 @@ const RegisterS = ({navigation}) => {
                         <View style={{
                             flexDirection: checkLanguage ? 'row-reverse' : 'row',
                             alignItems: 'center',
-                            justifyContent: 'flex-start',
                         }}>
                             <Checkbox value={true} color={colors.blue}
                                       style={{borderColor: colors.blue, borderRadius: 8, marginRight: 15}}/>
@@ -159,21 +160,18 @@ const RegisterS = ({navigation}) => {
                             </View>
 
                         </View>
-                        {/*// @ts-ignore */}
-                        <TouchableOpacity disabled={isDisabledBtn()} onPress={handleSubmit}>
-                            <LinearGradient
-                                colors={['#89BDE7', '#7EA7D9']}
-                                style={[{
-                                    width: '100%', height: 67, alignItems: 'center',
-                                    justifyContent: 'center',
-                                    borderRadius: 8,
-                                }]}>
-                                <Text style={[styles.text, {color: isDisabledBtn() ? 'red' : 'white'}]}>Log in</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
                     </View>
+                    <ButtonGradient disabled={isDisabledBtn()}
+                                    styleGradient={{
+                                        width: '100%',
+                                        height: 65,
+                                        borderRadius: 10
+                                    }}
+                                    styleText={[styles.text, {color: isDisabledBtn() ? 'red' : 'white'}]}
+                                    onPress={handleSubmit} btnText={'Log in'}/>
                 </View>
             </View>
+
         </BaseWrapperComponent>
     );
 };
@@ -215,13 +213,11 @@ const styles = StyleSheet.create({
         color: colors.white,
     },
     container: {
-        flex: 1,
         justifyContent: 'center',
+        width: '100%',
         alignItems: 'center',
         marginBottom: 40,
-        marginHorizontal: 20
     },
-    input: {},
     textHeader: {
         fontFamily: 'Onest-medium',
         textAlign: 'center',

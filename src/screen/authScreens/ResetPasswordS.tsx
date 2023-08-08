@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import logo from "../../assets/images/logoWitchWiFi.png";
@@ -8,22 +8,50 @@ import {LinearGradient} from "expo-linear-gradient";
 import ArrowBack from "../../components/ArrowBack";
 import * as Localization from "expo-localization";
 import arrowBack from "../../assets/images/keyboard_arrow_left-He.png"
+import rootStore from "../../store/RootStore/root-store";
+import {validateEmail} from "../../utils/utils";
+
 const ResetPasswordS = ({navigation}) => {
     const checkLanguage = Localization.locale.includes('he')
+    const {AuthStoreService} = rootStore
+    const [email, setEmail] = useState('')
+    const [errorEmail, setErrorEmail] = useState('')
+    const onPressSendForgotPassword = () => {
+        if (!validateEmail(email)) {
+            setErrorEmail('Invalid email')
+            return
+        }
+        AuthStoreService.forgotPassword(email.trim())
+    }
+    const onChangeTextEmailHandler = (text: string) => {
+        setErrorEmail('')
+        setEmail(text)
+    }
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
             <View style={styles.container}>
                 <View
-                    style={{justifyContent: 'center', flex: 1,  alignItems: 'center', flexDirection: 'column', marginTop: 10, marginBottom: 30}}>
-                    <Image style={[styles.logo, {marginRight: checkLanguage ? 70 : 0, marginLeft: checkLanguage ? 0 : 70}]} source={logo}/>
+                    style={{
+                        justifyContent: 'center',
+                        flex: 1,
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        marginTop: 10,
+                        marginBottom: 30
+                    }}>
+                    <Image
+                        style={[styles.logo, {marginRight: checkLanguage ? 70 : 0, marginLeft: checkLanguage ? 0 : 70}]}
+                        source={logo}/>
                     <Text style={styles.textHeader}>Reset password</Text>
                 </View>
                 <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
                     <View>
-                        <TextInput placeholder={'Email Address'} style={styles.input}/>
+                        <TextInput errorText={errorEmail} error={!!errorEmail} value={email}
+                                   onChangeText={onChangeTextEmailHandler}
+                                   placeholder={'Email Address'} />
 
-                        <TouchableOpacity onPress={() => {}}>
+                        <TouchableOpacity style={styles.btn} onPress={onPressSendForgotPassword}>
                             <LinearGradient
                                 colors={['#89BDE7', '#7EA7D9']}
                                 style={styles.button}>
@@ -57,8 +85,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 50
     },
-    input: {
-        marginBottom: 20
+    btn: {
+        marginTop: 10
     },
     textHeader: {
         fontFamily: 'Onest-medium',

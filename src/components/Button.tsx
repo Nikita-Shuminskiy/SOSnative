@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Pressable, StyleProp, StyleSheet, Text, TouchableOpacity} from "react-native";
+import {KeyboardAvoidingView, Pressable, StyleProp, StyleSheet, Text, TouchableOpacity} from "react-native";
 
 type ButtonProps = {
     onPress: () => void
@@ -10,6 +10,7 @@ type ButtonProps = {
 const Button = ({title, onPress, styleText, onPressIn, onPressOut, activeOpacity, styleContainer, activeHover}: any) => {
     const [activeBtn, setActiveBtn] = useState(false)
     return (
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <TouchableOpacity     onPressIn={() => setActiveBtn(true)}
                               onPressOut={() => setActiveBtn(false)}
                           style={{
@@ -24,6 +25,7 @@ const Button = ({title, onPress, styleText, onPressIn, onPressOut, activeOpacity
                 ...styleText
             }}>{title}</Text>
         </TouchableOpacity>
+        </KeyboardAvoidingView>
     );
 };
 const styles = StyleSheet.create({});

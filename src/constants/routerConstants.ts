@@ -1,11 +1,9 @@
-import ResultWorkS from "../screen/volounterScreens/ResultWorkS";
-
 export const routerConstants = {
-    MAIN: 'main',
+    MAIN_VOLUNTEER: 'main-volunteer',
+    MAIN_PATIENT: 'main-patient',
     NEED_HELP: 'need-help',
     EVALUATION_CONDITION: 'evaluation-condition',
     EMOTIONAL_STATE: 'emotional-state',
-    SEARCHING_VOLUNTEER: 'searching-volunteer',
     USER_PROFILE: 'user-profile',
     CHAT: 'chat',
     GOODBYE: 'goodbye',

@@ -40,7 +40,7 @@ export const BaseWrapperComponent = ({
                     {children}
                 </KeyboardAwareScrollView>
             </LinearGradient> : (
-                <VirtualizedList>
+
                     <KeyboardAwareScrollView
                         enableOnAndroid={true}
                         keyboardShouldPersistTaps={'handled'}
@@ -53,7 +53,7 @@ export const BaseWrapperComponent = ({
                     >
                         {children}
                     </KeyboardAwareScrollView>
-                </VirtualizedList>
+
             )
         )
     }

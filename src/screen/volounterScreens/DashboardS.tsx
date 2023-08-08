@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
-import {FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import userImages from "../../assets/images/user.png";
-import indicatorUsers from "../../assets/images/indicatorUsers.png";
+import {Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import userImages from "../../assets/images/people2.png"
 import {colors} from "../../assets/colors/colors";
 
 import {LinearGradient} from "expo-linear-gradient";
-import * as Localization from "expo-localization";
 import {routerConstants} from "../../constants/routerConstants";
 import rootStore from "../../store/RootStore/root-store";
 import AuthStore from "../../store/AuthStore/auth-store";
@@ -16,35 +14,68 @@ import {RoomType} from "../../api/api";
 import {Patient} from "../../components/list-viewer/Patient";
 import EmptyList from "../../components/empty-list";
 import CircularProgressBar from "../../components/CircularProgressBar";
+import Backdrop from "../../components/backdrop";
+import {VirtualizedList} from "../../components/virtualized-list";
 
+const renderEmptyContainer = (height, text) => {
+    const onPressLink = () => {
+
+    }
+    return (
+        <EmptyList
+            height={height}
+            text={text}
+            onPressLink={onPressLink}
+        />
+    )
+}
 
 type DashboardSType = {
     navigation: NavigationProp<ParamListBase>
+    route: any
 }
 
-const DashboardS = observer(({navigation}: DashboardSType) => {
-    const checkLanguage = Localization.locale.includes('he')
-    const {rooms, donePatients} = AuthStore
-    const [selectedPatientRoomId, setSelectedPatientRoomId] = useState('')
+const DashboardS = observer(({navigation, route}: DashboardSType) => {
+    const {user, rooms} = AuthStore
 
+    const [selectedPatientRoomId, setSelectedPatientRoomId] = useState('')
+    const [donePatients, setDonePatient] = useState(0)
     const {AuthStoreService} = rootStore
 
-    const renderItem = ({item}: { item: RoomType }) => {
+    let intervalId
+
+    const fetchData = () => {
+        if (navigation.getState().index >= 1) return
+        AuthStoreService.findRooms()
+    };
+    useEffect(() => {
+        AuthStoreService.getDonePatients().then((data) => {
+            if (data) {
+                setDonePatient(data?.total)
+            }
+        })
+
+        fetchData()
+        intervalId = +setInterval(fetchData, 3000);
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, []);
+
+    const renderRoom = ({item}: { item: RoomType }) => {
         const onPressPatientHandler = () => {
             setSelectedPatientRoomId(item.id)
         }
-
         return (
             <Patient
                 onPress={onPressPatientHandler}
-                checkLanguage={checkLanguage}
                 selectedPatient={selectedPatientRoomId}
                 patient={item}
             />
         );
     };
-
     const onPressTakePatient = () => {
+        if (!selectedPatientRoomId) return
         AuthStoreService.joinRoom(selectedPatientRoomId).then((data) => {
             if (data) {
                 navigation.navigate(routerConstants.CHAT)
@@ -52,86 +83,78 @@ const DashboardS = observer(({navigation}: DashboardSType) => {
         })
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await AuthStoreService.findRooms();
-        };
-        fetchData();
-        const intervalId = setInterval(fetchData, 3000);
-        AuthStoreService.getDonePatients()
-        return () => {
-            clearInterval(intervalId);
-        };
-    }, []);
-    const renderEmptyContainer = (height, text) => {
-        const onPressLink = () => {
 
-        }
-        return (
-            <EmptyList
-                text={text}
-                onPressLink={onPressLink}
-            />
-        )
-    }
     return (
-        <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-            <View style={{paddingHorizontal: 20}}>
-                <TouchableOpacity onPress={() => navigation.navigate(routerConstants.VOLUNTEER_PROFILE)} style={{
-                    flex: 1,
-                    justifyContent: 'flex-end',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginTop: 10
-                }}>
-                    <View style={styles.blockUserText}>
-                        <Text style={styles.textNameUser}>Jenny</Text>
-                    </View>
-                    <Image style={styles.img} source={userImages}/>
+        <>
+          <VirtualizedList>
+              <BaseWrapperComponent isKeyboardAwareScrollView={true}>
+                  <View style={{paddingHorizontal: 10}}>
+                      <TouchableOpacity onPress={() => navigation.navigate(routerConstants.VOLUNTEER_PROFILE)} style={{
+                          flex: 1,
+                          justifyContent: 'flex-end',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          marginTop: 10
+                      }}>
+                          <View style={styles.blockUserText}>
+                              <Text style={styles.textNameUser}>{user?.name}</Text>
+                          </View>
+                          <Image style={styles.img} source={userImages}/>
+                      </TouchableOpacity>
+                      <View style={styles.blockHeader}>
+                          <CircularProgressBar donePatients={donePatients}/>
+                          <Text style={styles.textNameUser}>Go on!{'\n'}
+                              You’ve helped {donePatients} people this week.</Text>
+                      </View>
+                      <View style={styles.blockBody}>
+                          {
+                              !!rooms?.length && <View>
+                                  <Text style={[styles.textNameUser, {color: '#1F8298', fontWeight: '500'}]}>Need your
+                                      help!</Text>
+                              </View>
+                          }
+
+                          <View style={{flex: 1, marginBottom: 10, marginTop: 20, width: '100%'}}>
+                              <FlatList
+                                  data={rooms ?? []}
+                                  renderItem={renderRoom}
+                                  keyExtractor={item => item.id}
+                                  contentContainerStyle={
+                                      !rooms?.length ? styles.contentContainerStyle : {
+                                          alignItems: 'center',
+                                          justifyContent: 'center'
+                                      }
+                                  }
+                                  ListEmptyComponent={() => renderEmptyContainer(Dimensions.get('window').height - 200, 'There are no tasks for you right now.')}
+                                  horizontal={false}
+                                  showsVerticalScrollIndicator={false}
+                                  showsHorizontalScrollIndicator={false}
+                                  style={{flex: 1, height: '100%', width: '100%'}}
+                              />
+                          </View>
+                      </View>
+                  </View>
+              </BaseWrapperComponent>
+          </VirtualizedList>
+            <View style={{alignItems: 'center', width: '100%'}}>
+                <TouchableOpacity style={{alignItems: 'center', width: '100%'}} onPress={onPressTakePatient}>
+                    <LinearGradient
+                        colors={['#89BDE7', '#7EA7D9']}
+                        style={[{
+                            width: '100%', height: 67, alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 8,
+                        }]}>
+                        <Text style={styles.text}>Take</Text>
+                    </LinearGradient>
                 </TouchableOpacity>
-                <View style={styles.blockHeader}>
-                    <CircularProgressBar donePatients={donePatients}/>
-                    <Text style={styles.textNameUser}>Go on!{'\n'}
-                        You’ve helped {donePatients} people this week.</Text>
-                </View>
-                <View style={styles.blockBody}>
-                    <View>
-                        <Text style={[styles.textNameUser, {color: '#1F8298', fontWeight: '500'}]}>Need your
-                            help!</Text>
-                    </View>
-                    <View style={{flex: 1, marginBottom: 10, marginTop: 20, width: '100%'}}>
-                        <FlatList
-                            data={rooms ?? []}
-                            renderItem={renderItem}
-                            keyExtractor={item => item.id}
-                            contentContainerStyle={
-                                !rooms?.length && styles.contentContainerStyle
-                            }
-                            ListEmptyComponent={() => renderEmptyContainer(0, '')}
-                            horizontal={false}
-                            showsVerticalScrollIndicator={false}
-                            showsHorizontalScrollIndicator={false}
-                            style={{flex: 1, height: '100%', width: '100%'}}
-                        />
-                    </View>
-                    <View style={{flex: 1, width: '100%'}}>
-                        <TouchableOpacity onPress={onPressTakePatient}>
-                            <LinearGradient
-                                colors={['#89BDE7', '#7EA7D9']}
-                                style={[{
-                                    width: '100%', height: 67, alignItems: 'center',
-                                    justifyContent: 'center',
-                                    borderRadius: 8,
-                                }]}>
-                                <Text style={styles.text}>Take</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
-                    </View>
-                </View>
             </View>
-        </BaseWrapperComponent>
+            <Backdrop/>
+        </>
     );
 })
+
+
 const styles = StyleSheet.create({
     contentContainerStyle: {
         flex: 1,

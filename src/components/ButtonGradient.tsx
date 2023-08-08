@@ -12,6 +12,7 @@ type ButtonGradientProps = {
     styleText?: any
     colorsGradient?: string[]
     colorText?: string
+    disabled?: boolean
     backgroundImage?: ImageSourcePropType
 }
 
@@ -23,6 +24,7 @@ const ButtonGradient = ({
                             styleTouchable,
                             colorsGradient,
                             colorText,
+                            disabled,
                              backgroundImage
                         }: ButtonGradientProps) => {
     const [activeBtn, setActiveBtn] = useState(false)
@@ -30,6 +32,7 @@ const ButtonGradient = ({
         backgroundImage ? (
             <ImageBackground style={styles.backgroundImg} source={activeBtn ? backgroundImage : 0}>
                 <TouchableOpacity
+                    disabled={disabled}
                     activeOpacity={0.9}
                     onPressIn={() => setActiveBtn(true)}
                     onPressOut={() => setActiveBtn(false)} style={styleTouchable} onPress={onPress}>

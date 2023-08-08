@@ -1,32 +1,25 @@
-import React, {useState} from 'react';
-import * as Localization from "expo-localization";
-import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
-import ArrowBack from "../../components/ArrowBack";
-import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
+import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, Switch, Text, TouchableOpacity, View} from "react-native";
-import userImages from "../../assets/images/people2.png";
-import Picker from "../../components/Picker";
+import {BaseWrapperComponent,} from "../../components/baseWrapperComponent";
+import ArrowBack from "../../components/ArrowBack";
+import userImages from '../../assets/images/user.png'
 import {colors} from "../../assets/colors/colors";
-import logoutImages from "../../assets/images/logout.png";
 import Backdrop from "../../components/backdrop";
+import Picker from "../../components/Picker";
+import logoutImages from '../../assets/images/logout.png'
+import * as Localization from "expo-localization";
+import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
 import AuthStore from "../../store/AuthStore/auth-store";
 import rootStore from "../../store/RootStore/root-store";
-import {observer} from "mobx-react-lite";
-import {NavigationProp, ParamListBase} from "@react-navigation/native";
 
-type VolunteerProfileSProps = {
-    navigation: NavigationProp<ParamListBase>
-    route: any
-}
-const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps) => {
-    const [notifications, setNotifications] = useState(false)
+const UserProfileS = ({navigation}) => {
     const checkLanguage = Localization.locale.includes('he')
     const {user} = AuthStore
     const {AuthStoreService} = rootStore
+    const [notifications, setNotifications] = useState(false)
     const onPressLogOut = () => {
         AuthStoreService.logOut()
     }
-
     return (
         <BaseWrapperComponent>
             <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
@@ -42,8 +35,7 @@ const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps)
             <View style={{flex: 1, marginRight: 20, marginLeft: 20, alignItems: 'center'}}>
 
                 <View style={styles.blockPicker}>
-                    <Picker onValueChange={(e) => {
-                    }} selectStyles={{
+                    <Picker onValueChange={(e) => console.log(e)} selectStyles={{
                         margin: -15,
                         height: 67
                     }}/>
@@ -58,16 +50,6 @@ const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps)
                         value={notifications}
                     />
                 </View>
-                <View>
-                    <Text style={{
-                        marginTop: 20,
-                        color: '#51658D',
-                        fontFamily: 'Onest-light',
-                        fontWeight: '500',
-                        fontSize: 18,
-                    }}>Situations in which a person feels bad can happen at any moment. Turn on notifications to see
-                        when they appear.</Text>
-                </View>
                 <TouchableOpacity onPress={onPressLogOut} style={{
                     ...styles.notificationsBlock,
                     position: 'absolute',
@@ -81,7 +63,7 @@ const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps)
             <Backdrop/>
         </BaseWrapperComponent>
     );
-});
+};
 const styles = StyleSheet.create({
     blockPicker: {
         backgroundColor: '#D5E3FE',
@@ -122,6 +104,8 @@ const styles = StyleSheet.create({
     textNameUser: {
         color: colors.blue,
         fontSize: 27,
+        maxWidth: 200,
+        width: '100%'
         //font-family: 'Inter';
     },
     textChange: {
@@ -135,4 +119,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default VolunteerProfileS;
+export default UserProfileS;

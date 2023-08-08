@@ -5,32 +5,30 @@ import {colors} from "../assets/colors/colors";
 import microImg from '../assets/images/microWitchBackground.png'
 import ArrowUpImage from '../assets/images/arrowUpWitchBacground.png'
 import {TypingUserType} from "../store/SocketStore/socket-store";
+import {JoinRoomType} from "../store/AuthStore/auth-store";
 
 type InputFieldsChatProps = {
     onSendMessage: (message: string) => void
     onTypingHandler: () => void
-    setCurrentUserTyping: (data: TypingUserType) => void
+
 }
-const InputFieldsChat = ({onSendMessage, onTypingHandler, setCurrentUserTyping}:InputFieldsChatProps) => {
+const InputFieldsChat = ({ onSendMessage, onTypingHandler}: InputFieldsChatProps) => {
     const [textInput, setTextInput] = useState<string>('')
     const onChangeText = (text) => {
         setTextInput(text)
-        if(!text) {
-            setCurrentUserTyping(null)
-            return
-        }else {
+        if(text) {
             onTypingHandler()
         }
-
     }
+
     const onPressSend = () => {
         onSendMessage(textInput)
-        setCurrentUserTyping(null)
         setTextInput('')
     }
     return (
         <View style={styles.container}>
-            <TextInput value={textInput} onChangeText={onChangeText} styleContainer={styles.styleInputContainer} style={styles.input}/>
+            <TextInput value={textInput} onChangeText={onChangeText} styleContainer={styles.styleInputContainer}
+                       style={styles.input}/>
             {/*<TouchableOpacity>
                 <Image style={{...styles.img, marginRight: 5}} source={microImg}/>
             </TouchableOpacity>*/}

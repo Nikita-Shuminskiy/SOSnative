@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Image, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import logo from '../../assets/images/logoWitchWiFi.png'
 import TextInput from "../../components/TextInput";
@@ -22,11 +22,10 @@ type LoginSProps = {
 const LoginS = ({navigation}: LoginSProps) => {
     const {AuthStoreService} = rootStore
     const checkLanguage = Localization.locale.includes('he')
-    const {setAuth} = AuthStore
     const {handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, setSubmitting} =
         useFormik({
             initialValues: {
-                email: '2@mail.ru',
+                email: '4@mail.ru',
                 password: '11111111',
             },
             onSubmit: (values) => {
@@ -50,6 +49,10 @@ const LoginS = ({navigation}: LoginSProps) => {
         AuthStoreService.login({
             email: values.email?.trim(),
             password: values.password,
+        }).then((data) => {
+            if (data) {
+                navigation.navigate(data.role === 'volunteer' ? routerConstants.MAIN_VOLUNTEER : routerConstants.MAIN_PATIENT)
+            }
         })
         setSubmitting(false)
     }
@@ -72,14 +75,15 @@ const LoginS = ({navigation}: LoginSProps) => {
                     <Text style={styles.textHeader}>Welcome!{"\n"}
                         Log in to your account</Text>
                 </View>
-                <View style={{flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
+                <View style={{flex: 1, alignItems: 'center', justifyContent: 'space-between'}}>
                     <View>
                         <TextInput errorText={'Email entered incorrectly'}
-                                   error={!!(!validateEmail(values.email.trim()) && errors.email)} onBlur={handleBlur('email')} onChangeText={handleChange('email')}
+                                   error={!!(!validateEmail(values.email.trim()) && errors.email)}
+                                   onBlur={handleBlur('email')} onChangeText={handleChange('email')}
                                    value={values.email} placeholder={'Email Address'} style={styles.input}/>
-                        <TextInput onBlur={handleBlur('password')} onChangeText={handleChange('password')}
+                        <TextInput isPassword={true} onBlur={handleBlur('password')}
+                                   onChangeText={handleChange('password')}
                                    value={values.password}
-                                   secureTextEntry={true}
                                    error={!!(!!errors.password &&
                                        values.password.length <= 7)}
                                    errorText={'Password must contain at least 8 characters'}
@@ -90,7 +94,9 @@ const LoginS = ({navigation}: LoginSProps) => {
                             <Text style={{color: colors.blueMedium, fontSize: 18, fontFamily: 'Onest-light'}}>Forgot my
                                 password</Text>
                         </TouchableOpacity>
-                        {/*// @ts-ignore */}
+
+
+                            {/*// @ts-ignore */}
                         <TouchableOpacity onPress={handleSubmit} disabled={isDisabledBtn()}>
                             <LinearGradient
                                 colors={['#89BDE7', '#7EA7D9']}
@@ -159,98 +165,3 @@ const styles = StyleSheet.create({
 
 
 export default LoginS;
-
-
-/*
-const Test = () => {
-    const [recording, setRecording] = useState<Audio.Recording|null>(null);
-    const [fftData, setFftData] = useState<number[]>([]);
-
-    useEffect(() => {
-        (async () => {
-            const { status } = await Audio.requestPermissionsAsync();
-            if (status !== 'granted') {
-                console.log('Permission to access audio was denied');
-                return;
-            }
-            const recording = new Audio.Recording();
-            try {
-                await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
-                await recording.startAsync();
-                setRecording(recording);
-                const interval = setInterval(async () => {
-
-                    const data = await recording.getTransformDataAsync(Audio.FFT_SIZE_MEDIUM);
-                    setFftData(data);
-                }, 100);
-                return () => clearInterval(interval);
-            } catch (error) {
-                console.log('Error starting recording:', error);
-            }
-        })();
-    }, []);
-
-    const stopRecording = async () => {
-        try {
-            await recording?.stopAndUnloadAsync();
-            setRecording(null);
-        } catch (error) {
-            console.log('Error stopping recording:', error);
-        }
-    };
-
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Audio Frequency Plot</Text>
-            <View style={styles.graph}>
-                {fftData.map((value, index) => (
-                    <View key={index} style={[styles.bar, { height: value * 100 }]} />
-                ))}
-            </View>
-            {recording && (
-                <TouchableOpacity onPress={stopRecording} style={styles.button}>
-                    <Text style={styles.buttonText}>Stop Recording</Text>
-                </TouchableOpacity>
-            )}
-        </View>
-    );
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'red',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    graph: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        width: '80%',
-        height: '50%',
-        backgroundColor: '#EEE',
-        padding: 10,
-    },
-    bar: {
-        width: 2,
-        backgroundColor: 'blue',
-    },
-    button: {
-
-        backgroundColor: 'red',
-        padding: 10,
-        marginTop: 90,
-        borderRadius: 10,
-    },
-    buttonText: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
-});
-*/

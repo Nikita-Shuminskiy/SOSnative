@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start --clear",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "build_apk": "eas build -p android --profile preview",
-    "build_all": "eas build --platform all",
-    "build_android": "eas build --platform android"
+    "start": "npx expo start",
+    "android": "npx expo start --android",
+    "ios": "npx expo start --ios",
+    "web": "npx expo start --web",
+    "build_apk": "npx eas build -p android --profile preview",
+    "build_all": " npx eas build --platform all",
+    "build_android": " npx eas build --platform android"
   },
   "dependencies": {
     "@expo/webpack-config": "^18.0.1",
@@ -32,6 +32,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.71.8",
+    "react-native-gesture-handler": "~2.9.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-picker-select-updated": "^9.0.3",
     "react-native-pure-loaders": "^1.0.12",
@@ -46,7 +47,7 @@
     "@react-navigation/native": "^6.1.0",
     "@react-navigation/native-stack": "^6.9.5",
     "@types/axios": "^0.14.0",
-    "@types/react": "~18.0.14",
+    "@types/react": "~18.2.14",
     "@types/react-native": "^0.71.6",
     "typescript": "^4.9.4"
   },

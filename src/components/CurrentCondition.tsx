@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import {FlatList, Image, StyleSheet, TouchableOpacity, View} from "react-native";
-import {ItemData} from "../screen/mainScreens/EmotionalStateS";
-import {ConditionRateData} from "../utils/utils";
+import {ItemData} from "../screen/patientScreens/EmotionalStateS";
 import {RoomType} from "../api/api";
+import {ConditionRateData} from "../utils/generalData";
+import {getCurrentConditionRateData} from "../utils/utils";
 
 const Item = ({item, onPress, borderColor}) => (
     <TouchableOpacity onPress={onPress} style={[{
@@ -20,9 +21,8 @@ type CurrentConditionType = {
     dataRoom: RoomType
 }
 const CurrentCondition = ({dataRoom}:CurrentConditionType ) => {
-    const conditionRate = ConditionRateData[dataRoom.conditionRate]?.id
-    const [selectedId, setSelectedId] = useState<number>(conditionRate);
-
+    const conditionRate = getCurrentConditionRateData(dataRoom?.conditionRate)
+    const [selectedId, setSelectedId] = useState<number>(conditionRate?.id);
     const renderItem = ({item}: { item: ItemData }) => {
         const borderColor =  item.id === selectedId ? '#7EA7D9' : '';
 
@@ -43,7 +43,7 @@ const CurrentCondition = ({dataRoom}:CurrentConditionType ) => {
                     data={ConditionRateData}
                     renderItem={renderItem}
                     keyExtractor={item => item.id.toString()}
-                    extraData={selectedId}
+                  /*  extraData={selectedId}*/
                     contentContainerStyle={{
                         flexDirection: 'row',
                         justifyContent: 'space-around',
