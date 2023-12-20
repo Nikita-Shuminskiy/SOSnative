@@ -1,8 +1,9 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+export const BASE_URL = 'http://stage.sos.luden-labs.com:3030'
+//https://sos.luden-labs.com/
 export const instance = axios.create({
-    baseURL: 'https://sos.luden-labs.com/',
+    baseURL: BASE_URL,
     withCredentials: true
 })
 // Request interceptor for API calls
@@ -28,13 +29,6 @@ instance.interceptors.response.use(
         return response;
     },
     async function (error) {
-        const originalRequest = error.config;
-        if (error.response.status === 403 && !originalRequest._retry) {
-            originalRequest._retry = true;
-            const {data} = await instance.post<{ token: string }>(`auth/refresh`);
-            axios.defaults.headers.common['authorization'] = 'Bearer ' + data.token;
-            return instance(originalRequest);
-        }
         return Promise.reject(error);
     },
 );

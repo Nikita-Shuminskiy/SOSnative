@@ -1,50 +1,51 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from "react-native";
 import imgGood from '../assets/images/smileGood.png'
-import {RoomType} from "../api/api";
 import {colors} from "../assets/colors/colors";
-import {ConditionRateData} from "../utils/generalData";
 import {checkLanguage, getCurrentConditionRateData} from "../utils/utils";
-import {AudienceType} from "../store/AuthStore/auth-store";
+import {audienceType, DataJoinRoomType} from "../store/SocketStore/socket-store";
+import {Box} from "native-base";
 
 
 type SensePatientType = {
-    dataRoom: RoomType
-    userJoin: AudienceType
+    userJoin: audienceType
+    joinedRoomData: DataJoinRoomType
+    currentUserConditionRate: number
 }
-const SensePatient = ({dataRoom, userJoin}: SensePatientType) => {
-    const conditionRate = getCurrentConditionRateData(dataRoom?.conditionRate)
+const SensePatient = ({userJoin, joinedRoomData, currentUserConditionRate}: SensePatientType) => {
+    const conditionRate = getCurrentConditionRateData(currentUserConditionRate ?? joinedRoomData?.room.conditionRate)
 
     return (
-        <View style={styles.container}>
-            <View style={styles.blockText}>
-                <Text style={{color: colors.grayLight, fontSize: 12}}>{userJoin?.name}</Text>
-                <Text style={{color: '#1F8298', fontSize: 14}}>{conditionRate?.title}</Text>
+        <Box maxW={'45%'}>
+            <View style={styles.container}>
+                <View style={styles.blockText}>
+                   {/* <Text ellipsizeMode={'middle'} numberOfLines={1} style={{color: colors.grayLight, fontSize: 12}}>{userJoin?.name}</Text>*/}
+                    <Text style={{color: '#1F8298', fontSize: 12, textAlign: 'center'}}>{conditionRate?.title}</Text>
+                </View>
+                <Image style={styles.img} resizeMode={'contain'} alt="feel" source={conditionRate?.img}/>
             </View>
-            <Image style={styles.img} alt="feel" source={conditionRate?.img ?? imgGood}/>
-        </View>
+        </Box>
     );
 };
 const styles = StyleSheet.create({
     container: {
+        width: '100%',
         backgroundColor: 'white',
         borderBottomRightRadius: 16,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        height: 80,
-        width: 130,
-        paddingHorizontal: 10,
+        justifyContent: 'space-evenly',
+        padding: 5,
+        height: 55,
         marginLeft: -10
     },
     blockText: {
-        flex: 1,
         justifyContent: 'center'
     },
     img: {
         marginLeft: checkLanguage ? 2 : 0,
-        width: 38,
-        height: 38
+        width: 34,
+        height: 34
     }
 })
 export default SensePatient;

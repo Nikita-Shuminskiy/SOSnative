@@ -1,10 +1,9 @@
 import {ItemData} from "../screen/patientScreens/EmotionalStateS";
-import smileGood from "../assets/images/smileGood.png";
-import smileOk from "../assets/images/smileOk.png";
-import smileAverage from "../assets/images/smileAverage.png";
-import smileBad from "../assets/images/smileBad.png";
-import smileVeryBad from "../assets/images/smileVeryBad.png";
-
+import smileGood from "../assets/images/coleredSmile/smileGood.png";
+import smileOk from "../assets/images/coleredSmile/smileOk.png";
+import smileAverage from "../assets/images/coleredSmile/smileAverege.png";
+import smileBad from "../assets/images/coleredSmile/smileBad.png";
+import smileVeryBad from "../assets/images/coleredSmile/smileVeryBad.png";
 
 import peopleLeftHand from "../assets/images/people_problem/peolple-problem-leftHand.png"
 import peopleRightHand from "../assets/images/people_problem/people-problem-rightHand.png"
@@ -15,30 +14,60 @@ import {afflictionType} from "../store/AuthStore/auth-store";
 
 export const ConditionRateData: ItemData[] = [
     {
-        id: 5,
+        id: 0,
         img: smileGood,
         title: 'I’m good',
     },
     {
-        id: 4,
+        id: 1,
+        img: smileOk,
+        title: 'I’m ok',
+    },
+    {
+        id: 2,
         img: smileOk,
         title: 'I’m ok',
     },
     {
         id: 3,
+        img: smileOk,
+        title: 'I’m ok',
+    },
+    {
+        id: 4,
         img: smileAverage,
         title: 'Average',
     },
     {
-        id: 2,
+        id: 5,
+        img: smileAverage,
+        title: 'Average',
+    },
+    {
+        id: 6,
+        img: smileAverage,
+        title: 'Average',
+    },
+    {
+        id: 7,
         img: smileBad,
         title: 'I feel bad',
     },
     {
-        id: 1,
+        id: 8,
+        img: smileBad,
+        title: 'I feel bad',
+    },
+    {
+        id: 9,
+        img: smileBad,
+        title: 'I feel bad',
+    },
+    {
+        id: 10,
         img: smileVeryBad,
         title: 'I feel very bad',
-    }
+    },
 ];
 export type PeopleProblemType = Omit<ItemData, 'title'> & {
     title: afflictionType

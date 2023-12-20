@@ -25,12 +25,12 @@ const ButtonGradient = ({
                             colorsGradient,
                             colorText,
                             disabled,
-                             backgroundImage
+                            backgroundImage
                         }: ButtonGradientProps) => {
     const [activeBtn, setActiveBtn] = useState(false)
     return (
         backgroundImage ? (
-            <ImageBackground style={styles.backgroundImg} source={activeBtn ? backgroundImage : 0}>
+            <ImageBackground style={styles.backgroundImg} source={activeBtn ? backgroundImage : null}>
                 <TouchableOpacity
                     disabled={disabled}
                     activeOpacity={0.9}
@@ -68,19 +68,11 @@ const styles = StyleSheet.create({
     button: {
         alignItems: 'center',
         justifyContent: 'center',
-        /* shadowColor: "rgba(0,0,0,0.56)",
-         shadowOffset: {
-             width: 0,
-             height: 5,
-         },
-         shadowOpacity: 0.34,
-         shadowRadius: 100,
-
-         elevation: 10,*/
     },
 
     textBtn: {
-        fontFamily: 'Onest-medium',
+        fontWeight: '500',
+        fontSize: 18,
     },
 })
 export default ButtonGradient;

@@ -9,26 +9,16 @@ import {routerConstants} from "../../constants/routerConstants";
 import rootStore from "../../store/RootStore/root-store";
 import AuthStore from "../../store/AuthStore/auth-store";
 import {observer} from "mobx-react-lite";
-import {NavigationProp, ParamListBase} from "@react-navigation/native";
+import {NavigationProp, ParamListBase, useIsFocused} from "@react-navigation/native";
 import {RoomType} from "../../api/api";
 import {Patient} from "../../components/list-viewer/Patient";
-import EmptyList from "../../components/empty-list";
+import {renderEmptyContainer} from "../../components/empty-list";
 import CircularProgressBar from "../../components/CircularProgressBar";
 import Backdrop from "../../components/backdrop";
 import {VirtualizedList} from "../../components/virtualized-list";
+import SocketStore from "../../store/SocketStore/socket-store";
+import {StatusBar} from "expo-status-bar";
 
-const renderEmptyContainer = (height, text) => {
-    const onPressLink = () => {
-
-    }
-    return (
-        <EmptyList
-            height={height}
-            text={text}
-            onPressLink={onPressLink}
-        />
-    )
-}
 
 type DashboardSType = {
     navigation: NavigationProp<ParamListBase>
@@ -36,31 +26,31 @@ type DashboardSType = {
 }
 
 const DashboardS = observer(({navigation, route}: DashboardSType) => {
-    const {user, rooms} = AuthStore
-
+    const {user, rooms, setRooms} = AuthStore
     const [selectedPatientRoomId, setSelectedPatientRoomId] = useState('')
     const [donePatients, setDonePatient] = useState(0)
     const {AuthStoreService} = rootStore
+    const {socketInit} = SocketStore
+    const isFocused = useIsFocused()
+    const [intervalId, setIntervalId] = useState<number | null>(null)
 
-    let intervalId
-
-    const fetchData = () => {
-        if (navigation.getState().index >= 1) return
-        AuthStoreService.findRooms()
-    };
     useEffect(() => {
-        AuthStoreService.getDonePatients().then((data) => {
-            if (data) {
-                setDonePatient(data?.total)
-            }
-        })
-
-        fetchData()
-        intervalId = +setInterval(fetchData, 3000);
-        return () => {
-            clearInterval(intervalId);
-        };
-    }, []);
+        if (isFocused) {
+            AuthStoreService.getDonePatients().then((data) => {
+                if (data) {
+                    setDonePatient(data?.total)
+                }
+            })
+            AuthStoreService.findRooms()
+            const intervalId = +setInterval(() => {
+                AuthStoreService.findRooms()
+            }, 10000)
+            setIntervalId(intervalId)
+        } else {
+            clearInterval(intervalId)
+            setRooms([])
+        }
+    }, [isFocused]);
 
     const renderRoom = ({item}: { item: RoomType }) => {
         const onPressPatientHandler = () => {
@@ -78,65 +68,69 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
         if (!selectedPatientRoomId) return
         AuthStoreService.joinRoom(selectedPatientRoomId).then((data) => {
             if (data) {
+                setSelectedPatientRoomId('')
+                socketInit()
                 navigation.navigate(routerConstants.CHAT)
             }
         })
     }
 
-
     return (
         <>
-          <VirtualizedList>
-              <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-                  <View style={{paddingHorizontal: 10}}>
-                      <TouchableOpacity onPress={() => navigation.navigate(routerConstants.VOLUNTEER_PROFILE)} style={{
-                          flex: 1,
-                          justifyContent: 'flex-end',
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          marginTop: 10
-                      }}>
-                          <View style={styles.blockUserText}>
-                              <Text style={styles.textNameUser}>{user?.name}</Text>
-                          </View>
-                          <Image style={styles.img} source={userImages}/>
-                      </TouchableOpacity>
-                      <View style={styles.blockHeader}>
-                          <CircularProgressBar donePatients={donePatients}/>
-                          <Text style={styles.textNameUser}>Go on!{'\n'}
-                              You’ve helped {donePatients} people this week.</Text>
-                      </View>
-                      <View style={styles.blockBody}>
-                          {
-                              !!rooms?.length && <View>
-                                  <Text style={[styles.textNameUser, {color: '#1F8298', fontWeight: '500'}]}>Need your
-                                      help!</Text>
-                              </View>
-                          }
+            <StatusBar hidden={false} style={'auto'} animated={true}
+                       translucent={false}/>
+            <VirtualizedList>
+                <BaseWrapperComponent isKeyboardAwareScrollView={true}>
+                    <View style={{paddingHorizontal: 10}}>
+                        <TouchableOpacity onPress={() => navigation.navigate(routerConstants.VOLUNTEER_PROFILE)}
+                                          style={{
+                                              flex: 1,
+                                              justifyContent: 'flex-end',
+                                              flexDirection: 'row',
+                                              alignItems: 'center',
+                                              marginTop: 10
+                                          }}>
+                            <View style={styles.blockUserText}>
+                                <Text style={styles.textNameUser}>{user?.name}</Text>
+                            </View>
+                            <Image style={styles.img} source={userImages}/>
+                        </TouchableOpacity>
+                        <View style={styles.blockHeader}>
+                            <CircularProgressBar donePatients={donePatients}/>
+                            <Text style={styles.textNameUser}>Go on!{'\n'}
+                                You’ve helped {donePatients} people this week.</Text>
+                        </View>
+                        <View style={styles.blockBody}>
+                            {
+                                !!rooms?.length && <View>
+                                    <Text style={[styles.textNameUser, {color: '#1F8298', fontWeight: '500'}]}>Need your
+                                        help!</Text>
+                                </View>
+                            }
 
-                          <View style={{flex: 1, marginBottom: 10, marginTop: 20, width: '100%'}}>
-                              <FlatList
-                                  data={rooms ?? []}
-                                  renderItem={renderRoom}
-                                  keyExtractor={item => item.id}
-                                  contentContainerStyle={
-                                      !rooms?.length ? styles.contentContainerStyle : {
-                                          alignItems: 'center',
-                                          justifyContent: 'center'
-                                      }
-                                  }
-                                  ListEmptyComponent={() => renderEmptyContainer(Dimensions.get('window').height - 200, 'There are no tasks for you right now.')}
-                                  horizontal={false}
-                                  showsVerticalScrollIndicator={false}
-                                  showsHorizontalScrollIndicator={false}
-                                  style={{flex: 1, height: '100%', width: '100%'}}
-                              />
-                          </View>
-                      </View>
-                  </View>
-              </BaseWrapperComponent>
-          </VirtualizedList>
-            <View style={{alignItems: 'center', width: '100%'}}>
+                            <View style={{flex: 1, marginBottom: 10, marginTop: 20, width: '100%'}}>
+                                <FlatList
+                                    data={rooms ?? []}
+                                    renderItem={renderRoom}
+                                    keyExtractor={item => item.id}
+                                    contentContainerStyle={
+                                        !rooms?.length ? styles.contentContainerStyle : {
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }
+                                    }
+                                    ListEmptyComponent={() => renderEmptyContainer(Dimensions.get('window').height - 200, 'There are no tasks for you right now.')}
+                                    horizontal={false}
+                                    showsVerticalScrollIndicator={false}
+                                    showsHorizontalScrollIndicator={false}
+                                    style={{flex: 1, height: '100%', width: '100%'}}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </BaseWrapperComponent>
+            </VirtualizedList>
+            <View style={{alignItems: 'center', width: '100%', paddingHorizontal: 5}}>
                 <TouchableOpacity style={{alignItems: 'center', width: '100%'}} onPress={onPressTakePatient}>
                     <LinearGradient
                         colors={['#89BDE7', '#7EA7D9']}
@@ -163,7 +157,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     text: {
-        fontFamily: 'Onest-medium',
         fontWeight: '500',
         fontSize: 18,
         color: colors.white,
@@ -178,14 +171,15 @@ const styles = StyleSheet.create({
     blockHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-evenly',
-        flexGrow: 1,
+        justifyContent: 'space-between',
+        flex: 1,
+        width: '100%',
         marginTop: 8,
-        marginBottom: 50
+        marginBottom: 40
     },
     textNameUser: {
         color: colors.blue,
-        fontSize: 16,
+        fontSize: 14,
         //font-family: 'Inter';
     },
     textChange: {

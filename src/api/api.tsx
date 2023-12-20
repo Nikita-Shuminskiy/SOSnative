@@ -1,9 +1,10 @@
 import {instance} from "./config";
 import {afflictionType, DataPatientType} from "../store/AuthStore/auth-store";
-import axios, { AxiosResponse } from 'axios';
+import {AxiosResponse} from 'axios';
+
 export const authApi = {
-    async login(email: string, password: string): Promise<AxiosResponse<ResponseType, any>> {
-        return await instance.post(`authentication`, {email, password, strategy: 'local'})
+    async login(payload: { email: string; password: string, rememberMe?: boolean }): Promise<AxiosResponse<ResponseType, any>> {
+        return await instance.post(`authentication`, {...payload, strategy: 'local'})
     },
     async logout(aссessToken: string) {
         return await instance.delete<ResponseType>(`authentication/${aссessToken}`)
@@ -14,14 +15,14 @@ export const authApi = {
     async forgotPassword(email: string) {
         return await instance.post<DataSignUpType>(`forgot-password`, {email})
     },
-    async getUser(data: DataSignUpType) {
-        return await instance.post<DataSignUpType>(`users`, data)
+    async getUser() {
+        return await instance.get<DataType<UserType[]>>(`users`)
     },
     async createRoom(data: DataPatientType) {
         return await instance.post<RoomType>(`rooms`, data)
     },
     async findRooms() {
-        return await instance.get<DataFindRoomsType>(`rooms?$sort[createdAt]=-1&isOpen=true`)
+        return await instance.get<DataType<RoomType[]>>(`rooms?$sort[createdAt]=-1&isOpen=true`)
     },
     async getDonePatients(idVolunteer: string) {
         return await instance.get(`rooms/?volunteer=${idVolunteer}`)
@@ -29,16 +30,17 @@ export const authApi = {
     async joinRoom(idRoom) {
         return await instance.patch<RoomType>(`rooms/${idRoom}?isOpen=true`, {isOpen: false})
     },
-    async deleteRoom() {
-        return await instance.delete<RoomType>(`rooms/fc6eaa4b-480a-473b-81c2-030fdc3487b0`)
+
+    async sendToken(payload: { token: string, device: string, platform: string, osVersion: string }) {
+        return await instance.post<any>(`/device-tokens`, payload)
     }
 
 }
-export type DataFindRoomsType = {
+export type DataType<T> = {
     "total": number,
     "limit": number,
     "skip": number,
-    "data": RoomType[]
+    "data": T
 }
 export type RoomType = {
     "affliction": afflictionType[],

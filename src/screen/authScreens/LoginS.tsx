@@ -1,5 +1,5 @@
-import React from 'react';
-import {Image, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useState} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import logo from '../../assets/images/logoWitchWiFi.png'
 import TextInput from "../../components/TextInput";
@@ -7,12 +7,15 @@ import {colors} from "../../assets/colors/colors";
 import Button from "../../components/Button";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {LinearGradient} from "expo-linear-gradient";
-import AuthStore from "../../store/AuthStore/auth-store";
 import {routerConstants} from "../../constants/routerConstants";
 import * as Localization from "expo-localization";
 import {useFormik} from "formik";
 import rootStore from "../../store/RootStore";
-import {validateEmail} from "../../utils/utils";
+import {checkLanguage, validateEmail} from "../../utils/utils";
+import {Checkbox} from "expo-checkbox";
+import {DataJoinRoomType} from "../../store/SocketStore/socket-store";
+import SocketStore from "../../store/SocketStore";
+import {Box} from "native-base";
 
 
 type LoginSProps = {
@@ -21,11 +24,12 @@ type LoginSProps = {
 
 const LoginS = ({navigation}: LoginSProps) => {
     const {AuthStoreService} = rootStore
-    const checkLanguage = Localization.locale.includes('he')
+    const {activeSessionCheck, setJoinedRoom, forcedClosingSocket} = SocketStore
+    const [isRememberMe, setIsRememberMe] = useState(false)
     const {handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, setSubmitting} =
         useFormik({
             initialValues: {
-                email: '4@mail.ru',
+                email: '3@mail.ru',
                 password: '11111111',
             },
             onSubmit: (values) => {
@@ -45,13 +49,27 @@ const LoginS = ({navigation}: LoginSProps) => {
                 return errors
             },
         })
+    const connectToSocket = (userId) => {
+        activeSessionCheck().then((socket) => {
+            socket && socket?.once('rooms join', (data: DataJoinRoomType) => {
+                if (data.audience.length) {
+                    setJoinedRoom(data)
+                    navigation?.navigate(routerConstants.CHAT)
+                } else {
+                    return forcedClosingSocket(userId)
+                }
+            })
+        })
+    }
     const onPressLogin = (values) => {
         AuthStoreService.login({
             email: values.email?.trim(),
             password: values.password,
+            rememberMe: isRememberMe
         }).then((data) => {
             if (data) {
-                navigation.navigate(data.role === 'volunteer' ? routerConstants.MAIN_VOLUNTEER : routerConstants.MAIN_PATIENT)
+                connectToSocket(data.id)
+                navigation.navigate(data.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
             }
         })
         setSubmitting(false)
@@ -88,15 +106,23 @@ const LoginS = ({navigation}: LoginSProps) => {
                                        values.password.length <= 7)}
                                    errorText={'Password must contain at least 8 characters'}
                                    placeholder={'Password'} style={styles.input}/>
+                        <View style={styles.blockRememberMe}>
+                            <Checkbox onValueChange={(value) => {
+                                setIsRememberMe(value)
+                            }} value={isRememberMe} color={colors.blue}
+                                      style={styles.checkBox}/>
+                            <Text style={{...styles.text, color: colors.blue, marginRight: 5}}>Remember me</Text>
+                        </View>
+                       <Box alignItems={'center'}>
+                           <TouchableOpacity onPress={() => navigation.navigate(routerConstants.RESET_PASSWORD)}
+                                             style={{marginTop: 20, marginBottom: 20, marginLeft: 10}}>
+                               <Text style={{color: colors.blueMedium, fontSize: 18}}>Forgot my
+                                   password</Text>
+                           </TouchableOpacity>
+                       </Box>
 
-                        <TouchableOpacity onPress={() => navigation.navigate(routerConstants.RESET_PASSWORD)}
-                                          style={{marginTop: 20, marginBottom: 20, marginLeft: 10}}>
-                            <Text style={{color: colors.blueMedium, fontSize: 18, fontFamily: 'Onest-light'}}>Forgot my
-                                password</Text>
-                        </TouchableOpacity>
 
-
-                            {/*// @ts-ignore */}
+                        {/*// @ts-ignore */}
                         <TouchableOpacity onPress={handleSubmit} disabled={isDisabledBtn()}>
                             <LinearGradient
                                 colors={['#89BDE7', '#7EA7D9']}
@@ -104,17 +130,16 @@ const LoginS = ({navigation}: LoginSProps) => {
                                 <Text style={[styles.text, {color: isDisabledBtn() ? 'red' : 'white'}]}>Log in</Text>
                             </LinearGradient>
                         </TouchableOpacity>
-                        <TouchableOpacity
+                        <View
                             style={{marginTop: 20, marginBottom: 20, marginLeft: 10, alignItems: 'center'}}>
-                            <Text style={{color: colors.blueMedium, fontSize: 18, fontFamily: 'Onest-light'}}>
+                            <Text style={{color: colors.blueMedium, fontSize: 18}}>
                                 You don’t have an account yet?</Text>
-                        </TouchableOpacity>
+                        </View>
                         <Button
                             activeHover={true}
                             styleContainer={{borderWidth: 1, borderColor: colors.blue}}
                             styleText={{
-                                color: colors.blue, fontFamily: 'Onest-medium', fontSize: 18,
-                                lineHeight: 21
+                                color: colors.blue, fontSize: 18,
                             }}
                             title={'Create an account'} onPress={() => {
                             navigation.navigate(routerConstants.REGISTRATION)
@@ -126,6 +151,13 @@ const LoginS = ({navigation}: LoginSProps) => {
     );
 };
 const styles = StyleSheet.create({
+    checkBox: {borderColor: colors.blue, borderRadius: 8, marginRight: 5, width: 20, height: 20},
+    blockRememberMe: {
+        marginTop: 20,
+        marginLeft: 10,
+        flexDirection: checkLanguage ? 'row-reverse' : 'row',
+        alignItems: 'center'
+    },
     button: {
         padding: 15,
         alignItems: 'center',
@@ -134,7 +166,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     text: {
-        fontFamily: 'Onest-medium',
         fontWeight: '500',
         fontSize: 18,
         color: colors.white,
@@ -148,7 +179,6 @@ const styles = StyleSheet.create({
     },
     input: {},
     textHeader: {
-        fontFamily: 'Onest-medium',
         textAlign: 'center',
         fontSize: 30,
         fontWeight: '400',

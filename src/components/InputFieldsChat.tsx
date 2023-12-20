@@ -1,22 +1,23 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from "react-native";
 import TextInput from "./TextInput";
 import {colors} from "../assets/colors/colors";
-import microImg from '../assets/images/microWitchBackground.png'
 import ArrowUpImage from '../assets/images/arrowUpWitchBacground.png'
-import {TypingUserType} from "../store/SocketStore/socket-store";
-import {JoinRoomType} from "../store/AuthStore/auth-store";
+import Button from "./Button";
+import SocketStore from "../store/SocketStore/socket-store";
+import {Box} from "native-base";
+import {checkLanguage} from "../utils/utils";
 
 type InputFieldsChatProps = {
     onSendMessage: (message: string) => void
     onTypingHandler: () => void
 
 }
-const InputFieldsChat = ({ onSendMessage, onTypingHandler}: InputFieldsChatProps) => {
+const InputFieldsChat = ({onSendMessage, onTypingHandler}: InputFieldsChatProps) => {
     const [textInput, setTextInput] = useState<string>('')
-    const onChangeText = (text) => {
+    const onChangeText = (text: string) => {
         setTextInput(text)
-        if(text) {
+        if (text) {
             onTypingHandler()
         }
     }
@@ -26,8 +27,9 @@ const InputFieldsChat = ({ onSendMessage, onTypingHandler}: InputFieldsChatProps
         setTextInput('')
     }
     return (
-        <View style={styles.container}>
-            <TextInput value={textInput} onChangeText={onChangeText} styleContainer={styles.styleInputContainer}
+        <Box backgroundColor={colors.white} paddingX={5} flexDirection={'row'} alignItems={'center'} flex={1} justifyContent={'space-evenly'} w={'100%'}>
+            <TextInput multiline={true} inputMode={'text'} pointerEvents={'box-only'} value={textInput}
+                       onChangeText={onChangeText} styleContainer={styles.styleInputContainer}
                        style={styles.input}/>
             {/*<TouchableOpacity>
                 <Image style={{...styles.img, marginRight: 5}} source={microImg}/>
@@ -35,18 +37,17 @@ const InputFieldsChat = ({ onSendMessage, onTypingHandler}: InputFieldsChatProps
             <TouchableOpacity style={styles.styleBtn} onPress={onPressSend}>
                 <Image style={styles.img} source={ArrowUpImage}/>
             </TouchableOpacity>
-        </View>
+        </Box>
     );
 };
 const styles = StyleSheet.create({
     styleBtn: {
-        zIndex: 9999,
-        margin: 10
+        width: 30,
+        height: 30,
     },
-    styleInputContainer: {marginTop: 0, height: 37, marginRight: 5},
+    styleInputContainer: {marginTop: 0, width: '100%'},
     container: {
         zIndex: 9999,
-        flex: 1,
         width: '100%',
         flexDirection: 'row',
         backgroundColor: colors.white,
@@ -55,14 +56,19 @@ const styles = StyleSheet.create({
         height: 70,
     },
     img: {
-        width: 40,
-        height: 40
+        width: 30,
+        height: 30,
+
     },
     input: {
-        padding: 10,
         fontSize: 14,
-        width: 243,
-        height: 37
+        borderRadius: 24,
+        backgroundColor: colors.blueLight,
+        width: '93%',
+        minHeight: 40,
+        maxHeight: 37,
+        paddingHorizontal: 16,
+        paddingVertical: 7,
     },
 
 })

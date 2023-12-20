@@ -3,26 +3,20 @@ import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {colors} from "../../assets/colors/colors";
 import TextInput from "../../components/TextInput";
-import {LinearGradient} from "expo-linear-gradient";
 import ArrowBack from "../../components/ArrowBack";
 import arrowBack from "../../assets/images/keyboard_arrow_left-He.png"
 import Picker from "../../components/Picker";
 import {Checkbox} from "expo-checkbox";
 import ButtonGradient from "../../components/ButtonGradient";
-import * as Localization from 'expo-localization';
-import {routerConstants} from "../../constants/routerConstants";
 import {useFormik} from "formik";
-import {validateEmail} from "../../utils/utils";
+import {checkLanguage, validateEmail} from "../../utils/utils";
 import rootStore from "../../store/RootStore";
 import {DataSignUpType} from "../../api/api";
-import {AntDesign} from "@expo/vector-icons";
 
 
 const RegisterS = ({navigation}) => {
     const [role, setRole] = useState<'patient' | 'volunteer'>('patient')
-    const checkLanguage = Localization.locale.includes('he')
     const {AuthStoreService} = rootStore
-
     const {handleChange, handleBlur, handleSubmit, touched, values, errors, isSubmitting, setSubmitting} =
         useFormik({
             initialValues: {
@@ -176,9 +170,8 @@ const RegisterS = ({navigation}) => {
     );
 };
 const styles = StyleSheet.create({
-    textAgree: {color: colors.blue, fontSize: 18, fontFamily: 'Onest-light'},
+    textAgree: {color: colors.blue, fontSize: 18,},
     textBtn: {
-        fontFamily: 'Onest-light',
         fontWeight: '500',
         fontSize: 18
     },
@@ -197,7 +190,6 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         color: '#909597',
         fontSize: 14,
-        fontFamily: 'Onest-light'
     },
     button: {
         alignItems: 'center',
@@ -207,7 +199,6 @@ const styles = StyleSheet.create({
         width: 162,
     },
     text: {
-        fontFamily: 'Onest-medium',
         fontWeight: '500',
         fontSize: 18,
         color: colors.white,
@@ -219,7 +210,6 @@ const styles = StyleSheet.create({
         marginBottom: 40,
     },
     textHeader: {
-        fontFamily: 'Onest-medium',
         textAlign: 'center',
         fontSize: 30,
         fontWeight: '400',

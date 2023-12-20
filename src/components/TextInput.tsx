@@ -20,12 +20,13 @@ const TextInput = ({style, styleContainer, error, errorText, isPassword, ...rest
             {
                 isPassword &&
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
-                                  style={[styles.icon, !checkLanguage && styles.right]}>
+                                  style={styles.icon}>
                     <AntDesign name={!showPassword ? "eyeo" : "eye"} size={30} color={colors.blue}/>
                 </TouchableOpacity>
             }
 
             <Input
+                returnKeyType={'send'}
                 secureTextEntry={isPassword && showPassword}
                 value={userName}
                 onChangeText={(userName) => setUserName(userName)}
@@ -40,14 +41,11 @@ const TextInput = ({style, styleContainer, error, errorText, isPassword, ...rest
     );
 };
 const styles = StyleSheet.create({
-    right: {
-        right: 10,
-        left: null,
-    },
     icon: {
         position: 'absolute',
         top: 20,
-        left: 10,
+        right: !checkLanguage ? 10 : null,
+        left: checkLanguage ? 10 : null,
         zIndex: 100,
     },
     container: {
@@ -57,7 +55,6 @@ const styles = StyleSheet.create({
         padding: 20,
         width: 340,
         fontSize: 18,
-        fontFamily: 'Onest-light',
         color: colors.blue,
         height: 67,
         borderRadius: 8,

@@ -21,3 +21,15 @@ const EmptyList = ({ text, onPressLink, styleText, styleLink, height }: EmptyLis
 }
 
 export default EmptyList
+export const renderEmptyContainer = (height, text) => {
+	const onPressLink = () => {
+
+	}
+	return (
+		<EmptyList
+			height={height}
+			text={text}
+			onPressLink={onPressLink}
+		/>
+	)
+}

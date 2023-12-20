@@ -1,6 +1,4 @@
 export const routerConstants = {
-    MAIN_VOLUNTEER: 'main-volunteer',
-    MAIN_PATIENT: 'main-patient',
     NEED_HELP: 'need-help',
     EVALUATION_CONDITION: 'evaluation-condition',
     EMOTIONAL_STATE: 'emotional-state',

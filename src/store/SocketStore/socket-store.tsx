@@ -1,9 +1,13 @@
-import {action, makeObservable, observable} from "mobx";
+import {action, makeAutoObservable, makeObservable, observable} from "mobx";
 import {deviceStorage} from "../../utils/storage/storage";
 import io, {Socket} from "socket.io-client";
-import {afflictionType, DataPatientType, JoinRoomType} from "../AuthStore/auth-store";
-import {authApi, RoleType, RoomType} from "../../api/api";
+import {afflictionType, DataPatientType} from "../AuthStore/auth-store";
+import {authApi, RoleType, UserType} from "../../api/api";
 import {MessageType} from "../../screen/commonScreen/Chat/types";
+import {BASE_URL} from "../../api/config";
+import {Role} from "react-native";
+import {routerConstants} from "../../constants/routerConstants";
+import {createAlert} from "../../components/alert";
 
 export type TypingUserType = {
     id: string,
@@ -32,146 +36,231 @@ export type ResultPatchedVolunteerDataType = {
     resultConditionRate: number,
 }
 
+export type RoomType = {
+    id: string;
+    description: string;
+    affliction: afflictionType[];
+    conditionRate: number;
+};
+
+export type audienceType = {
+    id: string;
+    name: string;
+    role: RoleType;
+    avatar: null | string;
+};
+export type RoomDisconnectInfoType = { disconnected: audienceType, room: { id: string } }
+export type DataJoinRoomType = {
+    room: RoomType;
+    joined: audienceType;
+    audience: audienceType[];
+};
+
 export class SocketStore {
     socket: Socket | null = null
+    user: UserType | null = null
+    navigation: any | null = null
     messages: MessageType[] = []
-    dataRoom: RoomType | null = null
     dataScoresAfterChat: dataScoresAfterChat | null = null
-    joinedRoom: JoinRoomType | null = null
+    joinedRoomData: DataJoinRoomType | null = null
     resultPatchedVolunteerData: ResultPatchedVolunteerDataType | null = null
+    roomDisconnectInfo: RoomDisconnectInfoType | null = null
+    currentUserConditionRate: number | null = null
 
-
-    setDataRoom(dataRoom: RoomType): void {
-        this.dataRoom = dataRoom
-    }
-
-    setResultPatchedVolunteerData(data: ResultPatchedVolunteerDataType): void {
+    setResultPatchedVolunteerData = (data: ResultPatchedVolunteerDataType): void => {
         this.resultPatchedVolunteerData = data
     }
 
-    setDataScoresAfterChat<T>(value: T, key: keyof dataScoresAfterChat): void {
+    setDataScoresAfterChat = (value: any, key: keyof dataScoresAfterChat): void => {
         this.dataScoresAfterChat = {...this.dataScoresAfterChat, [key]: value}
     }
 
-    setMessage(message: MessageType) {
+    setMessage = (message: MessageType) => {
         this.messages = [...this.messages, message]
     }
 
-    setMessages(messages: MessageType[]) {
+    setMessages = (messages: MessageType[]) => {
         this.messages = messages
     }
 
-    setJoinedRoom(user: JoinRoomType) {
-        this.joinedRoom = user
+    setJoinedRoom = (data: DataJoinRoomType) => {
+        this.joinedRoomData = data
     }
 
-    setSocket(socket) {
+    setSocket = (socket) => {
         this.socket = socket
     }
 
-    sendMessage(message: string) {
-        this.socket?.emit('create', 'messages', {content: message, roomId: this.dataRoom.id});
+    setDisconnectInfo = (data: RoomDisconnectInfoType) => {
+        this.roomDisconnectInfo = data
     }
 
-    setVolunteerEvaluation(userId: string) {
+    sendMessage = (message: string) => {
+        this.socket?.emit('create', 'messages', {content: message});
+    }
+
+    setVolunteerEvaluation = (userId: string) => {
         const volunteerEvaluationHandler = (data) => {
-            this.disconnectSocket(userId)
+            this.forcedClosingSocket(userId)
         }
-        this.socket?.emit('patch', 'rooms', this.dataRoom.id, this.dataScoresAfterChat, volunteerEvaluationHandler);
+        this.socket?.emit('patch', 'rooms', null, this.dataScoresAfterChat, volunteerEvaluationHandler);
     }
 
-    typingHandler() {
-        this.socket?.emit('typing', 'rooms', {roomId: this.dataRoom.id})
+    typingHandler = () => {
+        this.socket?.emit('typing', 'rooms')
     }
 
-    async joinRoom(idRoom) {
+    sendSelectedRate = (conditionRate) => {
+        this.socket?.emit('patch', 'rooms', null, {conditionRate: conditionRate[0]})
+    }
+
+    joinRoom = async (idRoom) => {
         const {data} = await authApi.joinRoom(idRoom)
-        this.setDataRoom(data)
-        await this.socketInit();
         return data
     }
 
-    async createRoom(dataPatient: DataPatientType) {
+    createRoom = async (dataPatient: DataPatientType) => {
         const {data} = await authApi.createRoom(dataPatient)
-        this.setDataRoom(data)
-        await this.socketInit();
         return data
     }
+    getMessages = () => {
+        this.socket?.emit('find', 'messages', {$limit: 5000}, (val, data) => {
+            this.setMessages(data?.data)
+        });
+    }
 
-    async socketInit() {
+    socketInit = async () => {
         try {
             const token = await deviceStorage.getItem('token')
-            const socket = io('https://sos.luden-labs.com/', {
+            const socket = io(BASE_URL, {
                 rejectUnauthorized: false,
                 extraHeaders: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             this.setSocket(socket)
+            socket?.on('messages created', (data: MessageType) => {
+                console.log('messages created')
+                this.setMessage(data)
+            });
+            socket?.on('connect_error', (data) => {
+                console.log('connect_error', this.user.role)
+            })
+            socket?.on('rooms join', (data) => {
+                this.setJoinedRoom(data)
+            })
+            socket?.on('rooms disconnect', (data: RoomDisconnectInfoType, err) => {
+                this.setDisconnectInfo(data)
+                const onPressExit = () => {
+                    this.forcedClosingSocket(this.user?.id)
+                    this.socket.off('rooms close')
+                    this.navigation.navigate(this.user.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
+                }
+                createAlert({
+                    title: 'Message',
+                    message: `User ${data.disconnected.name} logged out`,
+                    buttons: [{text: 'Exit', style: "default", onPress: onPressExit}, {text: 'Stay', style: "default"}]
+                })
+            })
+            socket?.on('rooms patched', (data) => { // событие только для volun
+                if (data.resultAffliction[0] !== 'none' || data.resultConditionRate !== null) {
+                    this.socket.off('rooms close')
+                    this.socket.off('rooms disconnect')
+                    this.setResultPatchedVolunteerData(data)
+                    this.forcedClosingSocket(this.user.id)
+                    this.navigation.navigate(routerConstants.RESULT_WORK)
+                } else {
+                    this.setCurrentUserConditionRate(data.conditionRate)
+                }
+            })
+            this.getMessages()
+            socket?.on('rooms rate', () => {
+                this.socket.off('rooms close')
+                createAlert({
+                    title: 'Message',
+                    message: 'The patient has moved on to an evaluation',
+                    buttons: [{text: 'Ok', style: "default"}]
+                })
+            })
+            socket?.on('rooms close', () => {
+                this.forcedClosingSocket(this.user?.id)
+                this.navigation.navigate(this.user.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
+                createAlert({
+                    title: 'Message',
+                    message: 'The room is closed',
+                    buttons: [{text: 'Ok', style: "default"}]
+                })
+            })
+
+            const roomsTimeoutHandler = () => {
+                if (this.user.role === 'volunteer') return
+                const onPressLeave = () => {
+                    this.socket.off('rooms close')
+                    this.socket.emit('rate', 'rooms')
+                    this.navigation.navigate(routerConstants.EVALUATION_CONDITION, {fromChat: true})
+                }
+                createAlert({
+                    title: 'Message',
+                    message: 'Time is running out, would you like to come out and appreciate?',
+                    buttons: [{text: 'Go to evaluation', style: "cancel", onPress: onPressLeave}, {
+                        text: 'Stay',
+                        style: "default"
+                    }]
+                })
+            }
+            socket?.once('rooms timeout', roomsTimeoutHandler)
+
+            return socket
         } catch (e) {
-            console.log('error socket')
         }
     }
 
-    clearData() {
+    activeSessionCheck = async (): Promise<any> => {
+        try {
+            const socket = await this.socketInit()
+            return socket
+        } catch (e) {
+            return false
+        }
+    }
+
+    setCurrentUserConditionRate = (rate) => {
+        this.currentUserConditionRate = rate
+
+    }
+
+    forcedClosingSocket = (userId: string) => {
+        this.socket?.off('rooms disconnect')
+        const roomsCloseHandler = (data) => {
+            this.clearData()
+        }
+        this.socket?.emit('close', 'rooms', {userId}, roomsCloseHandler);
+    }
+
+    clearData = () => {
+        this.socket?.off('messages created')
+        this.socket?.off('connect_error')
+        this.socket?.off('rooms join')
+        this.socket?.off('rooms disconnect')
+
+        this.socket?.disconnect()
         this.socket = null
         this.messages = [];
-        this.dataRoom = null
         this.dataScoresAfterChat = null
-        this.joinedRoom = null
+        this.joinedRoomData = null
         this.resultPatchedVolunteerData = null
     }
 
-    disconnectSocket(userId: string) {
-        const roomsCloseHandler = (data) => {
-            console.log('rooms close', data)
-        }
-        this.socket?.emit('close', 'rooms', {userId, roomId: this.dataRoom.id}, roomsCloseHandler);
-        this.dataRoom = {} as RoomType
-        this.socket?.disconnect()
-        this.socket = null
-        this.setMessages([])
-        this.setDataRoom({} as RoomType)
+    setNavigation = (navigation) => {
+        this.navigation = navigation
+    }
+
+    setUser = (user) => {
+        this.user = user
     }
 
     constructor() {
-        makeObservable(this, {
-            socket: observable,
-            resultPatchedVolunteerData: observable,
-            joinedRoom: observable,
-            messages: observable,
-            dataRoom: observable,
-            dataScoresAfterChat: observable,
-            setDataScoresAfterChat: action,
-            setDataRoom: action,
-            setJoinedRoom: action,
-            setSocket: action,
-            setResultPatchedVolunteerData: action,
-            createRoom: action,
-            joinRoom: action,
-            setMessage: action,
-            setVolunteerEvaluation: action,
-            setMessages: action,
-            sendMessage: action,
-            socketInit: action,
-            clearData: action,
-            disconnectSocket: action,
-            typingHandler: action,
-        })
-        this.setDataRoom = this.setDataRoom.bind(this)
-        this.clearData = this.clearData.bind(this)
-        this.setJoinedRoom = this.setJoinedRoom.bind(this)
-        this.setResultPatchedVolunteerData = this.setResultPatchedVolunteerData.bind(this)
-        this.setDataScoresAfterChat = this.setDataScoresAfterChat.bind(this)
-        this.socketInit = this.socketInit.bind(this)
-        this.createRoom = this.createRoom.bind(this)
-        this.setVolunteerEvaluation = this.setVolunteerEvaluation.bind(this)
-        this.setMessage = this.setMessage.bind(this)
-        this.sendMessage = this.sendMessage.bind(this)
-        this.setMessages = this.setMessages.bind(this)
-        this.joinRoom = this.joinRoom.bind(this)
-        this.typingHandler = this.typingHandler.bind(this)
-        this.disconnectSocket = this.disconnectSocket.bind(this)
+        makeAutoObservable(this)
     }
 }
 

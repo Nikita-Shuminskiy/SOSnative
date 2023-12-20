@@ -9,36 +9,34 @@ import ovalImg from "../../../assets/images/oval.png";
 import React from "react";
 import {colors} from "../../../assets/colors/colors";
 import {UserType} from "../../../api/api";
-import {AudienceType} from "../../../store/AuthStore/auth-store";
+import {audienceType} from "../../../store/SocketStore/socket-store";
 type HeaderChatProps = {
     exitChatHandler: () => void
     isVolunteer: boolean
-    getInfo: AudienceType
+    getInfo: audienceType
     user: UserType
 }
-const HeaderChat = ({exitChatHandler, isVolunteer, getInfo, user}:HeaderChatProps) => {
+const HeaderChat = ({exitChatHandler, getInfo}:HeaderChatProps) => {
     return (
         <LinearGradient
             colors={['#89BDE7', '#7EA7D9']}
             locations={[0.14, 0.8]}
             start={{x: 0.3, y: 0.2}}
             style={styles.headerContainer}>
-            {
-                checkLanguage && <View style={{flexDirection: 'row-reverse'}}>
+            {checkLanguage && <View style={{flexDirection: 'row-reverse'}}>
                     <ArrowBack styleTouchable={styles.right} img={arrowLeftImg}
                                goBackPress={exitChatHandler}/>
-                    <Text style={[styles.textHeader, {position: 'absolute', left: 0, top: 40}]}>
+                    <Text style={[styles.textHeader, {position: 'absolute', left: 0, bottom: 15}]}>
                         Chat with
                     </Text>
                     <View style={styles.blockImgInfo}>
                         <Image style={[styles.userImg, {marginLeft: 20}]}
-                               source={isVolunteer ? getInfo?.role === 'patient' && userImages : getInfo?.role === 'volunteer' && volunteerImg}/>
+                               source={getInfo?.role === 'patient' ? userImages : volunteerImg}/>
                         <Text
                             style={[styles.userNameText, {marginLeft: 5}]}>{getInfo?.name ?? 'Waiting'}</Text>
                     </View>
                     <Image style={styles.userImgBackground} source={ovalImg}/>
-                </View>
-            }
+                </View>}
             {!checkLanguage && <View style={[styles.header, {alignItems: 'flex-end'}]}>
                 <View style={{marginBottom: 10}}>
                     <ArrowBack styleTouchable={styles.right} img={arrowLeftImg}
@@ -50,11 +48,11 @@ const HeaderChat = ({exitChatHandler, isVolunteer, getInfo, user}:HeaderChatProp
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}} >
                     <Text
-                        style={{...styles.userNameText, position: 'relative', right: 20}}>{(getInfo?.id !== user.id) && getInfo?.name ? getInfo?.name : 'Waiting'}</Text>
+                        style={{...styles.userNameText, position: 'relative', right: 20}}>{getInfo?.name ?? 'Waiting'}</Text>
                     <ImageBackground style={{ width: 82, height: 82 }} source={ovalImg}>
                         <Image
                             style={{position: 'relative', right: 10, width: 68, height: 68}}
-                            source={isVolunteer ? getInfo?.role === 'patient' && userImages : getInfo?.role === 'volunteer' && volunteerImg}/>
+                            source={getInfo?.role === 'patient' ? userImages : volunteerImg}/>
                     </ImageBackground>
                 </View>
             </View>}
@@ -67,7 +65,7 @@ const styles = StyleSheet.create({
     userNameText: {
         textAlign: checkLanguage ? "left" : 'right',
         color: colors.white,
-        fontSize: 16,
+        fontSize: 15,
         maxWidth: 150,
         width: '100%'
     },
@@ -85,14 +83,14 @@ const styles = StyleSheet.create({
     },
     textHeader: {
         marginLeft: 25,
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: '700',
         color: colors.white
     },
     headerContainer: {
-        paddingTop: 30,
+        paddingTop: 20,
         width: '100%',
-        minHeight: 126,
+        minHeight: 110,
     },
     right: {},
 })

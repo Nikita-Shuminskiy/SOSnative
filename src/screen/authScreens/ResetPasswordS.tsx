@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
         borderRadius: 8
     },
     text: {
-        fontFamily: 'Onest-medium',
         fontWeight: '500',
         fontSize: 18,
         color: colors.white,
@@ -89,7 +88,6 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     textHeader: {
-        fontFamily: 'Onest-medium',
         textAlign: 'center',
         fontSize: 30,
         fontWeight: '400',

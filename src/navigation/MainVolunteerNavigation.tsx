@@ -23,11 +23,12 @@ const MainVolunteerNavigation = ({navigation, route}) => {
             />
             <MainStack.Screen
                 options={{headerShown: false, animation: 'flip'}}
+
                 name={routerConstants.CHAT}
                 component={ChatS}
             />
             <MainStack.Screen
-                options={{headerShown: false, animation: 'flip'}}
+                options={{headerShown: false, animation: 'flip',  }}
                 name={routerConstants.DASHBOARD}
                 component={DashboardS}
             />

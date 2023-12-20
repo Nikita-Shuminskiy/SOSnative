@@ -45,6 +45,7 @@ export const BaseWrapperComponent = ({
                         enableOnAndroid={true}
                         keyboardShouldPersistTaps={'handled'}
                         contentContainerStyle={{
+                            flexGrow: 1,
                             marginBottom: 10,
                             width: '100%',
                         }}

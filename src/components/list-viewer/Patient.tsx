@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginRight: 5,
         color: '#51658D',
-        fontFamily: 'Onest-medium',
         fontWeight: '500',
         fontSize: 14,
         width: '100%',
@@ -156,8 +155,7 @@ const styles = StyleSheet.create({
     },
     textTime: {
         color: '#1F8298',
-        fontFamily: 'Onest-medium',
     },
-    textName: {color: colors.blue, fontFamily: 'Onest-medium'},
+    textName: {color: colors.blue},
 
 })

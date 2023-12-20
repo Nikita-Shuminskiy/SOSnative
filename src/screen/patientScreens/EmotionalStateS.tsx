@@ -1,15 +1,5 @@
 import React, {useState} from 'react';
-import {
-    FlatList,
-    Image,
-    ImageSourcePropType,
-    Platform,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
-} from "react-native";
+import {Image, ImageSourcePropType, Platform, SafeAreaView, StyleSheet, Text, View} from "react-native";
 import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
 import {colors} from "../../assets/colors/colors";
@@ -22,9 +12,9 @@ import * as Localization from "expo-localization";
 import AuthStore from "../../store/AuthStore/auth-store";
 import rootStore from "../../store/RootStore/root-store";
 import SocketStore from "../../store/SocketStore/socket-store";
-import {ConditionRateData} from "../../utils/generalData";
 import Backdrop from "../../components/backdrop";
-import currentCondition from "../../components/CurrentCondition";
+import SliderEmotionalState from "../../components/SliderEmotionalState";
+import {observer} from "mobx-react-lite";
 
 
 export type ItemData = {
@@ -34,70 +24,40 @@ export type ItemData = {
     img: ImageSourcePropType;
 };
 
-
-type ItemProps = {
-    item: ItemData;
-    onPress: () => void;
-    borderColor: string;
-    checkLanguage: boolean;
-};
-
-const EmotionalStateViewer = ({item, onPress, borderColor, checkLanguage}: ItemProps) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item, {
-        borderColor: borderColor,
-        borderWidth: borderColor ? 1 : 0,
-        borderRadius: borderColor ? 9 : 0,
-        width: 264, height: 78,
-        flexDirection: checkLanguage ? 'row-reverse' : 'row'
-
-    }]}>
-        <Image style={styles.img} source={item.img}/>
-        <Text style={[styles.textImg]}>{item.title}</Text>
-    </TouchableOpacity>
-);
-
-const EmotionalStateS = ({navigation, route}: any) => {
+const EmotionalStateS = observer(({navigation, route}: any) => {
     const checkLanguage = Localization.locale.includes('he')
-    const [selectedState, setSelectedState] = useState<number>(1);
+
     const {setDataPatient, dataPatient, user} = AuthStore
+    const {socketInit} = SocketStore
     const {AuthStoreService} = rootStore
     const isFromChat = route.params?.fromChat
     const {
         setDataScoresAfterChat,
         setVolunteerEvaluation,
-        disconnectSocket
+        forcedClosingSocket
     } = SocketStore
-
-    const emotionalStateView = ({item}: { item: ItemData }) => {
-        const borderColor = item.id === selectedState ? colors.gray : '';
+    const onValueSliderChange = (value) => {
         if (isFromChat) {
-            setDataScoresAfterChat(selectedState, 'resultConditionRate')
+            setDataScoresAfterChat(value, 'resultConditionRate')
         } else {
-            setDataPatient(selectedState, 'conditionRate')
+            setDataPatient(value, 'conditionRate')
         }
 
-        return (
-            <EmotionalStateViewer
-                checkLanguage={checkLanguage}
-                item={item}
-                onPress={() => setSelectedState(item.id)}
-                borderColor={borderColor}
-            />
-        );
-    };
-    const onPressBtnHandler = () => {
-        if (!selectedState) return
+    }
+    const onPressBtnHandler = () => {3
         if (isFromChat) {
             setVolunteerEvaluation(user?.id)
-            disconnectSocket(user?.id)
             navigation.navigate(routerConstants.GOODBYE)
             return
-        } else {
-            AuthStoreService.createRoom({...dataPatient, conditionRate: selectedState }).then((data) => {
-                if (data) {
-                    navigation.navigate(routerConstants.CHAT)
-                }
+        }
+        if(!isFromChat) {
+            AuthStoreService.createRoom(dataPatient).then((data) => {
+               if(data) {
+                   socketInit()
+                   navigation.navigate(routerConstants.CHAT)
+               }
             })
+            return
         }
     }
     return (
@@ -111,18 +71,11 @@ const EmotionalStateS = ({navigation, route}: any) => {
                 </View>
             }
             <View style={styles.container}>
-                <View style={{marginTop: isFromChat ? 0 : 50}}>
+                <View style={{position: 'relative', top: isFromChat ? 0 : 10}}>
                     <Text style={styles.text}>Evaluate your condition using this scale</Text>
                 </View>
-                <View style={{flex: 1, marginBottom: 10, marginTop: 50}}>
-                    <FlatList
-                        data={ConditionRateData}
-                        renderItem={emotionalStateView}
-                        keyExtractor={item => String(item.id)}
-                        extraData={selectedState}
-                        //    style={{flex:1, height: '100%', width: '100%'}}
-                        contentContainerStyle={{justifyContent: 'center', alignItems: 'center', height: 'auto'}}
-                    />
+                <View style={styles.emotionalStateBlock}>
+                    <SliderEmotionalState onValueChange={onValueSliderChange}/>
                 </View>
                 <ButtonGradient
                     styleTouchable={{marginBottom: 20}}
@@ -135,19 +88,18 @@ const EmotionalStateS = ({navigation, route}: any) => {
             <Backdrop/>
         </SafeAreaView>
     );
-}
+})
 const styles = StyleSheet.create({
+    emotionalStateBlock: {
+        width: '100%',
+        height: 100
+    },
     bodyContainer: {
         flex: 1,
         width: '100%',
         height: '100%',
         alignItems: 'center',
         justifyContent: 'space-between'
-    },
-    item: {
-        alignItems: 'center',
-        paddingHorizontal: 30,
-        //justifyContent: 'center'
     },
 
     blockImg: {
@@ -161,17 +113,17 @@ const styles = StyleSheet.create({
     },
     textImg: {
         marginRight: 20,
-        fontFamily: 'Onest-light',
         color: colors.blue,
         fontSize: 16
     },
     text: {
         fontSize: 24,
-        fontFamily: 'Onest-medium',
+        fontWeight: '500',
         color: colors.blue,
     },
     container: {
-        paddingHorizontal: 20,
+        marginTop: 10,
+        paddingHorizontal: 10,
         flex: 1,
         justifyContent: 'space-between'
     },

@@ -2,7 +2,7 @@ import * as Localization from "expo-localization";
 import {ConditionRateData, peopleProblem, PeopleProblemType} from "./generalData";
 import {afflictionType} from "../store/AuthStore/auth-store";
 import peopleNoProblem from '../assets/images/people_problem/people-no-problem.png'
-
+import Constants from 'expo-constants';
 const regex = {
     hostname: /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
     email:
@@ -11,7 +11,6 @@ const regex = {
 export const validateEmail = (email: string) => {
     return regex.email.test(email.trim())
 }
-export const isLanguageHE = Localization.locale.includes('he')
 export const getTimeElapsedFromNow = (dateString) => {
     const givenDate = new Date(dateString);
     const currentDate = new Date();
@@ -34,12 +33,18 @@ export const getTimeElapsedFromNow = (dateString) => {
     }
 }
 
-export const checkLanguage = Localization.locale.includes('he')
+const checkLanguagesArabic = () => {
+    const rtlLanguages = ['he', 'ar', 'fa', 'ur', 'ar-EG', 'he-IL', 'he-BY', 'he-EN'];
+
+    const currentLanguage = Localization.locale;
+    return rtlLanguages.includes(currentLanguage);
+};
+export const checkLanguage = checkLanguagesArabic()
 export const getCurrentConditionRateData = (id: number) => {
-    return ConditionRateData.find((el) => el.id === id)
+    return ConditionRateData?.find((el) => el.id === id)
 }
 export const getCurrentPeopleProblem = (affliction: afflictionType[]): PeopleProblemType[] => {
-    if (affliction.join() === '') {
+    if (affliction?.join() === '') {
         return [{
             description: 'doesn’t feel pain anywhere.',
             id: 2,
@@ -64,4 +69,13 @@ export const monosyllable = (text: string) => {
     const wordsArray = text.split(/(?=[А-ЯЁІЇЄҐA-Z])/);
 
     return wordsArray.join(" ").toLowerCase();
+}
+export const getInfoAboutPhone = () => {
+    const phone = {
+        name: Constants.name,
+        deviceName: Constants.deviceName,
+        platform: Constants.platform,
+        version: Constants.systemVersion
+    }
+    return phone
 }

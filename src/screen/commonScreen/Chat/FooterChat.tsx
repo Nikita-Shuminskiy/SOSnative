@@ -1,47 +1,44 @@
 import React from 'react';
-import {StyleSheet, Text, View} from "react-native";
+import {KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, View} from "react-native";
 import CurrentCondition from "../../../components/CurrentCondition";
 import InputFieldsChat from "../../../components/InputFieldsChat";
-import SocketStore from "../../../store/SocketStore/socket-store";
+import SocketStore, {DataJoinRoomType} from "../../../store/SocketStore/socket-store";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
+import {BaseWrapperComponent} from "../../../components/baseWrapperComponent";
+import {Box} from "native-base";
 
 type FooterChatProps = {
     isVolunteer: boolean
-    setShowNameJoined: (val: boolean) => void
+    onSendMessage: (text: string) => void
+    joinedRoomData: DataJoinRoomType
 }
-const FooterChat = ({isVolunteer, setShowNameJoined}: FooterChatProps) => {
-    const {
-        dataRoom,
-    } = SocketStore
-    const onSendMessage = (message: string) => {
-        SocketStore.sendMessage(message)
-    };
+const FooterChat = ({isVolunteer, joinedRoomData, onSendMessage}: FooterChatProps) => {
     const onTypingHandler = () => {
-        setShowNameJoined(false)
         SocketStore?.typingHandler()
     }
     return (
-        <View style={{
-            alignItems: 'center',
-            height: isVolunteer ? 80 : 180,
-            backgroundColor: 'rgba(223,233,255,0.97)'
-        }}>
-            {
-                !isVolunteer && <>
-                    <Text style={styles.text}>Your current condition</Text>
-                    <CurrentCondition dataRoom={dataRoom}/>
-                </>
-            }
-            <InputFieldsChat
-                onTypingHandler={onTypingHandler}
-                onSendMessage={onSendMessage}/>
-        </View>
+       <>
+           <Box style={{
+               height: isVolunteer ? 60 : 150,
+               backgroundColor: 'rgba(223,233,255,0.97)'
+           }}>
+               {
+                   !isVolunteer && <>
+                       <Text style={styles.text}>Your current condition</Text>
+                       <CurrentCondition joinRoom={joinedRoomData}/>
+                   </>
+               }
+               <InputFieldsChat
+                   onTypingHandler={onTypingHandler}
+                   onSendMessage={onSendMessage}/>
+           </Box>
+       </>
     );
 };
 
 const styles = StyleSheet.create({
     text: {
         color: '#9BB5E9',
-        fontFamily: 'Onest-light',
         fontSize: 13,
         textAlign: 'center'
     },

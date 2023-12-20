@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     },
     text: {
         color: 'white',
-        fontFamily: 'Onest-light',
         fontSize: 13,
         marginRight: 5,
         marginLeft: 5
