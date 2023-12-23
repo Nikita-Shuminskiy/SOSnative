@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "91939127177",
+    "project_id": "sos-luden-labs",
+    "storage_bucket": "sos-luden-labs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91939127177:android:e990de5f62ddb87b4aeb58",
+        "android_client_info": {
+          "package_name": "com.nick_1995.SOSnative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "91939127177-6cm7j9l1siqavitqcv7hcr2kpbnm8tlp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDJVjpJysbI0bQlgiLUHYJ4SuH8FTLkiI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "91939127177-6cm7j9l1siqavitqcv7hcr2kpbnm8tlp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
