@@ -2,6 +2,7 @@ import * as Localization from "expo-localization";
 import {ConditionRateData, peopleProblem, PeopleProblemType} from "./generalData";
 import {afflictionType} from "../store/AuthStore/auth-store";
 import peopleNoProblem from '../assets/images/people_problem/people-no-problem.png'
+import {manipulateAsync, SaveFormat} from "expo-image-manipulator";
 import Constants from 'expo-constants';
 const regex = {
     hostname: /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
@@ -37,7 +38,7 @@ const checkLanguagesArabic = () => {
     const rtlLanguages = ['he', 'ar', 'fa', 'ur', 'ar-EG', 'he-IL', 'he-BY', 'he-EN'];
 
     const currentLanguage = Localization.locale;
-    return rtlLanguages.includes(currentLanguage);
+    return rtlLanguages?.includes(currentLanguage);
 };
 export const checkLanguage = checkLanguagesArabic()
 export const getCurrentConditionRateData = (id: number) => {
@@ -52,23 +53,23 @@ export const getCurrentPeopleProblem = (affliction: afflictionType[]): PeoplePro
             img: peopleNoProblem
         }]
     }
-    const findProblem = peopleProblem.filter((problem, index) => affliction.includes(problem.title))
+    const findProblem = peopleProblem.filter((problem, index) => affliction?.includes(problem.title))
     return findProblem
 }
 export const getAllDescriptions = (affliction: afflictionType[], returnArray = false): string | string[] => {
-    if (affliction.join() === '') {
+    if (affliction?.join() === '') {
         return ''
     }
     const peopleProblems = getCurrentPeopleProblem(affliction);
     const descriptionsArray = peopleProblems.map((problem) => problem.description);
 
-    return returnArray ? descriptionsArray : descriptionsArray.join(', ');
+    return returnArray ? descriptionsArray : descriptionsArray?.join(', ');
 };
 export const monosyllable = (text: string) => {
     if (!text) return ''
     const wordsArray = text.split(/(?=[А-ЯЁІЇЄҐA-Z])/);
 
-    return wordsArray.join(" ").toLowerCase();
+    return wordsArray?.join(" ").toLowerCase();
 }
 export const getInfoAboutPhone = () => {
     const phone = {
@@ -78,4 +79,19 @@ export const getInfoAboutPhone = () => {
         version: Constants.systemVersion
     }
     return phone
+}
+export const convertToFormDataImg = async (img: string) => {
+    const resizedImage = await manipulateAsync(
+        img,
+        [{ resize: { width: 720, height: 1280 } }],
+        { format: 'jpeg' as SaveFormat, compress: 0.5 },
+    )
+    const formData = new FormData()
+    formData.append('scope', 'avatars')
+    // @ts-ignore
+    formData.append('file', { uri: resizedImage.uri,
+        name: 'image.jpg',
+        type: 'image/jpeg',
+    })
+    return formData
 }

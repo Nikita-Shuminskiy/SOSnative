@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {observer} from "mobx-react-lite";
 import AuthStore from "../store/AuthStore";
@@ -25,43 +25,46 @@ import * as Notifications from 'expo-notifications';
 import {useBackgroundTime} from "../utils/hook/useBackgroundTime";
 import * as Updates from "expo-updates"
 import {usePermissions} from "../utils/hook/usePermissions";
+import {AppState} from "react-native";
+import {useNetInfo} from "@react-native-community/netinfo";
 
+import NetInfo from '@react-native-community/netinfo';
+import {useNotification} from "../utils/hook/useNotification";
+import {useInternetConnected} from "../utils/hook/useInternetConnected";
+import SearchingVolunteerModal from "../components/modal/SearchingVolunteerModal";
 const RootStack = createNativeStackNavigator()
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: true,
-    }),
-});
-const backgroundHandler = async (time: number) => {
-    if (time >= 10) {
-        await Updates.reloadAsync()
-    }
-}
+
+
 const RootNavigation = observer(() => {
     const {isLoading} = NotificationStore
     const {isAuth, user, redirectFromNotification, setRedirectFromNotification} = AuthStore
-    const {setNavigation} = SocketStore
+    const {setNavigation, socket, getMessages} = SocketStore
     const {AuthStoreService} = rootStore
-   // useNotification()
+    const backgroundHandler = async (time: number) => {
+        console.log(time, 'backgroundHandler')
+        if (time >= 10) {
+            await Updates.reloadAsync()
+            return
+        }
+        getMessages()
+        console.log('backgroundHandler connect and get message')
 
+    }
+    useBackgroundTime({backgroundHandler, socket})
+    useNotification()
     const {askNotificationPermissionHandler, notificationStatus} = usePermissions()
-
     useEffect(() => {
         if (redirectFromNotification) {
-            //navigation.navigate(redirectFromNotification)
             setRedirectFromNotification('')
         }
     }, [redirectFromNotification])
-    useBackgroundTime({backgroundHandler})
+
     useEffect(() => {
         if (notificationStatus !== 'granted') {
             askNotificationPermissionHandler()
         }
         AuthStoreService.getUser()
     }, []);
-
     return (
         <NavigationContainer
             ref={(navigationRef) => {

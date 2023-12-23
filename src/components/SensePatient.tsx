@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {Image, StyleSheet, Text, View} from "react-native";
 import imgGood from '../assets/images/smileGood.png'
 import {colors} from "../assets/colors/colors";
@@ -8,25 +8,24 @@ import {Box} from "native-base";
 
 
 type SensePatientType = {
-    userJoin: audienceType
     joinedRoomData: DataJoinRoomType
     currentUserConditionRate: number
 }
-const SensePatient = ({userJoin, joinedRoomData, currentUserConditionRate}: SensePatientType) => {
+const SensePatient = memo(({joinedRoomData, currentUserConditionRate}: SensePatientType) => {
     const conditionRate = getCurrentConditionRateData(currentUserConditionRate ?? joinedRoomData?.room.conditionRate)
 
     return (
         <Box maxW={'45%'}>
             <View style={styles.container}>
                 <View style={styles.blockText}>
-                   {/* <Text ellipsizeMode={'middle'} numberOfLines={1} style={{color: colors.grayLight, fontSize: 12}}>{userJoin?.name}</Text>*/}
+                    {/* <Text ellipsizeMode={'middle'} numberOfLines={1} style={{color: colors.grayLight, fontSize: 12}}>{userJoin?.name}</Text>*/}
                     <Text style={{color: '#1F8298', fontSize: 12, textAlign: 'center'}}>{conditionRate?.title}</Text>
                 </View>
                 <Image style={styles.img} resizeMode={'contain'} alt="feel" source={conditionRate?.img}/>
             </View>
         </Box>
     );
-};
+})
 const styles = StyleSheet.create({
     container: {
         width: '100%',

@@ -52,7 +52,7 @@ const LoginS = ({navigation}: LoginSProps) => {
     const connectToSocket = (userId) => {
         activeSessionCheck().then((socket) => {
             socket && socket?.once('rooms join', (data: DataJoinRoomType) => {
-                if (data.audience.length) {
+                if (data?.audience?.length) {
                     setJoinedRoom(data)
                     navigation?.navigate(routerConstants.CHAT)
                 } else {

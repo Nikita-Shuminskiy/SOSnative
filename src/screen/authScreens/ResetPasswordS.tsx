@@ -9,10 +9,9 @@ import ArrowBack from "../../components/ArrowBack";
 import * as Localization from "expo-localization";
 import arrowBack from "../../assets/images/keyboard_arrow_left-He.png"
 import rootStore from "../../store/RootStore/root-store";
-import {validateEmail} from "../../utils/utils";
+import {checkLanguage, validateEmail} from "../../utils/utils";
 
 const ResetPasswordS = ({navigation}) => {
-    const checkLanguage = Localization.locale.includes('he')
     const {AuthStoreService} = rootStore
     const [email, setEmail] = useState('')
     const [errorEmail, setErrorEmail] = useState('')

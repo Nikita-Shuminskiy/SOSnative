@@ -1,12 +1,27 @@
-import {useEffect, useState} from "react"
+import {useEffect, useRef, useState} from "react"
 import {deviceStorage} from "../storage/storage"
 import * as Updates from "expo-updates"
 import {AppState} from "react-native"
+import SocketStore from "../../store/SocketStore/socket-store";
+import {Socket} from "socket.io-client";
 type useBackgroundTimeProps = {
 	backgroundHandler: (time: number) => void
+	socket: Socket | null
 }
-export const useBackgroundTime = ({backgroundHandler}: useBackgroundTimeProps) => {
+export const useBackgroundTime = ({backgroundHandler, socket}: useBackgroundTimeProps) => {
+/*	const appState = useRef(AppState.currentState);*/
 	const handleAppStateChange = async (nextAppState) => {
+	/*	if (
+			appState.current.match(/inactive|background/) &&
+			nextAppState === 'active'
+		) {
+			console.log('connect')
+			socket?.connect()
+		}else {
+			console.log('dis')
+			socket?.disconnect()
+		}
+		appState.current = nextAppState;*/
 		if (nextAppState === "background") {
 			// Пользователь перешел в фоновый режим, начнем отслеживать время
 			const timeBackground = new Date().getTime()

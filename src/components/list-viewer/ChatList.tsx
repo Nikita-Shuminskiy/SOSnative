@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {Image, StyleSheet, Text, View} from "react-native";
 import {colors} from "../../assets/colors/colors";
 import userImg from '../../assets/images/user.png'
@@ -14,7 +14,7 @@ type ChatListType = {
     isSentByCurrentUser: boolean
     isTyping?: boolean
 }
-const ChatList = ({message, isVolunteer, isSentByCurrentUser, isTyping = false}: ChatListType) => {
+const ChatList = memo(({message, isVolunteer, isSentByCurrentUser, isTyping = false}: ChatListType) => {
 
     return (
         <Box paddingX={3} paddingY={2} flex={1} borderRadius={8}
@@ -38,7 +38,7 @@ const ChatList = ({message, isVolunteer, isSentByCurrentUser, isTyping = false}:
             </View>
         </Box>
     );
-};
+})
 
 const styles = StyleSheet.create({
     container: {

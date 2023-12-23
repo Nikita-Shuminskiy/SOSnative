@@ -13,11 +13,13 @@ import Backdrop from "../../components/backdrop";
 import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
 import ArrowBack from "../../components/ArrowBack";
-import * as Localization from "expo-localization";
 import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
 import AuthStore, {afflictionType} from "../../store/AuthStore/auth-store";
 import SocketStore from "../../store/SocketStore/socket-store";
 import {checkLanguage} from "../../utils/utils";
+import ImageHeaderAvatar from "../../components/ImageHeaderAvatar";
+import {observer} from "mobx-react-lite";
+
 type CheckEvaluationConditionType = {
     head: boolean,
     heart: boolean,
@@ -25,8 +27,8 @@ type CheckEvaluationConditionType = {
     leftHand: boolean,
     rightHand: boolean
 }
-const BodyAssessmentS = ({navigation, route}: any) => {
-    const {setDataPatient} = AuthStore
+const BodyAssessmentS = observer(({navigation, route}: any) => {
+    const {setDataPatient, user} = AuthStore
     const isFromChat = route.params?.fromChat
     const {
         setDataScoresAfterChat
@@ -63,136 +65,132 @@ const BodyAssessmentS = ({navigation, route}: any) => {
     }
 
     return (
-       <>
-           <BaseWrapperComponent styleSafeArea={{ paddingTop: 0 }}  isKeyboardAwareScrollView={true}>
-               {!isFromChat && <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
-               {
-                   isFromChat && <View>
-                       <Image style={{width: 95, height: 170}}
-                              source={checkLanguage ? backgroundUserHeaderHe : backgroundUserHeader}/>
-                       <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}} source={userImg}/>
-                   </View>
-               }
-               <View style={styles.container}>
-                   <View style={{marginTop: isFromChat ? 0 : 10}}>
-                       <Text style={styles.text}>
-                           {
-                               isFromChat ? 'Chat is over. How do you feel now?' : 'Which part of your body is bothering you?'
-                           }
-                       </Text>
-                   </View>
-                   <View style={styles.imageContainer}>
-                       <Image style={styles.img} source={bodyImg}/>
-                       <View style={{marginTop: 10}}>
-                           <View>
-                               {
-                                   isChecked.head ?
-                                       <Pressable onTouchEnd={() => onTouchEndCheckedHandler('head')}>
-                                           <Image style={{
-                                               position: 'absolute', ...styles.checkboxHead,
-                                               right: checkLanguage ? 84 : 86
-                                           }}
-                                                  source={checkBodyHeadImg}/>
-                                       </Pressable>
-                                       :
-                                       <Pressable onTouchEnd={() => onTouchEndCheckedHandler('head')}>
-                                           <Image style={{
-                                               position: 'absolute', ...styles.checkboxHead,
-                                               right: checkLanguage ? 84 : 86
-                                           }}
-                                                  source={checkBodyHeadFalse}/>
-                                       </Pressable>
+        <>
+            <BaseWrapperComponent styleSafeArea={{ paddingTop: 0 }}  isKeyboardAwareScrollView={true}>
+                {!isFromChat && <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
+                {
+                    isFromChat && <ImageHeaderAvatar  image={user?.avatar}/>
+                }
+                <View style={styles.container}>
+                    <View style={{marginTop: isFromChat ? 0 : 10}}>
+                        <Text style={styles.text}>
+                            {
+                                isFromChat ? 'Chat is over. How do you feel now?' : 'Which part of your body is bothering you?'
+                            }
+                        </Text>
+                    </View>
+                    <View style={styles.imageContainer}>
+                        <Image style={styles.img} source={bodyImg}/>
+                        <View style={{marginTop: 10}}>
+                            <View>
+                                {
+                                    isChecked.head ?
+                                        <Pressable onTouchEnd={() => onTouchEndCheckedHandler('head')}>
+                                            <Image style={{
+                                                position: 'absolute', ...styles.checkboxHead,
+                                                right: checkLanguage ? 84 : 86
+                                            }}
+                                                   source={checkBodyHeadImg}/>
+                                        </Pressable>
+                                        :
+                                        <Pressable onTouchEnd={() => onTouchEndCheckedHandler('head')}>
+                                            <Image style={{
+                                                position: 'absolute', ...styles.checkboxHead,
+                                                right: checkLanguage ? 84 : 86
+                                            }}
+                                                   source={checkBodyHeadFalse}/>
+                                        </Pressable>
 
-                               }
-                               <Text
-                                   style={[styles.textBody, styles.head, {color: isChecked ? colors.green : colors.blue}]}>head</Text>
-                           </View>
-                           <View>
+                                }
+                                <Text
+                                    style={[styles.textBody, styles.head, {color: isChecked ? colors.green : colors.blue}]}>head</Text>
+                            </View>
+                            <View>
 
-                               {
-                                   isChecked.heart ?
-                                       <Pressable onTouchEnd={() => onTouchEndCheckedHandler('heart')}>
-                                           <Image style={{
-                                               position: 'absolute', ...styles.checkboxHeart,
-                                               right: checkLanguage ? 110 : 60
-                                           }}
-                                                  source={checkBodyImg}/>
-                                       </Pressable>
-                                       :
-                                       <View onTouchEnd={() => onTouchEndCheckedHandler('heart')}
-                                             style={{
-                                                 position: 'absolute', ...styles.checkboxHeart, ...styles.checkbox,
-                                                 right: checkLanguage ? 110 : 60
-                                             }}/>
+                                {
+                                    isChecked.heart ?
+                                        <Pressable onTouchEnd={() => onTouchEndCheckedHandler('heart')}>
+                                            <Image style={{
+                                                position: 'absolute', ...styles.checkboxHeart,
+                                                right: checkLanguage ? 110 : 60
+                                            }}
+                                                   source={checkBodyImg}/>
+                                        </Pressable>
+                                        :
+                                        <View onTouchEnd={() => onTouchEndCheckedHandler('heart')}
+                                              style={{
+                                                  position: 'absolute', ...styles.checkboxHeart, ...styles.checkbox,
+                                                  right: checkLanguage ? 110 : 60
+                                              }}/>
 
-                               }
-                               <Text
-                                   style={[styles.textBody, styles.heart, {color: isChecked ? colors.green : colors.blue}]}>heart</Text>
-                           </View>
-                           <View>
-                               {
-                                   isChecked.stomach ?
-                                       <Pressable onTouchEnd={() => onTouchEndCheckedHandler('stomach')}>
-                                           <Image style={{
-                                               position: 'absolute', ...styles.checkboxStomach,
-                                               right: checkLanguage ? 90 : 60
-                                           }}
-                                                  source={checkBodyImg}/>
-                                       </Pressable>
-                                       :
-                                       <View onTouchEnd={() => onTouchEndCheckedHandler('stomach')}
-                                             style={{
-                                                 position: 'absolute', ...styles.checkboxStomach, ...styles.checkbox,
-                                                 right: checkLanguage ? 90 : 60
-                                             }}/>
+                                }
+                                <Text
+                                    style={[styles.textBody, styles.heart, {color: isChecked ? colors.green : colors.blue}]}>heart</Text>
+                            </View>
+                            <View>
+                                {
+                                    isChecked.stomach ?
+                                        <Pressable onTouchEnd={() => onTouchEndCheckedHandler('stomach')}>
+                                            <Image style={{
+                                                position: 'absolute', ...styles.checkboxStomach,
+                                                right: checkLanguage ? 90 : 60
+                                            }}
+                                                   source={checkBodyImg}/>
+                                        </Pressable>
+                                        :
+                                        <View onTouchEnd={() => onTouchEndCheckedHandler('stomach')}
+                                              style={{
+                                                  position: 'absolute', ...styles.checkboxStomach, ...styles.checkbox,
+                                                  right: checkLanguage ? 90 : 60
+                                              }}/>
 
-                               }
-                               <Text
-                                   style={[styles.textBody, styles.stomach, {color: isChecked ? colors.green : colors.blue}]}>stomach</Text>
-                           </View>
-                           <View>
-                               <Text
-                                   style={[styles.textBody, styles.hands, {color: isChecked ? colors.green : colors.blue}]}>hands</Text>
+                                }
+                                <Text
+                                    style={[styles.textBody, styles.stomach, {color: isChecked ? colors.green : colors.blue}]}>stomach</Text>
+                            </View>
+                            <View>
+                                <Text
+                                    style={[styles.textBody, styles.hands, {color: isChecked ? colors.green : colors.blue}]}>hands</Text>
 
-                               {
-                                   isChecked.leftHand ?
-                                       <Pressable onTouchEnd={() => onTouchEndCheckedHandler('leftHand')}>
-                                           <Image style={{position: 'absolute', ...styles.checkboxHandsLeft}}
-                                                  source={checkBodyImg}/>
-                                       </Pressable>
-                                       :
-                                       <View onTouchEnd={() => onTouchEndCheckedHandler('leftHand')}
-                                             style={{position: 'absolute', ...styles.checkboxHandsLeft, ...styles.checkbox}}/>
+                                {
+                                    isChecked.leftHand ?
+                                        <Pressable onTouchEnd={() => onTouchEndCheckedHandler('leftHand')}>
+                                            <Image style={{position: 'absolute', ...styles.checkboxHandsLeft}}
+                                                   source={checkBodyImg}/>
+                                        </Pressable>
+                                        :
+                                        <View onTouchEnd={() => onTouchEndCheckedHandler('leftHand')}
+                                              style={{position: 'absolute', ...styles.checkboxHandsLeft, ...styles.checkbox}}/>
 
-                               }
-                               {
-                                   isChecked.rightHand ?
-                                       <Pressable onTouchEnd={() => onTouchEndCheckedHandler('rightHand')}>
-                                           <Image style={{position: 'absolute', ...styles.checkboxHandsRight}}
-                                                  source={checkBodyImg}/>
-                                       </Pressable>
-                                       :
-                                       <View onTouchEnd={() => onTouchEndCheckedHandler('rightHand')}
-                                             style={{position: 'absolute', ...styles.checkboxHandsRight, ...styles.checkbox}}/>
+                                }
+                                {
+                                    isChecked.rightHand ?
+                                        <Pressable onTouchEnd={() => onTouchEndCheckedHandler('rightHand')}>
+                                            <Image style={{position: 'absolute', ...styles.checkboxHandsRight}}
+                                                   source={checkBodyImg}/>
+                                        </Pressable>
+                                        :
+                                        <View onTouchEnd={() => onTouchEndCheckedHandler('rightHand')}
+                                              style={{position: 'absolute', ...styles.checkboxHandsRight, ...styles.checkbox}}/>
 
-                               }
+                                }
 
-                           </View>
-                       </View>
-                   </View>
-                   <ButtonGradient
-                       styleTouchable={{ width: '100%', marginBottom: 10}}
-                       styleGradient={styles.button}
-                       styleText={styles.textBtn}
-                       btnText={!isFromChat ? 'Continue' : 'Next step'}
-                       onPress={onPressBtnHandler}
-                   />
-               </View>
-           </BaseWrapperComponent>
-           <Backdrop/>
-       </>
+                            </View>
+                        </View>
+                    </View>
+                    <ButtonGradient
+                        styleTouchable={{ width: '100%', marginBottom: 10}}
+                        styleGradient={styles.button}
+                        styleText={styles.textBtn}
+                        btnText={!isFromChat ? 'Continue' : 'Next step'}
+                        onPress={onPressBtnHandler}
+                    />
+                </View>
+            </BaseWrapperComponent>
+            <Backdrop/>
+        </>
     );
-}
+})
 
 
 const styles = StyleSheet.create({

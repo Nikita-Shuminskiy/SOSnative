@@ -10,8 +10,12 @@ import Backdrop from "../../components/backdrop";
 import ButtonGradient from "../../components/ButtonGradient";
 import AuthStore from "../../store/AuthStore/auth-store";
 import {checkLanguage} from "../../utils/utils";
-
-const ProblemDescription = ({navigation}) => {
+import {observer} from "mobx-react-lite";
+import {NavigationProp, ParamListBase} from "@react-navigation/native";
+type ProblemDescriptionProps = {
+    navigation: NavigationProp<ParamListBase>
+}
+const ProblemDescription = observer(({navigation}: ProblemDescriptionProps) => {
     const {user, setDataPatient} = AuthStore
     const [description, setDescription] = useState('')
     const onPressHandler = () => {
@@ -20,9 +24,6 @@ const ProblemDescription = ({navigation}) => {
         setDataPatient(description, 'description')
         setDescription('')
     }
-    useEffect(() => {
-        navigation.navigate(routerConstants.EMOTIONAL_STATE)
-    }, []);
     return (
         <>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>
@@ -31,9 +32,8 @@ const ProblemDescription = ({navigation}) => {
                                       style={styles.header}>
                         <Text style={styles.nameUser}>{user?.name}</Text>
                         {
-                            userImages && <Image source={userImages} alt={'logo'} style={styles.logo}/>
+                            userImages && <Image source={user?.avatar ? {uri: user.avatar} : userImages} alt={'logo'} style={styles.logo}/>
                         }
-
                     </TouchableOpacity>
                     <View style={styles.description}>
                         <View style={{
@@ -62,7 +62,7 @@ const ProblemDescription = ({navigation}) => {
             <Backdrop/>
         </>
     );
-};
+})
 const styles = StyleSheet.create({
     styleGradient: {
         width: 265,
@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
         color: colors.blue
     },
     logo: {
+        borderRadius: 30,
         width: 34,
         height: 34
     },

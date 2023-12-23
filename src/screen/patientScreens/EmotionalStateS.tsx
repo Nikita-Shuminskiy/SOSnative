@@ -1,20 +1,18 @@
-import React, {useState} from 'react';
-import {Image, ImageSourcePropType, Platform, SafeAreaView, StyleSheet, Text, View} from "react-native";
+import React from 'react';
+import {ImageSourcePropType, Platform, SafeAreaView, StyleSheet, Text, View} from "react-native";
 import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
 import {colors} from "../../assets/colors/colors";
 import ArrowBack from "../../components/ArrowBack";
-import backgroundUserHeader from '../../assets/images/backgroundUserHeader.png'
-import backgroundUserHeaderHe from '../../assets/images/backgroundUserHeader-He.png'
-import userImg from '../../assets/images/people2.png'
 import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
-import * as Localization from "expo-localization";
 import AuthStore from "../../store/AuthStore/auth-store";
 import rootStore from "../../store/RootStore/root-store";
 import SocketStore from "../../store/SocketStore/socket-store";
 import Backdrop from "../../components/backdrop";
 import SliderEmotionalState from "../../components/SliderEmotionalState";
 import {observer} from "mobx-react-lite";
+import ImageHeaderAvatar from "../../components/ImageHeaderAvatar";
+import {checkLanguage} from "../../utils/utils";
 
 
 export type ItemData = {
@@ -25,8 +23,6 @@ export type ItemData = {
 };
 
 const EmotionalStateS = observer(({navigation, route}: any) => {
-    const checkLanguage = Localization.locale.includes('he')
-
     const {setDataPatient, dataPatient, user} = AuthStore
     const {socketInit} = SocketStore
     const {AuthStoreService} = rootStore
@@ -53,8 +49,14 @@ const EmotionalStateS = observer(({navigation, route}: any) => {
         if(!isFromChat) {
             AuthStoreService.createRoom(dataPatient).then((data) => {
                if(data) {
-                   socketInit()
-                   navigation.navigate(routerConstants.CHAT)
+                   forcedClosingSocket(user.id)
+                   setTimeout(() => {
+                       socketInit().then((data) => {
+                           if(!!data) {
+                               navigation.navigate(routerConstants.CHAT)
+                           }
+                       })
+                   }, 1)
                }
             })
             return
@@ -64,11 +66,7 @@ const EmotionalStateS = observer(({navigation, route}: any) => {
         <SafeAreaView style={{flex: 1, marginTop: Platform.OS === 'ios' ? 10 : 40}}>
             {!isFromChat && <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
             {
-                isFromChat && <View>
-                    <Image style={{width: 95, height: 170}}
-                           source={checkLanguage ? backgroundUserHeaderHe : backgroundUserHeader}/>
-                    <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}} source={userImg}/>
-                </View>
+                isFromChat && <ImageHeaderAvatar image={user?.avatar}/>
             }
             <View style={styles.container}>
                 <View style={{position: 'relative', top: isFromChat ? 0 : 10}}>

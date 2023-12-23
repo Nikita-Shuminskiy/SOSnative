@@ -5,9 +5,9 @@ import {afflictionType, DataPatientType} from "../AuthStore/auth-store";
 import {authApi, RoleType, UserType} from "../../api/api";
 import {MessageType} from "../../screen/commonScreen/Chat/types";
 import {BASE_URL} from "../../api/config";
-import {Role} from "react-native";
 import {routerConstants} from "../../constants/routerConstants";
 import {createAlert} from "../../components/alert";
+import * as Updates from "expo-updates";
 
 export type TypingUserType = {
     id: string,
@@ -124,7 +124,7 @@ export class SocketStore {
         return data
     }
     getMessages = () => {
-        this.socket?.emit('find', 'messages', {$limit: 5000}, (val, data) => {
+        this?.socket?.emit('find', 'messages', {$limit: 5000}, (val, data) => {
             this.setMessages(data?.data)
         });
     }
@@ -134,21 +134,33 @@ export class SocketStore {
             const token = await deviceStorage.getItem('token')
             const socket = io(BASE_URL, {
                 rejectUnauthorized: false,
+                reconnection: false,
+                transports: ['websocket'],
                 extraHeaders: {
                     Authorization: `Bearer ${token}`,
                 },
             });
             this.setSocket(socket)
-            socket?.on('messages created', (data: MessageType) => {
-                console.log('messages created')
-                this.setMessage(data)
-            });
+            socket?.on('messages created', this.setMessage);
             socket?.on('connect_error', (data) => {
-                console.log('connect_error', this.user.role)
+                socket?.disconnect();
+                if (data?.message === "Duplicated socketio connection") {
+                    if(socket?.disconnected) {
+                        console.log(socket?.disconnected, 'socket?.disconnected')
+                        socket?.connect();
+                        socket.emit('find', 'messages', {$limit: 5000}, (val, data) => {
+                            this.setMessages(data?.data)
+                        });
+                        return
+                    }
+                }
+                if (data?.message === "Room for this user not found") {
+                    this.forcedClosingSocket(this.user?.id)
+                    this.socket?.off('rooms close')
+                    this.navigation.navigate(this.user.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
+                }
             })
-            socket?.on('rooms join', (data) => {
-                this.setJoinedRoom(data)
-            })
+            socket?.on('rooms join', this.setJoinedRoom)
             socket?.on('rooms disconnect', (data: RoomDisconnectInfoType, err) => {
                 this.setDisconnectInfo(data)
                 const onPressExit = () => {
@@ -191,7 +203,6 @@ export class SocketStore {
                     buttons: [{text: 'Ok', style: "default"}]
                 })
             })
-
             const roomsTimeoutHandler = () => {
                 if (this.user.role === 'volunteer') return
                 const onPressLeave = () => {
@@ -209,40 +220,16 @@ export class SocketStore {
                 })
             }
             socket?.once('rooms timeout', roomsTimeoutHandler)
-
             return socket
         } catch (e) {
         }
     }
-
-    activeSessionCheck = async (): Promise<any> => {
-        try {
-            const socket = await this.socketInit()
-            return socket
-        } catch (e) {
-            return false
-        }
-    }
-
-    setCurrentUserConditionRate = (rate) => {
-        this.currentUserConditionRate = rate
-
-    }
-
-    forcedClosingSocket = (userId: string) => {
-        this.socket?.off('rooms disconnect')
-        const roomsCloseHandler = (data) => {
-            this.clearData()
-        }
-        this.socket?.emit('close', 'rooms', {userId}, roomsCloseHandler);
-    }
-
     clearData = () => {
+        this.socket?.removeAllListeners()
+        this.socket?.close()
         this.socket?.off('messages created')
         this.socket?.off('connect_error')
         this.socket?.off('rooms join')
-        this.socket?.off('rooms disconnect')
-
         this.socket?.disconnect()
         this.socket = null
         this.messages = [];
@@ -251,6 +238,22 @@ export class SocketStore {
         this.resultPatchedVolunteerData = null
     }
 
+    activeSessionCheck = async (): Promise<any> => {
+        try {
+            return await this.socketInit()
+        } catch (e) {
+            return false
+        }
+    }
+
+    setCurrentUserConditionRate = (rate) => {
+        this.currentUserConditionRate = rate
+    }
+
+    forcedClosingSocket = (userId: string) => {
+        this.socket?.off('rooms disconnect')
+        this.socket?.emit('close', 'rooms', {userId}, this.clearData);
+    }
     setNavigation = (navigation) => {
         this.navigation = navigation
     }

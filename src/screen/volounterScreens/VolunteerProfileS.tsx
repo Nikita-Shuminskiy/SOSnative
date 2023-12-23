@@ -17,6 +17,7 @@ import {Box} from "native-base";
 import BtnLogOut from "../../components/btnLogOut";
 import * as Notifications from 'expo-notifications';
 import {checkLanguage} from "../../utils/utils";
+import AvatarProfile from "../../components/AvatarProfile";
 type VolunteerProfileSProps = {
     navigation: NavigationProp<ParamListBase>
     route: any
@@ -55,15 +56,10 @@ const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps)
                 <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
                 <Box paddingX={4} flex={1} w={'100%'} justifyContent={'space-between'} alignItems={'center'}>
                     <Box alignItems={'center'}>
-                        <View style={styles.blockHeader}>
-                            <Image style={styles.img} source={userImages}/>
-                            <View style={styles.blockUserText}>
-                                <Text style={styles.textNameUser}>{user?.name}</Text>
-                                <TouchableOpacity>
-                                    <Text style={styles.textChange}>change</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                        <Box mb={3}>
+                            <AvatarProfile photo={user?.avatar}/>
+                            <Text style={styles.textNameUser}>{user?.name}</Text>
+                        </Box>
                         <View style={styles.blockPicker}>
                             <Picker onValueChange={(e) => {
                             }} selectStyles={{
@@ -128,14 +124,6 @@ const styles = StyleSheet.create({
     },
     blockUserText: {
         marginLeft: 15
-    },
-    blockHeader: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        marginTop: 8,
-        marginLeft: 50,
-        marginBottom: 50
     },
     textNameUser: {
         color: colors.blue,

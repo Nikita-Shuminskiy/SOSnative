@@ -5,13 +5,13 @@ import RNPickerSelect from 'react-native-picker-select-updated';
 import {Image, StyleSheet, View} from "react-native";
 import {AntDesign} from '@expo/vector-icons';
 import * as Localization from 'expo-localization';
+import {checkLanguage} from "../utils/utils";
 type PickerProps = {
     selectStyles?: any
     onValueChange?: any
 }
 const Picker = ({selectStyles, onValueChange}: PickerProps) => {
     //const [selectedLanguage, setSelectedLanguage] = useState()
-    const checkLanguage = Localization.locale.includes('he')
     const pickerRef = useRef<any>();
 
     function open() {

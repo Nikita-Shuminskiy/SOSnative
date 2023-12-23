@@ -1,13 +1,11 @@
 import React from 'react';
-import {Image, Platform, SafeAreaView, StyleSheet, Text, View} from "react-native";
+import {Image, StyleSheet, Text, View} from "react-native";
 import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
 import {colors} from "../../assets/colors/colors";
-import ArrowBack from "../../components/ArrowBack";
 import backgroundUserHeader from '../../assets/images/backgroundUserHeader.png'
 import backgroundUserHeaderHe from '../../assets/images/backgroundUserHeader-He.png'
-import userImg from '../../assets/images/people2.png'
-import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
+import userImages from '../../assets/images/user.png'
 import people from '../../assets/images/resultWorkPeople/resultWorkPeople.png'
 import {
     checkLanguage,
@@ -15,14 +13,18 @@ import {
     getCurrentConditionRateData,
     getCurrentPeopleProblem,
 } from "../../utils/utils";
-import arrowLeftImg from "../../assets/images/arrow_left.png";
 import SocketStore from "../../store/SocketStore/socket-store";
 import AuthStore from "../../store/AuthStore/auth-store";
 import Backdrop from "../../components/backdrop";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {Box} from "native-base";
-
-const ResultWorkS = ({navigation, route}) => {
+import {observer} from "mobx-react-lite";
+import {NavigationProp, ParamListBase} from "@react-navigation/native";
+type ResultWorkSProps = {
+    navigation:  NavigationProp<ParamListBase>
+    route: any
+}
+const ResultWorkS = observer(({navigation, route}: ResultWorkSProps) => {
     const {
         forcedClosingSocket,
         resultPatchedVolunteerData
@@ -44,7 +46,7 @@ const ResultWorkS = ({navigation, route}) => {
                         <Image style={{width: 95, height: 170}}
                                source={checkLanguage ? backgroundUserHeaderHe : backgroundUserHeader}/>
                         <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}}
-                               source={userImg}/>
+                               source={user?.avatar ? {uri: user.avatar} : userImages}/>
                     </View>
                     <View style={styles.container}>
                         <View>
@@ -87,7 +89,7 @@ const ResultWorkS = ({navigation, route}) => {
             <Backdrop/>
         </>
     );
-};
+})
 const styles = StyleSheet.create({
     rightHand: {
         width: 10,

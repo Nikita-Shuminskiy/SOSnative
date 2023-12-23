@@ -3,40 +3,39 @@ import {checkLanguage} from "../../../utils/utils";
 import {Image, ImageBackground, StyleSheet, Text, View} from "react-native";
 import ArrowBack from "../../../components/ArrowBack";
 import arrowLeftImg from "../../../assets/images/arrow_left_white.png";
-import userImages from "../../../assets/images/user.png";
-import volunteerImg from "../../../assets/images/people2.png";
+import avatarMock from "../../../assets/images/user.png";
 import ovalImg from "../../../assets/images/oval.png";
-import React from "react";
+import React, {memo} from "react";
 import {colors} from "../../../assets/colors/colors";
-import {UserType} from "../../../api/api";
 import {audienceType} from "../../../store/SocketStore/socket-store";
+import {StatusBar} from "expo-status-bar";
+
 type HeaderChatProps = {
     exitChatHandler: () => void
-    isVolunteer: boolean
     getInfo: audienceType
-    user: UserType
 }
-const HeaderChat = ({exitChatHandler, getInfo}:HeaderChatProps) => {
+const HeaderChat = memo(({exitChatHandler, getInfo}: HeaderChatProps) => {
     return (
         <LinearGradient
             colors={['#89BDE7', '#7EA7D9']}
             locations={[0.14, 0.8]}
             start={{x: 0.3, y: 0.2}}
             style={styles.headerContainer}>
+            <StatusBar translucent={true} backgroundColor={'transparent'}/>
             {checkLanguage && <View style={{flexDirection: 'row-reverse'}}>
-                    <ArrowBack styleTouchable={styles.right} img={arrowLeftImg}
-                               goBackPress={exitChatHandler}/>
-                    <Text style={[styles.textHeader, {position: 'absolute', left: 0, bottom: 15}]}>
-                        Chat with
-                    </Text>
-                    <View style={styles.blockImgInfo}>
-                        <Image style={[styles.userImg, {marginLeft: 20}]}
-                               source={getInfo?.role === 'patient' ? userImages : volunteerImg}/>
-                        <Text
-                            style={[styles.userNameText, {marginLeft: 5}]}>{getInfo?.name ?? 'Waiting'}</Text>
-                    </View>
-                    <Image style={styles.userImgBackground} source={ovalImg}/>
-                </View>}
+                <ArrowBack styleTouchable={styles.right} img={arrowLeftImg}
+                           goBackPress={exitChatHandler}/>
+                <Text style={[styles.textHeader, {position: 'absolute', left: 0, bottom: 15}]}>
+                    Chat with
+                </Text>
+                <View style={styles.blockImgInfo}>
+                    <Image style={[styles.userImg, {marginLeft: 20}]}
+                           source={getInfo?.avatar ? {uri: getInfo?.avatar} : avatarMock}/>
+                    <Text
+                        style={[styles.userNameText, {marginLeft: 5}]}>{getInfo?.name ?? 'Waiting'}</Text>
+                </View>
+                <Image style={styles.userImgBackground} source={ovalImg}/>
+            </View>}
             {!checkLanguage && <View style={[styles.header, {alignItems: 'flex-end'}]}>
                 <View style={{marginBottom: 10}}>
                     <ArrowBack styleTouchable={styles.right} img={arrowLeftImg}
@@ -46,19 +45,23 @@ const HeaderChat = ({exitChatHandler, getInfo}:HeaderChatProps) => {
                     </Text>
                 </View>
 
-                <View style={{flexDirection: 'row', alignItems: 'center'}} >
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Text
-                        style={{...styles.userNameText, position: 'relative', right: 20}}>{getInfo?.name ?? 'Waiting'}</Text>
-                    <ImageBackground style={{ width: 82, height: 82 }} source={ovalImg}>
+                        style={{
+                            ...styles.userNameText,
+                            position: 'relative',
+                            right: 20
+                        }}>{getInfo?.name ?? 'Waiting'}</Text>
+                    <ImageBackground style={{width: 82, height: 82}} source={ovalImg}>
                         <Image
-                            style={{position: 'relative', right: 10, width: 68, height: 68}}
-                            source={getInfo?.role === 'patient' ? userImages : volunteerImg}/>
+                            style={{position: 'relative', right: 10, width: 68, height: 68, borderRadius: 30}}
+                            source={getInfo?.avatar ? {uri: getInfo?.avatar} : avatarMock}/>
                     </ImageBackground>
                 </View>
             </View>}
         </LinearGradient>
     );
-};
+})
 const styles = StyleSheet.create({
     header: {width: '100%', flex: 1, flexDirection: 'row', justifyContent: 'space-between'},
     blockImgInfo: {width: '100%', flex: 1, flexDirection: 'row', marginRight: 25, marginTop: 15, alignItems: 'center'},
@@ -79,7 +82,8 @@ const styles = StyleSheet.create({
         width: 68,
         height: 68,
         marginLeft: 10,
-        marginBottom: 15
+        marginBottom: 15,
+        borderRadius: 30
     },
     textHeader: {
         marginLeft: 25,

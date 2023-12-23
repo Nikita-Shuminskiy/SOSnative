@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View, AppState, BackHandler} from "react-native";
+import {AppState, BackHandler, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View} from "react-native";
 import {LinearGradient} from "expo-linear-gradient";
 import ChatAvatar from "../../../components/ChatAvatar";
 import ChatList from "../../../components/list-viewer/ChatList";
@@ -13,54 +13,54 @@ import HeaderChat from './HeaderChat';
 import FooterChat from "./FooterChat";
 import {getInfoAboutInterlocutor} from "./utils";
 import {MessageType} from "./types";
-import {NavigationProp, ParamListBase} from "@react-navigation/native";
+import {NavigationProp, ParamListBase, useIsFocused} from "@react-navigation/native";
 import SensePatient from "../../../components/SensePatient";
 import {useLoggedInChatUser} from "./hook";
-import {StatusBar} from "expo-status-bar";
-import NetInfo from "@react-native-community/netinfo";
+import {useGoBack} from "../../../utils/hook/useGoBack";
+import {useKeepAwake} from "expo-keep-awake";
+import {useAppBackground} from "../../../utils/hook/useAppBackground";
+import {useInternetConnected} from "../../../utils/hook/useInternetConnected";
+import {Reconnect} from "./Reconnect";
+import * as Updates from "expo-updates";
+import {Box} from "native-base";
 
 type ChatSProps = {
     navigation: NavigationProp<ParamListBase>
 }
 const ChatS = observer(({navigation}: ChatSProps) => {
+    const goBackPress = () => {
+        return true
+    }
+    useGoBack(goBackPress)
     const {user} = AuthStore
+    useKeepAwake();
     const {
         socket,
         messages,
         sendMessage,
         joinedRoomData,
         currentUserConditionRate,
-        activeSessionCheck,
-        clearData
+        socketInit,
+        forcedClosingSocket
     } = SocketStore
+    const {isConnected} = useInternetConnected()
+    const [typingUser, setTypingUser] = useState<{ user: MessageType, isTyping: boolean } | null>(null);
+    const [isConnectInternet, setIsConnectedInternet] = useState<boolean>(true)
+    const scrollViewRef = useRef();
     const getInfoInterlocutor = getInfoAboutInterlocutor(joinedRoomData, user)
     const {showWhoLoggedInChat} = useLoggedInChatUser(user, getInfoInterlocutor)
+    useAppBackground({socket})
     let typingTimeout;
     const isVolunteer = user?.role === 'volunteer'
-    const scrollViewRef = useRef();
-    const [typingUser, setTypingUser] = useState<{ user: MessageType, isTyping: boolean } | null>(null);
-    const [isConnectInternet, setIsConnectedInternet] = useState(true)
     useEffect(() => {
-        if (!isConnectInternet) {
-            clearData()
-            const onPressLeave = () => {
-                BackHandler.exitApp();
-            }
-            createAlert({
-                title: 'Message',
-                message: 'Unstable connection, check the internet',
-                buttons: [{text: 'Exit', style: 'default', onPress: onPressLeave}]
-            })
+        if (!isConnected) {
+            socket?.disconnect()
         }
-        if (isConnectInternet && !socket) {
-            activeSessionCheck().then((data) => {
-                if (!data) {
-                    navigation.navigate(user.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
-                }
-            })
+        if (isConnected) {
+            socket?.connect()
         }
-    }, [isConnectInternet]);
-    const exitChatHandler = () => {
+    }, [isConnected]);
+    const exitChatHandler = useCallback(() => {
         const onPressLeave = () => {
             if (user?.role === 'volunteer') {
                 socket.off('rooms close')
@@ -79,10 +79,28 @@ const ChatS = observer(({navigation}: ChatSProps) => {
             message: 'Do you really want to leave the chat room?',
             buttons: [{text: 'Leave ', style: "cancel", onPress: onPressLeave}, {text: 'Stay', style: "default"}]
         })
-    }
+    }, [])
     const resetTypingState = () => {
         setTypingUser({...typingUser, isTyping: false});
     };
+    const chatView = useCallback((message: MessageType) => {
+        const isSentByCurrentUser = message?.from?.id === user?.id;
+        return <ChatList isVolunteer={isVolunteer}
+                         isSentByCurrentUser={isSentByCurrentUser}
+                         key={message?.id}
+                         message={message}/>
+    }, [])
+    const onLeaveHandler = useCallback(() => {
+        SocketStore?.forcedClosingSocket(user?.id)
+        navigation.navigate(routerConstants.NEED_HELP)
+    }, [])
+    const onSendMessage = useCallback((message: string) => {
+        sendMessage(message)
+        setTimeout(() => {
+            // @ts-ignore
+            scrollViewRef?.current && scrollViewRef.current?.scrollToEnd({animated: true});
+        }, 1)
+    }, [scrollViewRef?.current])
 
     useEffect(() => {
         if (socket) {
@@ -95,9 +113,8 @@ const ChatS = observer(({navigation}: ChatSProps) => {
                     typingTimeout = setTimeout(resetTypingState, 1000);
                 }
             })
-
         }
-    }, [socket, user?.id])
+    }, [socket])
 
     useEffect(() => {
         if (scrollViewRef?.current) {
@@ -106,42 +123,14 @@ const ChatS = observer(({navigation}: ChatSProps) => {
                 scrollViewRef?.current && scrollViewRef.current?.scrollToEnd({animated: true});
             }, 1000)
         }
-        const unsubscribe = NetInfo.addEventListener(state => {
-            setIsConnectedInternet(state.isConnected)
-        });
-        return () => {
-            unsubscribe();
-           //subscription.remove();
-        };
     }, []);
-    const chatView = (message: MessageType) => {
-        const isSentByCurrentUser = message?.from?.id === user?.id;
-        return <ChatList isVolunteer={isVolunteer}
-                         isSentByCurrentUser={isSentByCurrentUser}
-                         key={message?.id}
-                         message={message}/>
-    }
-    const onLeaveHandler = () => {
-        SocketStore?.forcedClosingSocket(user?.id)
-        navigation.navigate(routerConstants.NEED_HELP)
-    }
-    const onSendMessage = (message: string) => {
-        sendMessage(message)
-        setTimeout(() => {
-            // @ts-ignore
-            scrollViewRef?.current && scrollViewRef.current?.scrollToEnd({animated: true});
-        }, 1)
-    };
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                               style={{flex: 1}}>
-            <StatusBar hidden={false} style={'auto'} animated={true} backgroundColor={'rgba(213,227,254,0.71)'}
-                       translucent={false}/>
             <ScrollView style={{flex: 1, width: '100%'}}
                         contentContainerStyle={{flexGrow: 1, justifyContent: 'flex-end'}}
                         ref={scrollViewRef}>
-                <HeaderChat exitChatHandler={exitChatHandler} isVolunteer={isVolunteer} getInfo={getInfoInterlocutor}
-                            user={user}/>
+                <HeaderChat exitChatHandler={exitChatHandler} getInfo={getInfoInterlocutor}/>
                 <LinearGradient
                     style={{flex: 1, width: '100%'}}
                     colors={['rgba(213,227,254,0.71)', 'rgba(223,233,255,0.97)']}
@@ -150,15 +139,18 @@ const ChatS = observer(({navigation}: ChatSProps) => {
                 >
                     <View style={{width: '100%', paddingHorizontal: 12}}>
                         {isVolunteer && <SensePatient currentUserConditionRate={currentUserConditionRate}
-                                                      joinedRoomData={joinedRoomData} userJoin={getInfoInterlocutor}/>}
-                        <ChatAvatar isVolunteer={isVolunteer} user={user}/>
+                                                      joinedRoomData={joinedRoomData}/>}
+                        <Box mt={2} mb={2}>
+                            {getInfoInterlocutor?.avatar &&
+                                <ChatAvatar getInfo={getInfoInterlocutor} isVolunteer={isVolunteer} user={user}/>}
+                        </Box>
                         {
                             messages.map((message) => {
                                 return chatView(message)
                             })
                         }
                         {showWhoLoggedInChat && (
-                            <Text style={{...styles.text}}>
+                            <Text style={styles.text}>
                                 {getInfoInterlocutor?.name} entered the chat room
                             </Text>
                         )}
@@ -171,17 +163,16 @@ const ChatS = observer(({navigation}: ChatSProps) => {
                             )}
                         </View>
                     </View>
+                    {!isConnected && <Reconnect/>}
                 </LinearGradient>
             </ScrollView>
             <FooterChat onSendMessage={onSendMessage} joinedRoomData={joinedRoomData} isVolunteer={isVolunteer}/>
             <SearchingVolunteerModal onLeave={onLeaveHandler}
-                                     navigation={navigation}
                                      visible={navigation.isFocused() && !!(user.role === 'patient' && !getInfoInterlocutor) && isConnectInternet}/>
 
         </KeyboardAvoidingView>
     );
 });
-
 
 const styles = StyleSheet.create({
     typingBlock: {
@@ -199,38 +190,9 @@ const styles = StyleSheet.create({
 
 export default ChatS;
 
-/*const appState = useRef(AppState.currentState);
+/*
 const [closeTimeout, setCloseTimeout] = useState<number | null>(null)*/
 /*
-const subscription = AppState.addEventListener('change', nextAppState => {
-    if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === 'active'
-    ) {
-        clearTimeout(closeTimeout)
-        setCloseTimeout(null)
-        getMessages();
-        /!*if (!socket) {
-            activeSessionCheck().then((data) => {
-                if (!data) {
-                    navigation.goBack()
-                }
-            })
-        }*!/
-    } else {
-        if (!closeTimeout) {
-            const id = +setTimeout(() => {
-                forcedClosingSocket(user?.id)
-                navigation.navigate(user.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
-                createAlert({
-                    title: 'Message',
-                    message: 'background alert, close chat after 9s min!',
-                    buttons: [{text: 'Exit', style: 'default'}]
-                })
-            }, 3000)
-            setCloseTimeout(id)
-        }
-    }
-    appState.current = nextAppState;
+
 
 });*/

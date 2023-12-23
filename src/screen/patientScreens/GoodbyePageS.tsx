@@ -9,34 +9,31 @@ import {StatusBar} from "expo-status-bar";
 
 const GoodbyePageS = ({navigation, route}) => {
     const onPressGoStart = () => {
-        navigation.navigate(routerConstants.NEED_HELP)
+        navigation.navigate(routerConstants.EMOTIONAL_STATE)
     }
     return (
-      <>
-          <StatusBar hidden={false} style={'auto'} animated={true} backgroundColor={'rgba(213,227,254,0.71)'}
-                     translucent={false}/>
-          <SafeAreaView style={styles.containerSafeArea}>
-              <LinearGradient
-                  colors={['#89BDE7', '#7EA7D9']}
-                  style={styles.container}>
-                  <View style={{justifyContent: 'space-evenly', width: '100%', flex: 1}}>
-                      <View style={styles.blockBody}>
-                          <View style={styles.blockImg}>
-                              <View style={{marginBottom: 30}}>
-                                  <Text style={styles.textHeader}>Thank you!</Text>
-                                  <Text style={styles.text}>We've been through this together. Come back when you feel bad
-                                      again.</Text>
-                              </View>
-                              <Image style={styles.imgPeople} source={PeoplesWitchElements}/>
-                          </View>
-                      </View>
+        <SafeAreaView style={styles.containerSafeArea}>
+            <LinearGradient
+                colors={['#89BDE7', '#7EA7D9']}
+                style={styles.container}>
+                <StatusBar translucent={true} backgroundColor={'transparent'} />
+                <View style={{justifyContent: 'space-evenly', width: '100%', flex: 1}}>
+                    <View style={styles.blockBody}>
+                        <View style={styles.blockImg}>
+                            <View style={{marginBottom: 30}}>
+                                <Text style={styles.textHeader}>Thank you!</Text>
+                                <Text style={styles.text}>We've been through this together. Come back when you feel bad
+                                    again.</Text>
+                            </View>
+                            <Image style={styles.imgPeople} source={PeoplesWitchElements}/>
+                        </View>
+                    </View>
 
-                      <Button styleText={styles.textBtn} styleContainer={styles.btnContainer} title={'Ok, thanks'}
-                              onPress={onPressGoStart}/>
-                  </View>
-              </LinearGradient>
-          </SafeAreaView>
-      </>
+                    <Button styleText={styles.textBtn} styleContainer={styles.btnContainer} title={'Ok, thanks'}
+                            onPress={onPressGoStart}/>
+                </View>
+            </LinearGradient>
+        </SafeAreaView>
     );
 };
 
@@ -63,13 +60,6 @@ const styles = StyleSheet.create({
         width: 234,
         height: 226
     },
-    right: {
-        marginTop: 0,
-        marginLeft: 0,
-        position: 'absolute',
-        top: 10,
-        left: -25
-    },
     textHeader: {
         fontSize: 28,
         fontWeight: '700',
@@ -77,7 +67,6 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     text: {
-
         fontSize: 18,
         opacity: 0.5,
         color: colors.white,

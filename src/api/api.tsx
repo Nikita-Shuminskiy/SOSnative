@@ -1,6 +1,7 @@
 import {instance} from "./config";
 import {afflictionType, DataPatientType} from "../store/AuthStore/auth-store";
 import {AxiosResponse} from 'axios';
+import {convertToFormDataImg} from "../utils/utils";
 
 export const authApi = {
     async login(payload: { email: string; password: string, rememberMe?: boolean }): Promise<AxiosResponse<ResponseType, any>> {
@@ -24,6 +25,14 @@ export const authApi = {
     async findRooms() {
         return await instance.get<DataType<RoomType[]>>(`rooms?$sort[createdAt]=-1&isOpen=true`)
     },
+    async updateUserAvatar(photo: string) {
+        const formData = await convertToFormDataImg(photo)
+        return await instance.post(`upload`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        })
+    },
     async getDonePatients(idVolunteer: string) {
         return await instance.get(`rooms/?volunteer=${idVolunteer}`)
     },
@@ -32,7 +41,7 @@ export const authApi = {
     },
 
     async sendToken(payload: { token: string, device: string, platform: string, osVersion: string }) {
-        return await instance.post<any>(`/device-tokens`, payload)
+        return await instance.post<any>(`device-tokens`, payload)
     }
 
 }

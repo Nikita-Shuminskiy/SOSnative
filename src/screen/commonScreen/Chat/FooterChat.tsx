@@ -1,11 +1,12 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, View} from "react-native";
 import CurrentCondition from "../../../components/CurrentCondition";
 import InputFieldsChat from "../../../components/InputFieldsChat";
 import SocketStore, {DataJoinRoomType} from "../../../store/SocketStore/socket-store";
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 import {BaseWrapperComponent} from "../../../components/baseWrapperComponent";
-import {Box} from "native-base";
+import {Box, Heading, HStack, Spinner} from "native-base";
+import {useNetInfo} from "@react-native-community/netinfo";
 
 type FooterChatProps = {
     isVolunteer: boolean
@@ -13,15 +14,17 @@ type FooterChatProps = {
     joinedRoomData: DataJoinRoomType
 }
 const FooterChat = ({isVolunteer, joinedRoomData, onSendMessage}: FooterChatProps) => {
-    const onTypingHandler = () => {
+    const onTypingHandler = useCallback(() => {
         SocketStore?.typingHandler()
-    }
+    }, [])
     return (
        <>
+
            <Box style={{
                height: isVolunteer ? 60 : 150,
                backgroundColor: 'rgba(223,233,255,0.97)'
            }}>
+
                {
                    !isVolunteer && <>
                        <Text style={styles.text}>Your current condition</Text>

@@ -28,12 +28,12 @@ const CurrentCondition = ({joinRoom}: CurrentConditionType) => {
     const conditionRate = getCurrentConditionRateData(joinRoom?.room.conditionRate)
     const [selectedId, setSelectedId] = useState<number>(conditionRate?.id);
     useEffect(() => {
-        const selectedCondition = ConditionRateData.find(item => item.id.includes(conditionRate?.id));
+        const selectedCondition = ConditionRateData.find(item => item.id?.includes(conditionRate?.id));
         setSelectedId(selectedCondition?.id[0])
     }, [conditionRate?.id])
 
     const renderItem = ({item} ) => {
-        const borderColor = item.id.includes(selectedId) ? '#7EA7D9' : '';
+        const borderColor = item.id?.includes(selectedId) ? '#7EA7D9' : '';
         const onPressSelectedRate = () => {
             setSelectedId(item.id[0])
             SocketStore?.sendSelectedRate(item.id)

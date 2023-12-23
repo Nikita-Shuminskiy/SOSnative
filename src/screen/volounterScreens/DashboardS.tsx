@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import userImages from "../../assets/images/people2.png"
 import {colors} from "../../assets/colors/colors";
 
 import {LinearGradient} from "expo-linear-gradient";
@@ -18,6 +17,8 @@ import Backdrop from "../../components/backdrop";
 import {VirtualizedList} from "../../components/virtualized-list";
 import SocketStore from "../../store/SocketStore/socket-store";
 import {StatusBar} from "expo-status-bar";
+import userImages from '../../assets/images/user.png'
+import {createAlert} from "../../components/alert";
 
 
 type DashboardSType = {
@@ -30,7 +31,7 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
     const [selectedPatientRoomId, setSelectedPatientRoomId] = useState('')
     const [donePatients, setDonePatient] = useState(0)
     const {AuthStoreService} = rootStore
-    const {socketInit} = SocketStore
+    const {socketInit, forcedClosingSocket} = SocketStore
     const isFocused = useIsFocused()
     const [intervalId, setIntervalId] = useState<number | null>(null)
 
@@ -67,10 +68,24 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
     const onPressTakePatient = () => {
         if (!selectedPatientRoomId) return
         AuthStoreService.joinRoom(selectedPatientRoomId).then((data) => {
-            if (data) {
+            const onPressExit = () => {
+                AuthStoreService.findRooms()
+            }
+            if (!data.isActive) return createAlert({
+                title: 'Message',
+                message: `There's no patient in the room`,
+                buttons: [{text: 'Exit', style: "default", onPress: onPressExit}]
+            })
+            if (!!data) {
                 setSelectedPatientRoomId('')
-                socketInit()
-                navigation.navigate(routerConstants.CHAT)
+                forcedClosingSocket(user.id)
+                setTimeout(() => {
+                    socketInit().then((socket) => {
+                        if (!!socket) {
+                            navigation.navigate(routerConstants.CHAT)
+                        }
+                    })
+                }, 1)
             }
         })
     }
@@ -93,7 +108,8 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
                             <View style={styles.blockUserText}>
                                 <Text style={styles.textNameUser}>{user?.name}</Text>
                             </View>
-                            <Image style={styles.img} source={userImages}/>
+                            <Image style={styles.img} source={user?.avatar ? {uri: user.avatar} : userImages}/>
+
                         </TouchableOpacity>
                         <View style={styles.blockHeader}>
                             <CircularProgressBar donePatients={donePatients}/>

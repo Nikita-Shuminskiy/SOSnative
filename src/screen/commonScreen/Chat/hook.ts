@@ -35,7 +35,7 @@ export const useLoggedInChatUser = (user, getInfoInterlocutor, isLogout = false)
             }
         } else {
             if (showWhoLoggedInChat) {
-                const timeoutId = setTimeout(() => {
+                const timeoutId = +setTimeout(() => {
                     setShowWhoLoggedInChat(false);
                 }, 3000);
 

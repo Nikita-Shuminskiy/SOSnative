@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {memo, useState} from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from "react-native";
 import TextInput from "./TextInput";
 import {colors} from "../assets/colors/colors";
@@ -13,7 +13,7 @@ type InputFieldsChatProps = {
     onTypingHandler: () => void
 
 }
-const InputFieldsChat = ({onSendMessage, onTypingHandler}: InputFieldsChatProps) => {
+const InputFieldsChat = memo(({onSendMessage, onTypingHandler}: InputFieldsChatProps) => {
     const [textInput, setTextInput] = useState<string>('')
     const onChangeText = (text: string) => {
         setTextInput(text)
@@ -39,7 +39,7 @@ const InputFieldsChat = ({onSendMessage, onTypingHandler}: InputFieldsChatProps)
             </TouchableOpacity>
         </Box>
     );
-};
+})
 const styles = StyleSheet.create({
     styleBtn: {
         width: 30,

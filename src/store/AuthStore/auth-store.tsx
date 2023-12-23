@@ -92,10 +92,13 @@ export class AuthStore {
         this.rooms = rooms
     }
 
-
     findRooms = async () => {
         const {data} = await authApi.findRooms()
         this.setRooms(data.data.filter(el => el.isActive))
+    }
+    updateUserAvatar = async (photo: string) => {
+        const {data} = await authApi.updateUserAvatar(photo)
+        console.log(data)
     }
     getUser = async () => {
         const {data} = await authApi.getUser()
