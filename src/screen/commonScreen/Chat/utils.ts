@@ -1,7 +1,8 @@
-import {UserType} from "../../../api/api";
-import {audienceType, DataJoinRoomType} from "../../../store/SocketStore/socket-store";
+import {UserType} from "../../../api/type";
+import {AudienceType, DataJoinRoomType} from "../../../store/SocketStore/type";
 
-export const getInfoAboutInterlocutor = (joinedRoom: DataJoinRoomType, currentUser: UserType): audienceType | undefined => {
+
+export const getInfoAboutInterlocutor = (joinedRoom: DataJoinRoomType, currentUser: UserType): AudienceType | undefined => {
     if (currentUser.role === 'volunteer') {
         return joinedRoom?.audience[0]?.role === 'patient' ? joinedRoom.audience[0] : joinedRoom?.joined?.role === 'patient' ? joinedRoom?.joined : joinedRoom?.audience[1]?.role === 'patient' ? joinedRoom?.audience[1] : null
     }

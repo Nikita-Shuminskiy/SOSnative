@@ -1,12 +1,12 @@
-import {action, makeAutoObservable, makeObservable, observable} from "mobx";
+import {makeAutoObservable} from "mobx";
 import {deviceStorage} from "../../utils/storage/storage";
-import {authApi, DataSignUpType, RoleType, RoomType, UserType} from "../../api/api";
-import {createAlert} from "../../components/alert";
+import {authApi} from "../../api/api";
+import {DataSignUpType, RoomType, UploadScope, UserType} from "../../api/type";
 
-export type afflictionType = 'head' | 'heart' | 'stomach' | 'leftHand' | 'rightHand' | 'none'
+export type AfflictionType = 'head' | 'heart' | 'stomach' | 'leftHand' | 'rightHand' | 'none'
 export type DataPatientType = {
     "description"?: string,
-    "affliction"?: afflictionType[],
+    "affliction"?: AfflictionType[],
     "conditionRate"?: number
 }
 
@@ -17,9 +17,7 @@ export class AuthStore {
     isAuth: boolean = false
     newRoom: RoomType = {} as RoomType
     dataPatient: DataPatientType = {
-        affliction: ["leftHand", "stomach"],
-        conditionRate: 1,
-        description: '123'
+        conditionRate: 0,
     } as DataPatientType
     rooms: RoomType[] = [] as RoomType[]
 
@@ -96,9 +94,13 @@ export class AuthStore {
         const {data} = await authApi.findRooms()
         this.setRooms(data.data.filter(el => el.isActive))
     }
-    updateUserAvatar = async (photo: string) => {
-        const {data} = await authApi.updateUserAvatar(photo)
-        console.log(data)
+    sendUserPhoto = async (photo: string, scope: UploadScope) => {
+        const {data} = await authApi.updateUserPhoto(photo, scope)
+        return data
+    }
+    changeUser = async (photo: string) => {
+        const {data} = await authApi.changeUser(photo, this.user.id)
+        return data
     }
     getUser = async () => {
         const {data} = await authApi.getUser()

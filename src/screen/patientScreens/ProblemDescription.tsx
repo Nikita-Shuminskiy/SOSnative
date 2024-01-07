@@ -12,6 +12,7 @@ import AuthStore from "../../store/AuthStore/auth-store";
 import {checkLanguage} from "../../utils/utils";
 import {observer} from "mobx-react-lite";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
+import {useGoBack} from "../../utils/hook/useGoBack";
 type ProblemDescriptionProps = {
     navigation: NavigationProp<ParamListBase>
 }
@@ -24,6 +25,17 @@ const ProblemDescription = observer(({navigation}: ProblemDescriptionProps) => {
         setDataPatient(description, 'description')
         setDescription('')
     }
+ /*   const focues = useIsFocused()
+    useEffect(() => {
+        if(focues) {
+         navigation.navigate(routerConstants.EMOTIONAL_STATE)
+        }
+    }, [focues]);*/
+    const goBackPress = () => {
+
+        return true
+    }
+    useGoBack(goBackPress)
     return (
         <>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>

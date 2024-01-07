@@ -1,15 +1,17 @@
 import React from 'react';
-import {Image, ImageSourcePropType, TouchableOpacity} from "react-native";
+import {Image, ImageSourcePropType, ImageStyle, TouchableOpacity, ViewStyle} from "react-native";
 import arrowLeftBlackImg from "../assets/images/arrow_left.png";
+import {StyleProp} from "react-native/Libraries/StyleSheet/StyleSheet";
 type ArrowBackProps = {
-    goBackPress: any,
+    goBackPress: () => void,
     img?: ImageSourcePropType
-    styleTouchable?: any
+    styleTouchable?: StyleProp<ViewStyle>
+    styleImg?: StyleProp<ImageStyle>
 }
-const ArrowBack = ({goBackPress, img, styleTouchable}: ArrowBackProps) => {
+const ArrowBack = ({goBackPress, img, styleTouchable, styleImg}: ArrowBackProps) => {
     return (
-        <TouchableOpacity style={{marginTop: 10, marginLeft: 10, ...styleTouchable}} onPress={goBackPress}>
-            <Image style={{width: 31, height: 31}} source={img ?? arrowLeftBlackImg}/>
+        <TouchableOpacity style={[{marginTop: 10, marginLeft: 10}, styleTouchable]} onPress={goBackPress}>
+            <Image style={[{width: 31, height: 31}, styleImg]} source={img ?? arrowLeftBlackImg}/>
         </TouchableOpacity>
     );
 };

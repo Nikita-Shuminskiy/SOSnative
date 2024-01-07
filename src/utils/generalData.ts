@@ -10,7 +10,7 @@ import peopleRightHand from "../assets/images/people_problem/people-problem-righ
 import peopleHead from "../assets/images/people_problem/people-problem-head.png"
 import peopleHeart from "../assets/images/people_problem/people-problem-heart.png"
 import peopleStomach from "../assets/images/people_problem/people-problem-stomach.png"
-import {afflictionType} from "../store/AuthStore/auth-store";
+import {AfflictionType} from "../store/AuthStore/auth-store";
 
 export const ConditionRateData: ItemData[] = [
     {
@@ -70,7 +70,7 @@ export const ConditionRateData: ItemData[] = [
     },
 ];
 export type PeopleProblemType = Omit<ItemData, 'title'> & {
-    title: afflictionType
+    title: AfflictionType
 }
 export const peopleProblem: PeopleProblemType[] = [
     {

@@ -30,25 +30,21 @@ import {useNetInfo} from "@react-native-community/netinfo";
 
 import NetInfo from '@react-native-community/netinfo';
 import {useNotification} from "../utils/hook/useNotification";
-import {useInternetConnected} from "../utils/hook/useInternetConnected";
+import {useSettingsChat} from "../utils/hook/useSettingsChat";
 import SearchingVolunteerModal from "../components/modal/SearchingVolunteerModal";
 const RootStack = createNativeStackNavigator()
-
 
 const RootNavigation = observer(() => {
     const {isLoading} = NotificationStore
     const {isAuth, user, redirectFromNotification, setRedirectFromNotification} = AuthStore
-    const {setNavigation, socket, getMessages} = SocketStore
+    const {setNavigation, socket} = SocketStore
     const {AuthStoreService} = rootStore
     const backgroundHandler = async (time: number) => {
         console.log(time, 'backgroundHandler')
-        if (time >= 10) {
+     /*   if (time >= 10) {
             await Updates.reloadAsync()
             return
-        }
-        getMessages()
-        console.log('backgroundHandler connect and get message')
-
+        }*/
     }
     useBackgroundTime({backgroundHandler, socket})
     useNotification()
@@ -65,9 +61,11 @@ const RootNavigation = observer(() => {
         }
         AuthStoreService.getUser()
     }, []);
+
     return (
         <NavigationContainer
             ref={(navigationRef) => {
+                // @ts-ignore
                 setNavigation(navigationRef);
             }}
         >
@@ -77,7 +75,7 @@ const RootNavigation = observer(() => {
                     user.role === 'volunteer' ?
                         <>
                             <RootStack.Screen
-                                options={{headerShown: false, animation: 'flip'}}
+                                options={{headerShown: false, animation: 'flip', gestureEnabled: false}}
                                 name={routerConstants.DASHBOARD}
                                 component={DashboardS}
                             />
@@ -87,14 +85,14 @@ const RootNavigation = observer(() => {
                                 component={VolunteerProfileS}
                             />
                             <RootStack.Screen
-                                options={{headerShown: false, animation: 'flip'}}
+                                options={{headerShown: false, animation: 'flip', gestureEnabled: false}}
                                 name={routerConstants.RESULT_WORK}
                                 component={ResultWorkS}
                             />
                         </>
                         : <>
                             <RootStack.Screen
-                                options={{headerShown: false, animation: 'flip'}}
+                                options={{headerShown: false, animation: 'flip', gestureEnabled: false}}
                                 name={routerConstants.NEED_HELP}
                                 component={ProblemDescription}
                             />
@@ -114,7 +112,7 @@ const RootNavigation = observer(() => {
                                 component={UserProfileS}
                             />
                             <RootStack.Screen
-                                options={{headerShown: false, animation: 'flip'}}
+                                options={{headerShown: false, animation: 'flip', gestureEnabled: false}}
                                 name={routerConstants.GOODBYE}
                                 component={GoodbyePageS}
                             />
@@ -139,7 +137,7 @@ const RootNavigation = observer(() => {
                     </React.Fragment>
                 )}
                 <RootStack.Screen
-                    options={{headerShown: false, animation: 'flip'}}
+                    options={{headerShown: false, animation: 'flip', gestureEnabled: false}}
                     name={routerConstants.CHAT}
                     component={ChatS}
                 />

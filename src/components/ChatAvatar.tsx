@@ -1,14 +1,13 @@
 import React, {memo} from 'react';
-import {Image, StyleSheet, View} from "react-native";
-import avatarMock from '../assets/images/user.png'
-import AuthStore from "../store/AuthStore/auth-store";
-import {UserType} from "../api/api";
-import {audienceType} from "../store/SocketStore/socket-store";
+import {Image, StyleSheet} from "react-native";
 import {Box} from "native-base";
+import {UserType} from "../api/type";
+import {AudienceType} from "../store/SocketStore/type";
+
 type ChatAvatarProps = {
     user: UserType
     isVolunteer: boolean
-    getInfo: audienceType
+    getInfo: AudienceType
 }
 const ChatAvatar = memo(({getInfo}: ChatAvatarProps) => {
     return (

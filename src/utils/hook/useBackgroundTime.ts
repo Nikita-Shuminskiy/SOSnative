@@ -9,19 +9,7 @@ type useBackgroundTimeProps = {
 	socket: Socket | null
 }
 export const useBackgroundTime = ({backgroundHandler, socket}: useBackgroundTimeProps) => {
-/*	const appState = useRef(AppState.currentState);*/
 	const handleAppStateChange = async (nextAppState) => {
-	/*	if (
-			appState.current.match(/inactive|background/) &&
-			nextAppState === 'active'
-		) {
-			console.log('connect')
-			socket?.connect()
-		}else {
-			console.log('dis')
-			socket?.disconnect()
-		}
-		appState.current = nextAppState;*/
 		if (nextAppState === "background") {
 			// Пользователь перешел в фоновый режим, начнем отслеживать время
 			const timeBackground = new Date().getTime()

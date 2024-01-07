@@ -7,12 +7,12 @@ import avatarMock from "../../../assets/images/user.png";
 import ovalImg from "../../../assets/images/oval.png";
 import React, {memo} from "react";
 import {colors} from "../../../assets/colors/colors";
-import {audienceType} from "../../../store/SocketStore/socket-store";
 import {StatusBar} from "expo-status-bar";
+import {AudienceType} from "../../../store/SocketStore/type";
 
 type HeaderChatProps = {
     exitChatHandler: () => void
-    getInfo: audienceType
+    getInfo: AudienceType
 }
 const HeaderChat = memo(({exitChatHandler, getInfo}: HeaderChatProps) => {
     return (
@@ -54,7 +54,7 @@ const HeaderChat = memo(({exitChatHandler, getInfo}: HeaderChatProps) => {
                         }}>{getInfo?.name ?? 'Waiting'}</Text>
                     <ImageBackground style={{width: 82, height: 82}} source={ovalImg}>
                         <Image
-                            style={{position: 'relative', right: 10, width: 68, height: 68, borderRadius: 30}}
+                            style={{position: 'relative', right: 10, width: 68, height: 68, borderRadius: 50}}
                             source={getInfo?.avatar ? {uri: getInfo?.avatar} : avatarMock}/>
                     </ImageBackground>
                 </View>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         height: 68,
         marginLeft: 10,
         marginBottom: 15,
-        borderRadius: 30
+        borderRadius: 50
     },
     textHeader: {
         marginLeft: 25,

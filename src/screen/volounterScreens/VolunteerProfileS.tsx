@@ -1,13 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import * as Localization from "expo-localization";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import ArrowBack from "../../components/ArrowBack";
 import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
-import {Image, StyleSheet, Switch, Text, TouchableOpacity, View} from "react-native";
-import userImages from "../../assets/images/people2.png";
+import {StyleSheet, Switch, Text, View} from "react-native";
 import Picker from "../../components/Picker";
 import {colors} from "../../assets/colors/colors";
-import logoutImages from "../../assets/images/logout.png";
 import Backdrop from "../../components/backdrop";
 import AuthStore from "../../store/AuthStore/auth-store";
 import rootStore from "../../store/RootStore/root-store";
@@ -18,6 +15,7 @@ import BtnLogOut from "../../components/btnLogOut";
 import * as Notifications from 'expo-notifications';
 import {checkLanguage} from "../../utils/utils";
 import AvatarProfile from "../../components/AvatarProfile";
+
 type VolunteerProfileSProps = {
     navigation: NavigationProp<ParamListBase>
     route: any
@@ -28,7 +26,6 @@ const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps)
     const [areNotificationsEnabled, setNotificationsEnabled] = useState(false);
 
     useEffect(() => {
-        // Проверяем, включены ли уведомления при монтировании компонента
         checkNotificationStatus();
     }, []);
 

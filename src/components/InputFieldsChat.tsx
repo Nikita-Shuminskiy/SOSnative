@@ -1,20 +1,25 @@
 import React, {memo, useState} from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from "react-native";
+import {Image, StyleSheet, I18nManager, Alert} from "react-native";
+import paperClippingImg from '../assets/images/paperСlippng.png'
 import TextInput from "./TextInput";
 import {colors} from "../assets/colors/colors";
-import ArrowUpImage from '../assets/images/arrowUpWitchBacground.png'
-import Button from "./Button";
-import SocketStore from "../store/SocketStore/socket-store";
+import sendImg from '../assets/images/chat/send.png'
+import * as ImagePicker from 'expo-image-picker'
 import {Box} from "native-base";
+import Link from "./Link";
+import {MessagePayloadType} from "../store/SocketStore/type";
+import {UploadScope} from "../api/type";
+import rootStore from "../store/RootStore/root-store";
 import {checkLanguage} from "../utils/utils";
 
 type InputFieldsChatProps = {
-    onSendMessage: (message: string) => void
+    onSendMessage: (payload: MessagePayloadType) => void
     onTypingHandler: () => void
 
 }
 const InputFieldsChat = memo(({onSendMessage, onTypingHandler}: InputFieldsChatProps) => {
     const [textInput, setTextInput] = useState<string>('')
+    const {AuthStoreService} = rootStore
     const onChangeText = (text: string) => {
         setTextInput(text)
         if (text) {
@@ -23,20 +28,52 @@ const InputFieldsChat = memo(({onSendMessage, onTypingHandler}: InputFieldsChatP
     }
 
     const onPressSend = () => {
-        onSendMessage(textInput)
+        onSendMessage({content: textInput.trim()})
         setTextInput('')
     }
+    const onGalleryHandler = async () => {
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync()
+        if (permissionResult.granted === false) {
+            return
+        }
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 0.2,
+                allowsEditing: false
+            })
+            if (!result.canceled) {
+                const selectedAsset = result.assets[0]
+                AuthStoreService.sendUserPhoto(selectedAsset.uri, UploadScope.ROOMS, false).then((data) => {
+                    if (!!data) {
+                        onSendMessage({imageUrl: data?.path})
+                    }
+                })
+            }
+        } catch (error) {
+        }
+    }
     return (
-        <Box backgroundColor={colors.white} paddingX={5} flexDirection={'row'} alignItems={'center'} flex={1} justifyContent={'space-evenly'} w={'100%'}>
-            <TextInput multiline={true} inputMode={'text'} pointerEvents={'box-only'} value={textInput}
+        <Box backgroundColor={colors.white} paddingX={2} flexDirection={checkLanguage ? 'row-reverse' : 'row'}
+             alignItems={'center'} flex={1}
+             justifyContent={'space-between'} w={'100%'}>
+
+            <TextInput multiline={true} textAlign={checkLanguage ? 'right' : 'left'} inputMode={'text'}
+                       pointerEvents={'box-only'} value={textInput}
+                       returnKeyType={'done'}
+                       autoCorrect={false}
+                       onSubmitEditing = {(event) => (Alert.alert(event.nativeEvent.text))}
                        onChangeText={onChangeText} styleContainer={styles.styleInputContainer}
                        style={styles.input}/>
             {/*<TouchableOpacity>
                 <Image style={{...styles.img, marginRight: 5}} source={microImg}/>
             </TouchableOpacity>*/}
-            <TouchableOpacity style={styles.styleBtn} onPress={onPressSend}>
-                <Image style={styles.img} source={ArrowUpImage}/>
-            </TouchableOpacity>
+            <Box flexDirection={'row'}>
+                <Link styleImg={styles.img} styleLink={{...styles.styleBtn, marginRight: 20}}
+                      img={paperClippingImg} onPress={onGalleryHandler}/>
+                <Link styleImg={styles.img} styleLink={styles.styleBtn}
+                      img={sendImg} onPress={onPressSend}/>
+            </Box>
         </Box>
     );
 })
@@ -45,7 +82,7 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
     },
-    styleInputContainer: {marginTop: 0, width: '100%'},
+    styleInputContainer: {marginTop: 0, width: '100%', flex: 1},
     container: {
         zIndex: 9999,
         width: '100%',

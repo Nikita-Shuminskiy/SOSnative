@@ -26,8 +26,10 @@ type ResultWorkSProps = {
 }
 const ResultWorkS = observer(({navigation, route}: ResultWorkSProps) => {
     const {
-        forcedClosingSocket,
-        resultPatchedVolunteerData
+        clearData,
+        resultPatchedVolunteerData,
+        patientJoinedData,
+        socket
     } = SocketStore
     const {user} = AuthStore
 
@@ -35,7 +37,7 @@ const ResultWorkS = observer(({navigation, route}: ResultWorkSProps) => {
     const getProblem = getCurrentPeopleProblem(resultPatchedVolunteerData?.resultAffliction ?? resultPatchedVolunteerData?.affliction)
     const currentAllDescriptions = getAllDescriptions(resultPatchedVolunteerData?.resultAffliction ?? resultPatchedVolunteerData?.affliction)
     const onPressBtnHandler = () => {
-        forcedClosingSocket(user.id)
+        clearData()
         navigation.navigate(routerConstants.DASHBOARD)
     }
     return (
@@ -45,8 +47,8 @@ const ResultWorkS = observer(({navigation, route}: ResultWorkSProps) => {
                     <View>
                         <Image style={{width: 95, height: 170}}
                                source={checkLanguage ? backgroundUserHeaderHe : backgroundUserHeader}/>
-                        <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40}}
-                               source={user?.avatar ? {uri: user.avatar} : userImages}/>
+                        <Image style={{width: 68, height: 68, position: 'absolute', top: 50, left: 40, borderRadius: 40}}
+                               source={patientJoinedData?.avatar ? {uri: patientJoinedData.avatar} : userImages}/>
                     </View>
                     <View style={styles.container}>
                         <View>

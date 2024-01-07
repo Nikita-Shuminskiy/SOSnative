@@ -24,13 +24,13 @@ export type ItemData = {
 
 const EmotionalStateS = observer(({navigation, route}: any) => {
     const {setDataPatient, dataPatient, user} = AuthStore
-    const {socketInit} = SocketStore
+    const {socketInit, socket} = SocketStore
     const {AuthStoreService} = rootStore
     const isFromChat = route.params?.fromChat
     const {
         setDataScoresAfterChat,
         setVolunteerEvaluation,
-        forcedClosingSocket
+        volunteerJoinedData
     } = SocketStore
     const onValueSliderChange = (value) => {
         if (isFromChat) {
@@ -38,25 +38,23 @@ const EmotionalStateS = observer(({navigation, route}: any) => {
         } else {
             setDataPatient(value, 'conditionRate')
         }
-
     }
     const onPressBtnHandler = () => {3
         if (isFromChat) {
+            socket?.connect()
             setVolunteerEvaluation(user?.id)
             navigation.navigate(routerConstants.GOODBYE)
             return
         }
         if(!isFromChat) {
             AuthStoreService.createRoom(dataPatient).then((data) => {
+                console.log(!!data, 'dataCreate room')
                if(data) {
-                   forcedClosingSocket(user.id)
-                   setTimeout(() => {
-                       socketInit().then((data) => {
-                           if(!!data) {
-                               navigation.navigate(routerConstants.CHAT)
-                           }
-                       })
-                   }, 1)
+                   socketInit().then((data) => {
+                       if(!!data) {
+                           navigation.navigate(routerConstants.CHAT)
+                       }
+                   })
                }
             })
             return
@@ -66,7 +64,7 @@ const EmotionalStateS = observer(({navigation, route}: any) => {
         <SafeAreaView style={{flex: 1, marginTop: Platform.OS === 'ios' ? 10 : 40}}>
             {!isFromChat && <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
             {
-                isFromChat && <ImageHeaderAvatar image={user?.avatar}/>
+                isFromChat && <ImageHeaderAvatar image={volunteerJoinedData?.avatar}/>
             }
             <View style={styles.container}>
                 <View style={{position: 'relative', top: isFromChat ? 0 : 10}}>

@@ -1,31 +1,22 @@
-import {
-    Image,
-    ImageBackground,
-    Text,
-    View,
-    StyleSheet,
-    ScrollView, TouchableOpacity,
-} from "react-native";
+import {Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
 import {colors} from "../../assets/colors/colors";
 import manNoProblem from "../../assets/images/people_problem/people-no-problem.png";
 import circle from "../../assets/images/circle.png";
-import smileOk from "../../assets/images/smileOk.png";
 import React from "react";
-import {RoomType} from "../../api/api";
 import {
-    checkLanguage, getAllDescriptions,
+    checkLanguage,
+    getAllDescriptions,
     getCurrentConditionRateData,
     getCurrentPeopleProblem,
-    getTimeElapsedFromNow,
-    monosyllable
+    getTimeElapsedFromNow
 } from "../../utils/utils";
-import {peopleProblem} from "../../utils/generalData";
+import {RoomType} from "../../api/type";
 
 
 type PatientProps = {
     patient: RoomType;
     selectedPatient: string
-    onPress: () => void;
+    onPress: (id: string) => void;
 };
 export const Patient = React.memo(({patient, onPress, selectedPatient}: PatientProps) => {
     const timeElapsed = getTimeElapsedFromNow(patient.createdAt);
@@ -38,7 +29,7 @@ export const Patient = React.memo(({patient, onPress, selectedPatient}: PatientP
     return <TouchableOpacity style={{
         ...styles.container, borderWidth: isActivePatient ? 1 : 0,
         flexDirection: checkLanguage ? 'row-reverse' : 'row'
-    }} onPress={onPress}>
+    }} onPress={() => onPress(patient.id)}>
         <View style={styles.textContainer}>
             <Text style={{
                 color: colors.blue,

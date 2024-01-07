@@ -6,10 +6,19 @@ import Button from "../../components/Button";
 import {routerConstants} from "../../constants/routerConstants";
 import {LinearGradient} from "expo-linear-gradient";
 import {StatusBar} from "expo-status-bar";
+import {observer} from "mobx-react-lite";
+import SocketStore from "../../store/SocketStore/socket-store";
+type GoodbyePageSProps = {
+    navigation: any
+    route: any
+}
 
-const GoodbyePageS = ({navigation, route}) => {
+const GoodbyePageS = observer(({navigation, route}: GoodbyePageSProps) => {
+    const {forcedClosingSocket, socket, user} = SocketStore
     const onPressGoStart = () => {
-        navigation.navigate(routerConstants.EMOTIONAL_STATE)
+        socket?.disconnect() // ??
+        forcedClosingSocket(user.id)
+        navigation.navigate(routerConstants.NEED_HELP)
     }
     return (
         <SafeAreaView style={styles.containerSafeArea}>
@@ -35,7 +44,7 @@ const GoodbyePageS = ({navigation, route}) => {
             </LinearGradient>
         </SafeAreaView>
     );
-};
+})
 
 const styles = StyleSheet.create({
     containerSafeArea: {flex: 1, width: '100%'},

@@ -1,10 +1,8 @@
 import React, {memo} from 'react';
 import {Image, StyleSheet, Text, View} from "react-native";
-import imgGood from '../assets/images/smileGood.png'
-import {colors} from "../assets/colors/colors";
 import {checkLanguage, getCurrentConditionRateData} from "../utils/utils";
-import {audienceType, DataJoinRoomType} from "../store/SocketStore/socket-store";
 import {Box} from "native-base";
+import {DataJoinRoomType} from "../store/SocketStore/type";
 
 
 type SensePatientType = {

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {colors} from "../../assets/colors/colors";
@@ -9,7 +9,6 @@ import rootStore from "../../store/RootStore/root-store";
 import AuthStore from "../../store/AuthStore/auth-store";
 import {observer} from "mobx-react-lite";
 import {NavigationProp, ParamListBase, useIsFocused} from "@react-navigation/native";
-import {RoomType} from "../../api/api";
 import {Patient} from "../../components/list-viewer/Patient";
 import {renderEmptyContainer} from "../../components/empty-list";
 import CircularProgressBar from "../../components/CircularProgressBar";
@@ -19,6 +18,10 @@ import SocketStore from "../../store/SocketStore/socket-store";
 import {StatusBar} from "expo-status-bar";
 import userImages from '../../assets/images/user.png'
 import {createAlert} from "../../components/alert";
+import {RoomType} from "../../api/type";
+import {Box} from "native-base";
+import VolunteerDashboard from "../commonScreen/Chat/Footer/VolunteerDashboard";
+import {useGoBack} from "../../utils/hook/useGoBack";
 
 
 type DashboardSType = {
@@ -27,11 +30,15 @@ type DashboardSType = {
 }
 
 const DashboardS = observer(({navigation, route}: DashboardSType) => {
+    const goBackPress = () => {
+        return true
+    }
+    useGoBack(goBackPress)
     const {user, rooms, setRooms} = AuthStore
     const [selectedPatientRoomId, setSelectedPatientRoomId] = useState('')
     const [donePatients, setDonePatient] = useState(0)
     const {AuthStoreService} = rootStore
-    const {socketInit, forcedClosingSocket} = SocketStore
+    const {socketInit, forcedClosingSocket, socket} = SocketStore
     const isFocused = useIsFocused()
     const [intervalId, setIntervalId] = useState<number | null>(null)
 
@@ -52,11 +59,10 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
             setRooms([])
         }
     }, [isFocused]);
-
-    const renderRoom = ({item}: { item: RoomType }) => {
-        const onPressPatientHandler = () => {
-            setSelectedPatientRoomId(item.id)
-        }
+    const onPressPatientHandler = useCallback((id) => {
+        setSelectedPatientRoomId(id)
+    }, [])
+    const renderRoom = useCallback(({item}: { item: RoomType }) => {
         return (
             <Patient
                 onPress={onPressPatientHandler}
@@ -64,7 +70,7 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
                 patient={item}
             />
         );
-    };
+    }, [selectedPatientRoomId])
     const onPressTakePatient = () => {
         if (!selectedPatientRoomId) return
         AuthStoreService.joinRoom(selectedPatientRoomId).then((data) => {
@@ -78,24 +84,20 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
             })
             if (!!data) {
                 setSelectedPatientRoomId('')
-                forcedClosingSocket(user.id)
-                setTimeout(() => {
-                    socketInit().then((socket) => {
-                        if (!!socket) {
-                            navigation.navigate(routerConstants.CHAT)
-                        }
-                    })
-                }, 1)
+                socketInit().then((socket) => {
+                    if (!!socket) {
+                        navigation.navigate(routerConstants.CHAT)
+                    }
+                })
             }
         })
     }
-
     return (
         <>
-            <StatusBar hidden={false} style={'auto'} animated={true}
-                       translucent={false}/>
             <VirtualizedList>
                 <BaseWrapperComponent isKeyboardAwareScrollView={true}>
+                    <StatusBar hidden={false} style={'auto'} animated={true}
+                               translucent={false}/>
                     <View style={{paddingHorizontal: 10}}>
                         <TouchableOpacity onPress={() => navigation.navigate(routerConstants.VOLUNTEER_PROFILE)}
                                           style={{
@@ -146,7 +148,7 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
                     </View>
                 </BaseWrapperComponent>
             </VirtualizedList>
-            <View style={{alignItems: 'center', width: '100%', paddingHorizontal: 5}}>
+            <Box alignItems={'center'} w={'100%'} px={2} mb={2}>
                 <TouchableOpacity style={{alignItems: 'center', width: '100%'}} onPress={onPressTakePatient}>
                     <LinearGradient
                         colors={['#89BDE7', '#7EA7D9']}
@@ -158,7 +160,7 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
                         <Text style={styles.text}>Take</Text>
                     </LinearGradient>
                 </TouchableOpacity>
-            </View>
+            </Box>
             <Backdrop/>
         </>
     );
@@ -205,7 +207,8 @@ const styles = StyleSheet.create({
     },
     img: {
         width: 34,
-        height: 34
+        height: 34,
+        borderRadius: 30
     }
 })
 
