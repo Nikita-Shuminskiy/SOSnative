@@ -2,12 +2,12 @@ import {instance} from "./config";
 import {DataPatientType} from "../store/AuthStore/auth-store";
 import {AxiosResponse} from 'axios';
 import {convertToFormDataImg} from "../utils/utils";
-import {DataSignUpType, DataType, RoomType, UploadScope, UserType} from "./type";
+import {DataSignUpType, DataType, LoginPayloadType, RoomType, UploadScope, UserType} from "./type";
 import {AudienceType} from "../store/SocketStore/type";
 
 export const authApi = {
-    async login(payload: { email: string; password: string, rememberMe?: boolean }) {
-        return await instance.post(`authentication`, {...payload, strategy: 'local'})
+    async login(payload: LoginPayloadType) {
+        return await instance.post(`authentication`, {...payload})
     },
     async logout(aссessToken: string) {
         return await instance.delete<ResponseType>(`authentication/${aссessToken}`)

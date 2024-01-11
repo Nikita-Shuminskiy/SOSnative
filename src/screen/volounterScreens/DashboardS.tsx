@@ -22,6 +22,7 @@ import {RoomType} from "../../api/type";
 import {Box} from "native-base";
 import VolunteerDashboard from "../commonScreen/Chat/Footer/VolunteerDashboard";
 import {useGoBack} from "../../utils/hook/useGoBack";
+import {usePermissions} from "../../utils/hook/usePermissions";
 
 
 type DashboardSType = {
@@ -30,6 +31,7 @@ type DashboardSType = {
 }
 
 const DashboardS = observer(({navigation, route}: DashboardSType) => {
+    const {askNotificationPermissionHandler, notificationStatus} = usePermissions()
     const goBackPress = () => {
         return true
     }
@@ -44,6 +46,9 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
 
     useEffect(() => {
         if (isFocused) {
+            if (notificationStatus !== 'granted') {
+                askNotificationPermissionHandler()
+            }
             AuthStoreService.getDonePatients().then((data) => {
                 if (data) {
                     setDonePatient(data?.total)
@@ -148,12 +153,13 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
                     </View>
                 </BaseWrapperComponent>
             </VirtualizedList>
-            <Box alignItems={'center'} w={'100%'} px={2} mb={2}>
+            <Box alignItems={'center'} w={'100%'} px={2} mb={5}>
                 <TouchableOpacity style={{alignItems: 'center', width: '100%'}} onPress={onPressTakePatient}>
                     <LinearGradient
                         colors={['#89BDE7', '#7EA7D9']}
                         style={[{
-                            width: '100%', height: 67, alignItems: 'center',
+                            width: '100%', height: 67,
+                            alignItems: 'center',
                             justifyContent: 'center',
                             borderRadius: 8,
                         }]}>
@@ -189,7 +195,7 @@ const styles = StyleSheet.create({
     blockHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         flex: 1,
         width: '100%',
         marginTop: 8,
@@ -198,11 +204,7 @@ const styles = StyleSheet.create({
     textNameUser: {
         color: colors.blue,
         fontSize: 14,
-        //font-family: 'Inter';
-    },
-    textChange: {
-        color: '#1F8298',
-        fontSize: 16
+        fontWeight: 'normal',
         //font-family: 'Inter';
     },
     img: {

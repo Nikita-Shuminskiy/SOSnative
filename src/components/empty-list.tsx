@@ -13,7 +13,7 @@ const EmptyList = ({ text, onPressLink, styleText, styleLink, height }: EmptyLis
 
 	return (
 		<View style={{ alignItems: 'center', height, justifyContent: 'center', flex: 1, width: '100%' }}>
-			<Text style={{fontSize: 20, color: colors.green}}>
+			<Text style={{fontSize: 20, color: colors.green, fontWeight: 'normal'}}>
 				{text}
 			</Text>
 		</View>

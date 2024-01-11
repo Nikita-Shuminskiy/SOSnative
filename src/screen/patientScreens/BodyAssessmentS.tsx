@@ -148,7 +148,6 @@ const BodyAssessmentS = observer(({navigation, route}: any) => {
                             <View>
                                 <Text
                                     style={[styles.textBody, styles.hands, {color: isChecked.leftHand ? colors.green : colors.blue}]}>hands</Text>
-
                                 {
                                     isChecked.leftHand ?
                                         <Pressable style={{position: 'absolute', ...styles.checkboxHandsLeft}}
@@ -254,13 +253,11 @@ const styles = StyleSheet.create({
     },
     textBody: {
         position: 'absolute',
+        fontWeight: 'normal',
         fontSize: 13,
         color: colors.blue
     },
     button: {
-        padding: 15,
-        alignItems: 'center',
-        justifyContent: 'center',
         height: 67,
         borderRadius: 8,
     },

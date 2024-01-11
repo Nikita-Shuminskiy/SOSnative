@@ -47,7 +47,7 @@ const SliderEmotionalState = ({onValueChange}: SliderEmotionalStateProps) => {
                     minimumValue={0}
                     maximumValue={10}
                     step={1}
-                    thumbStyle={checkLanguage && {position: 'absolute', right: 0}}
+                    thumbStyle={styles.thumb } /*checkLanguage && {position: 'absolute', right: 0}*/
                     style={styles.slider}
                     onValueChange={handleSliderChange}
                     minimumTrackTintColor="transparent"
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     },
     smileText: {
         fontSize: 18,
-        fontWeight: '600',
+        fontWeight: '500',
     },
     smileBlock: {
         alignItems: 'center'
@@ -125,7 +125,8 @@ const styles = StyleSheet.create({
     thumb: {
         width: 40,
         height: 42,
-        borderRadius: 15,
+        borderRadius: 50,
+        zIndex: 20
     },
     slider: {
         position: 'absolute',

@@ -17,7 +17,7 @@ const SensePatient = memo(({joinedRoomData, currentUserConditionRate}: SensePati
             <View style={styles.container}>
                 <View style={styles.blockText}>
                     {/* <Text ellipsizeMode={'middle'} numberOfLines={1} style={{color: colors.grayLight, fontSize: 12}}>{userJoin?.name}</Text>*/}
-                    <Text style={{color: '#1F8298', fontSize: 12, textAlign: 'center'}}>{conditionRate?.title}</Text>
+                    <Text style={{color: '#1F8298', fontSize: 12, textAlign: 'center', fontWeight: 'normal'}}>{conditionRate?.title}</Text>
                 </View>
                 <Image style={styles.img} resizeMode={'contain'} alt="feel" source={conditionRate?.img}/>
             </View>

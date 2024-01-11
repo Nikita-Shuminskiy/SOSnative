@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {KeyboardAvoidingView, Pressable, StyleProp, StyleSheet, Text, TouchableOpacity} from "react-native";
+import {Image} from "native-base";
 
 type ButtonProps = {
     onPress: () => void
@@ -15,7 +16,8 @@ const Button = ({
                     onPressOut,
                     activeOpacity,
                     styleContainer,
-                    activeHover
+                    activeHover,
+                    img
                 }: any) => {
     const [activeBtn, setActiveBtn] = useState(false)
     return (
@@ -30,6 +32,10 @@ const Button = ({
                                   height: 66, ...styleContainer
                               }} activeOpacity={activeOpacity ?? 1}
                               onPress={onPress}>
+                {
+                    img &&
+                    <Image w={10} h={10} mr={2} source={img} alt={'img'} />
+                }
                 <Text style={{
                     fontWeight: '500',
                     fontSize: 18,

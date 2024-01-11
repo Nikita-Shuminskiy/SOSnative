@@ -110,7 +110,8 @@ const styles = StyleSheet.create({
     textImg: {
         marginRight: 20,
         color: colors.blue,
-        fontSize: 16
+        fontSize: 16,
+        fontWeight: 'normal'
     },
     text: {
         fontSize: 24,

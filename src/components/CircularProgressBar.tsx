@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
+        marginRight: 5
     },
     circleOuter: {
         width: 60,
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
     text: {
         color: '#51658D',
         fontSize: 22,
-        fontWeight: 'bold',
+        fontWeight: '500',
     },
 });
 export default CircularProgressBar;

@@ -97,13 +97,8 @@ const styles = StyleSheet.create({
         color: colors.blue,
         fontSize: 27,
         maxWidth: 200,
-        width: '100%'
-        //font-family: 'Inter';
-    },
-    textChange: {
-        color: '#1F8298',
-        fontSize: 17
-        //font-family: 'Inter';
+        width: '100%',
+        fontWeight: 'normal'
     },
     img: {
         width: 68,

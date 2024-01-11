@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 18,
+        fontWeight: 'normal',
         opacity: 0.5,
         color: colors.white,
     },

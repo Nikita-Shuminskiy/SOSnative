@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect} from 'react';
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {observer} from "mobx-react-lite";
 import AuthStore from "../store/AuthStore";
@@ -21,44 +21,27 @@ import BodyAssessmentS from "../screen/patientScreens/BodyAssessmentS";
 import EmotionalStateS from "../screen/patientScreens/EmotionalStateS";
 import UserProfileS from "../screen/patientScreens/UserProfileS";
 import GoodbyePageS from "../screen/patientScreens/GoodbyePageS";
-import * as Notifications from 'expo-notifications';
 import {useBackgroundTime} from "../utils/hook/useBackgroundTime";
-import * as Updates from "expo-updates"
-import {usePermissions} from "../utils/hook/usePermissions";
-import {AppState} from "react-native";
-import {useNetInfo} from "@react-native-community/netinfo";
-
-import NetInfo from '@react-native-community/netinfo';
 import {useNotification} from "../utils/hook/useNotification";
-import {useSettingsChat} from "../utils/hook/useSettingsChat";
-import SearchingVolunteerModal from "../components/modal/SearchingVolunteerModal";
+
 const RootStack = createNativeStackNavigator()
+const backgroundHandler = async (time: number) => {
+    console.log(time, 'backgroundHandler')
+    /*   if (time >= 10) {
+           await Updates.reloadAsync()
+           return
+       }*/
+}
 
 const RootNavigation = observer(() => {
     const {isLoading} = NotificationStore
-    const {isAuth, user, redirectFromNotification, setRedirectFromNotification} = AuthStore
-    const {setNavigation, socket} = SocketStore
+    const {isAuth, user} = AuthStore
+    const {setNavigation} = SocketStore
     const {AuthStoreService} = rootStore
-    const backgroundHandler = async (time: number) => {
-        console.log(time, 'backgroundHandler')
-     /*   if (time >= 10) {
-            await Updates.reloadAsync()
-            return
-        }*/
-    }
-    useBackgroundTime({backgroundHandler, socket})
+    useBackgroundTime({backgroundHandler})
     useNotification()
-    const {askNotificationPermissionHandler, notificationStatus} = usePermissions()
-    useEffect(() => {
-        if (redirectFromNotification) {
-            setRedirectFromNotification('')
-        }
-    }, [redirectFromNotification])
 
     useEffect(() => {
-        if (notificationStatus !== 'granted') {
-            askNotificationPermissionHandler()
-        }
         AuthStoreService.getUser()
     }, []);
 
@@ -97,12 +80,12 @@ const RootNavigation = observer(() => {
                                 component={ProblemDescription}
                             />
                             <RootStack.Screen
-                                options={{headerShown: false, animation: 'flip'}}
+                                options={{headerShown: false, animation: 'flip', gestureEnabled: false}}
                                 name={routerConstants.EVALUATION_CONDITION}
                                 component={BodyAssessmentS}
                             />
                             <RootStack.Screen
-                                options={{headerShown: false, animation: 'flip'}}
+                                options={{headerShown: false, animation: 'flip', gestureEnabled: false}}
                                 name={routerConstants.EMOTIONAL_STATE}
                                 component={EmotionalStateS}
                             />
@@ -120,7 +103,7 @@ const RootNavigation = observer(() => {
                 ) : (
                     <React.Fragment>
                         <RootStack.Screen
-                            options={{headerShown: false}}
+                            options={{headerShown: false, gestureEnabled: false}}
                             name={routerConstants.LOGIN}
                             component={LoginS}
                         />

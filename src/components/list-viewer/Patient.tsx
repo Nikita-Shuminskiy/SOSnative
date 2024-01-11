@@ -33,6 +33,7 @@ export const Patient = React.memo(({patient, onPress, selectedPatient}: PatientP
         <View style={styles.textContainer}>
             <Text style={{
                 color: colors.blue,
+                fontWeight: 'normal',
             }}>{patient.patient.name}{' '}<Text style={styles.textTime}>{timeElapsed}</Text></Text>
             <Text style={styles.textDescription}>{patient.description}</Text>
         </View>
@@ -50,7 +51,7 @@ export const Patient = React.memo(({patient, onPress, selectedPatient}: PatientP
                 <View style={{ marginLeft: checkLanguage ?  0 : 20 }}>
                     {
                         Array.isArray(currentAllDescriptions) && currentAllDescriptions.map((problem, index) => {
-                            return <Text key={index} style={{color: '#1F8298', fontSize: 10,}}>{problem}</Text>
+                            return <Text key={index} style={{color: '#1F8298', fontSize: 10, fontWeight: '500',}}>{problem}</Text>
                         })
                     }
                 </View>
@@ -98,7 +99,6 @@ const styles = StyleSheet.create({
         width: 10,
         left: 10,
         top: 5,
-
     },
     blockProblemPatient: {
         alignItems: 'center',
@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
     },
     textTime: {
         color: '#1F8298',
+        fontWeight: '500',
     },
     textName: {color: colors.blue},
 

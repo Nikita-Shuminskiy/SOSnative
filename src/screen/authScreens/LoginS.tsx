@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Image, StyleSheet, TouchableOpacity, View} from "react-native";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import logo from '../../assets/images/logoWitchWiFi.png'
 import TextInput from "../../components/TextInput";
@@ -13,8 +13,11 @@ import rootStore from "../../store/RootStore";
 import {checkLanguage, validateEmail} from "../../utils/utils";
 import {Checkbox} from "expo-checkbox";
 import SocketStore from "../../store/SocketStore";
-import {Box} from "native-base";
+import {Box, Text} from "native-base";
 import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
+import googleImg from '../../assets/images/google.png'
+import AuthWitchGoogleModal from "../../components/modal/AuthWitchGoogleModal";
+import {RoleEnum} from "../../api/type";
 
 GoogleSignin.configure({
     scopes: ["https://www.googleapis.com/auth/userinfo.profile"], // what API you want to access on behalf of the user, default is email and profile
@@ -37,6 +40,7 @@ const LoginS = ({navigation}: LoginSProps) => {
     const {AuthStoreService} = rootStore
     const {checkActiveSession} = SocketStore
     const [isRememberMe, setIsRememberMe] = useState(false)
+    const [isAuthWitchGoogle, setIsAuthWitchGoogle] = useState(false)
     const {handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, setSubmitting} =
         useFormik({
             initialValues: {
@@ -64,7 +68,8 @@ const LoginS = ({navigation}: LoginSProps) => {
         AuthStoreService.login({
             email: values.email?.trim(),
             password: values.password,
-            rememberMe: isRememberMe
+            rememberMe: isRememberMe,
+            strategy: 'local'
         }).then((data) => {
             if (data) {
                 checkActiveSession()
@@ -73,20 +78,21 @@ const LoginS = ({navigation}: LoginSProps) => {
         })
         setSubmitting(false)
     }
-    const loginGoogle = async () => {
+    const loginGoogle = async (role: RoleEnum) => {
+        setIsAuthWitchGoogle(false)
         try {
             const data = await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            console.log(userInfo)
-            console.log(data)
-            /*    const token = await AuthStoreService.authWithGoogle({
-                    server_auth_code: userInfo.serverAuthCode,
-                    id_token: userInfo.idToken,
-                    language: selectedLanguage ?? 'en'
-                })
-                if (token) {
-                    await OrdersStoreService.getSettingClient(navigation.navigate, true)
-                }*/
+            AuthStoreService.login({
+                strategy: 'google',
+                role: role,
+                accessToken: userInfo.idToken
+            }).then((data) => {
+                if (data) {
+                    checkActiveSession()
+                    navigation.navigate(data.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
+                }
+            })
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                 // user cancelled the login flow
@@ -146,7 +152,9 @@ const LoginS = ({navigation}: LoginSProps) => {
                         <Box alignItems={'center'}>
                             <TouchableOpacity onPress={() => navigation.navigate(routerConstants.RESET_PASSWORD)}
                                               style={{marginTop: 20, marginBottom: 20, marginLeft: 10}}>
-                                <Text style={{color: colors.blueMedium, fontSize: 18}}>Forgot my
+                                <Text fontSize={18}
+                                      fontWeight={'normal'}
+                                      color={colors.blueMedium}>Forgot my
                                     password</Text>
                             </TouchableOpacity>
                         </Box>
@@ -158,23 +166,33 @@ const LoginS = ({navigation}: LoginSProps) => {
                                 <Text style={[styles.text, {color: isDisabledBtn() ? 'red' : 'white'}]}>Log in</Text>
                             </LinearGradient>
                         </TouchableOpacity>
-                        <Box mt={2}>
-                            <Button
-                                activeHover={true}
-                                styleContainer={{borderWidth: 1, borderColor: colors.blue}}
-                                styleText={{
-                                    color: colors.blue, fontSize: 18,
-                                }}
-                                title={'Continue with Google'} onPress={loginGoogle}/>
-                        </Box>
                         <View
                             style={{marginTop: 20, marginBottom: 20, marginLeft: 10, alignItems: 'center'}}>
-                            <Text style={{color: colors.blueMedium, fontSize: 18}}>
+                            <Text
+                                fontSize={18}
+                                fontWeight={'normal'}
+                                color={colors.blueMedium}>
                                 You don’t have an account yet?</Text>
                         </View>
+                        <Box mb={2}>
+                            <Button
+                                activeHover={true}
+                                styleContainer={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    borderWidth: 1,
+                                    borderColor: colors.blue,
+                                    backgroundColor: colors.white
+                                }}
+                                styleText={{
+                                    color: colors.blue, fontSize: 15,
+                                }}
+                                img={googleImg}
+                                title={'Continue with Google'} onPress={() => setIsAuthWitchGoogle(true)}/>
+                        </Box>
                         <Button
                             activeHover={true}
-                            styleContainer={{borderWidth: 1, borderColor: colors.blue}}
+                            styleContainer={{borderWidth: 1, borderColor: colors.blue, backgroundColor: colors.white}}
                             styleText={{
                                 color: colors.blue, fontSize: 18,
                             }}
@@ -184,6 +202,10 @@ const LoginS = ({navigation}: LoginSProps) => {
                     </View>
                 </View>
             </View>
+            {
+                isAuthWitchGoogle && <AuthWitchGoogleModal visible={isAuthWitchGoogle} onPress={loginGoogle}
+                                                           onClose={() => setIsAuthWitchGoogle(false)}/>
+            }
         </BaseWrapperComponent>
     );
 };

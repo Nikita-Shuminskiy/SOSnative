@@ -1,7 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {deviceStorage} from "../../utils/storage/storage";
 import {authApi} from "../../api/api";
-import {DataSignUpType, RoomType, UploadScope, UserType} from "../../api/type";
+import {DataSignUpType, LoginPayloadType, RoomType, UploadScope, UserType} from "../../api/type";
 
 export type AfflictionType = 'head' | 'heart' | 'stomach' | 'leftHand' | 'rightHand' | 'none'
 export type DataPatientType = {
@@ -48,7 +48,7 @@ export class AuthStore {
         this.setUser({})
     }
 
-    login = async (payload: { email: string; password: string, rememberMe?: boolean }): Promise<UserType> => {
+    login = async (payload: LoginPayloadType): Promise<UserType> => {
         const {data} = await authApi.login(payload)
         await deviceStorage.saveItem('token', data.accessToken)
         this.setUser(data.user)
@@ -60,7 +60,7 @@ export class AuthStore {
     register = async (userData: DataSignUpType): Promise<DataSignUpType> => {
         const {data} = await authApi.signup(userData)
         if (data.email) {
-            await this.login({email: userData.email, password: userData.password})
+            await this.login({email: userData.email, password: userData.password, strategy: 'local'})
         }
         return data
     }

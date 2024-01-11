@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
     avatar: {width: 25, height: 25, position: "absolute", bottom: -5, left: -12, borderRadius: 30},
     text: {
         color: colors.white, fontSize: 13, textAlign: checkLanguage ? 'right' : "left",
+        fontWeight: 'normal',
         paddingHorizontal: 15,
         writingDirection: 'auto',
         flexWrap: 'wrap',

@@ -125,12 +125,12 @@ const styles = StyleSheet.create({
     textNameUser: {
         color: colors.blue,
         fontSize: 27,
-        //font-family: 'Inter';
+        fontWeight: 'normal',
     },
     textChange: {
         color: '#1F8298',
-        fontSize: 17
-        //font-family: 'Inter';
+        fontSize: 17,
+        fontWeight: 'normal',
     },
     img: {
         width: 68,

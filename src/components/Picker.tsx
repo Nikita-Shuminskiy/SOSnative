@@ -58,7 +58,8 @@ const Picker = ({selectStyles, onValueChange}: PickerProps) => {
 const styles = StyleSheet.create({
     inputAndroid: {
         fontSize: 18,
-        color: colors.blue
+        color: colors.blue,
+        fontWeight: 'normal'
     }
 })
 export default Picker;

@@ -11,7 +11,7 @@ import ButtonGradient from "../../components/ButtonGradient";
 import {useFormik} from "formik";
 import {checkLanguage, validateEmail} from "../../utils/utils";
 import rootStore from "../../store/RootStore";
-import {DataSignUpType} from "../../api/api";
+import {DataSignUpType, RoleEnum} from "../../api/type";
 
 
 const RegisterS = ({navigation}) => {
@@ -63,7 +63,7 @@ const RegisterS = ({navigation}) => {
             password: password.trim(),
             preferredLang,
             email: email.trim(),
-            role: role
+            role: role as RoleEnum
         })
         setSubmitting(false)
     }
@@ -81,7 +81,6 @@ const RegisterS = ({navigation}) => {
                 <View style={{justifyContent: 'center', flex: 1}}>
                     <Text style={styles.textHeader}>Create an account</Text>
                 </View>
-
                 <View>
                     <View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -170,7 +169,7 @@ const RegisterS = ({navigation}) => {
     );
 };
 const styles = StyleSheet.create({
-    textAgree: {color: colors.blue, fontSize: 18,},
+    textAgree: {color: colors.blue, fontSize: 18, fontWeight: 'normal'},
     textBtn: {
         fontWeight: '500',
         fontSize: 18
@@ -186,8 +185,7 @@ const styles = StyleSheet.create({
     },
     textAnyName: {
         textAlign: 'left',
-        marginTop: 5,
-        marginLeft: 20,
+        marginTop: 2,
         color: '#909597',
         fontSize: 14,
     },

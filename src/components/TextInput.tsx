@@ -35,7 +35,7 @@ const TextInput = ({style, styleContainer, error, errorText, isPassword, ...rest
                 {...rest}
             />
             {
-                error && <Text style={{color: 'gray', fontSize: 12}}>{errorText}</Text>
+                error && <Text style={{color: 'gray', fontSize: 12, fontWeight: 'normal'}}>{errorText}</Text>
             }
         </View>
     );
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
         padding: 20,
         width: 340,
         fontSize: 18,
+        fontWeight: '400',
         color: colors.blue,
         height: 67,
         borderRadius: 8,

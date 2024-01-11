@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
         color: colors.white,
         fontSize: 15,
         maxWidth: 150,
+        fontWeight: 'normal',
         width: '100%'
     },
     userImgBackground: {
