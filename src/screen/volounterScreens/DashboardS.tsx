@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
-import {Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Dimensions, FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {colors} from "../../assets/colors/colors";
 
 import {LinearGradient} from "expo-linear-gradient";
@@ -20,7 +20,6 @@ import userImages from '../../assets/images/user.png'
 import {createAlert} from "../../components/alert";
 import {RoomType} from "../../api/type";
 import {Box} from "native-base";
-import VolunteerDashboard from "../commonScreen/Chat/Footer/VolunteerDashboard";
 import {useGoBack} from "../../utils/hook/useGoBack";
 import {usePermissions} from "../../utils/hook/usePermissions";
 
@@ -40,12 +39,13 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
     const [selectedPatientRoomId, setSelectedPatientRoomId] = useState('')
     const [donePatients, setDonePatient] = useState(0)
     const {AuthStoreService} = rootStore
-    const {socketInit, forcedClosingSocket, socket} = SocketStore
+    const {socketInit, getToolboxVolunteer} = SocketStore
     const isFocused = useIsFocused()
     const [intervalId, setIntervalId] = useState<number | null>(null)
 
     useEffect(() => {
         if (isFocused) {
+            getToolboxVolunteer()
             if (notificationStatus !== 'granted') {
                 askNotificationPermissionHandler()
             }
@@ -101,9 +101,9 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
         <>
             <VirtualizedList>
                 <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-                    <StatusBar hidden={false} style={'auto'} animated={true}
-                               translucent={false}/>
                     <View style={{paddingHorizontal: 10}}>
+                        <StatusBar hidden={false} style={'auto'} animated={true}
+                                   translucent={false}/>
                         <TouchableOpacity onPress={() => navigation.navigate(routerConstants.VOLUNTEER_PROFILE)}
                                           style={{
                                               flex: 1,
@@ -136,12 +136,7 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
                                     data={rooms ?? []}
                                     renderItem={renderRoom}
                                     keyExtractor={item => item.id}
-                                    contentContainerStyle={
-                                        !rooms?.length ? styles.contentContainerStyle : {
-                                            alignItems: 'center',
-                                            justifyContent: 'center'
-                                        }
-                                    }
+                                    contentContainerStyle={styles.contentContainerStyle}
                                     ListEmptyComponent={() => renderEmptyContainer(Dimensions.get('window').height - 200, 'There are no tasks for you right now.')}
                                     horizontal={false}
                                     showsVerticalScrollIndicator={false}
@@ -153,7 +148,7 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
                     </View>
                 </BaseWrapperComponent>
             </VirtualizedList>
-            <Box alignItems={'center'} w={'100%'} px={2} mb={5}>
+            <Box alignItems={'center'} w={'100%'} px={2} mb={Platform.OS === 'ios' ? 8 : 5}>
                 <TouchableOpacity style={{alignItems: 'center', width: '100%'}} onPress={onPressTakePatient}>
                     <LinearGradient
                         colors={['#89BDE7', '#7EA7D9']}
@@ -175,8 +170,6 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
 
 const styles = StyleSheet.create({
     contentContainerStyle: {
-        flex: 1,
-        width: '100%',
         alignItems: 'center',
         justifyContent: 'center'
     },

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, Switch, Text, View} from "react-native";
+import {StyleSheet, Switch} from "react-native";
 import {BaseWrapperComponent,} from "../../components/baseWrapperComponent";
 import ArrowBack from "../../components/ArrowBack";
 import {colors} from "../../assets/colors/colors";
@@ -9,15 +9,17 @@ import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
 import AuthStore from "../../store/AuthStore/auth-store";
 import rootStore from "../../store/RootStore/root-store";
 import {checkLanguage} from "../../utils/utils";
-import {Box} from "native-base";
+import {Box, Text} from "native-base";
 import BtnLogOut from "../../components/btnLogOut";
 import AvatarProfile from "../../components/AvatarProfile";
 import {observer} from "mobx-react-lite";
 import {NavigationProp} from "@react-navigation/native";
+import Constants from "expo-constants";
+
 type UserProfileSProps = {
     navigation: NavigationProp<any>
 }
-const UserProfileS = observer(({navigation}:UserProfileSProps ) => {
+const UserProfileS = observer(({navigation}: UserProfileSProps) => {
     const {user} = AuthStore
     const {AuthStoreService} = rootStore
     const [notifications, setNotifications] = useState(false)
@@ -26,20 +28,20 @@ const UserProfileS = observer(({navigation}:UserProfileSProps ) => {
     }
 
     return (
-        <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-            <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
-            <Box paddingX={4} flex={1} w={'100%'} justifyContent={'space-between'} alignItems={'center'}>
-                <Box alignItems={'center'}>
-                    <Box mb={3}>
+        <>
+            <BaseWrapperComponent isKeyboardAwareScrollView={true}>
+                <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
+                <Box paddingX={4} flex={1} w={'100%'} justifyContent={'space-between'} alignItems={'center'}>
+                    <Box mb={3} alignItems={'center'}>
                         <AvatarProfile photo={user?.avatar}/>
-                        <Text style={styles.textNameUser}>{user?.name}</Text>
+                        <Text mt={1} style={styles.textNameUser}>{user?.name}</Text>
                     </Box>
-                    <View style={styles.blockBody}>
-                        <View style={styles.blockPicker}>
+                    <Box flex={1} alignItems={'center'}>
+                        <Box style={styles.blockPicker}>
                             <Picker onValueChange={(e) => {
                             }} selectStyles={styles.picker}/>
-                        </View>
-                        <View
+                        </Box>
+                        <Box
                             style={[styles.notificationsBlock, {flexDirection: checkLanguage ? 'row-reverse' : 'row'}]}>
                             <Text style={styles.textNotification}>Notifications</Text>
                             <Switch
@@ -49,23 +51,24 @@ const UserProfileS = observer(({navigation}:UserProfileSProps ) => {
                                 onValueChange={() => setNotifications(prevState => !prevState)}
                                 value={notifications}
                             />
-                        </View>
-                    </View>
+                        </Box>
+                    </Box>
                 </Box>
-            </Box>
-            <Box mt={2} alignItems={'center'}>
-                <BtnLogOut onPressLogOut={onPressLogOut}/>
-            </Box>
+                <Box mt={2} alignItems={'center'}>
+                    <BtnLogOut onPressLogOut={onPressLogOut}/>
+                    <Text mt={1} fontWeight={'normal'} fontSize={15}
+                          color={colors.gray}>version {Constants?.expoConfig?.version}</Text>
+                </Box>
+
+            </BaseWrapperComponent>
             <Backdrop/>
-        </BaseWrapperComponent>
+        </>
     );
 })
 const styles = StyleSheet.create({
     picker: {
-        margin: -15,
         height: 67
     },
-    blockBody: {flex: 1, marginRight: 20, marginLeft: 20, alignItems: 'center'},
     blockPicker: {
         backgroundColor: '#D5E3FE',
         height: 67,
@@ -73,7 +76,7 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         paddingLeft: 10,
         borderRadius: 8,
-        marginBottom: 20,
+        marginBottom: 10,
     },
     textNotification: {
         color: colors.blue,
@@ -90,12 +93,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between'
     },
-    blockUserText: {
-        marginLeft: 15
-    },
     textNameUser: {
+        textAlign: 'center',
         color: colors.blue,
-        fontSize: 27,
+        fontSize: 20,
         maxWidth: 200,
         width: '100%',
         fontWeight: 'normal'

@@ -13,7 +13,7 @@ import {
     DataJoinRoomType,
     DataScoresAfterChatType, MessagePayloadType,
     ResultPatchedVolunteerDataType,
-    RoomDisconnectInfoType
+    RoomDisconnectInfoType, VolunteerToolboxType
 } from "./type";
 import {RoleEnum, UserType} from "../../api/type";
 
@@ -30,7 +30,7 @@ export class SocketStore {
     roomDisconnectInfo: RoomDisconnectInfoType | null = null
     currentUserConditionRate: number | null = null
     isConnected: boolean = true
-
+    toolboxVolunteer: VolunteerToolboxType[] | null = null
 
     setIsConnected = (isConnected: boolean) => {
         this.isConnected = isConnected
@@ -86,6 +86,10 @@ export class SocketStore {
     sendSelectedRate = (conditionRate: number[]) => {
         this.socket?.emit('patch', 'rooms', null, {conditionRate: conditionRate[0]})
     }
+    getToolboxVolunteer = async () => {
+        const {data} = await authApi.getToolboxVolunteer()
+        this.toolboxVolunteer = data
+    }
 
     joinRoom = async (idRoom) => {
         const {data} = await authApi.joinRoom(idRoom)
@@ -133,17 +137,6 @@ export class SocketStore {
         this.socket?.on('connect_error', (data) => {
             console.log(data?.message, this.socket?.disconnected, 'socket?.disconnected')
             // socket?.disconnect();
-            if (data?.message === "Duplicated socketio connection") {
-                /* if (socket?.disconnected) {
-                     socket?.close();
-                     this.socket = null
-                     setTimeout(() => {
-                         console.log('activeSessionCheck, setTimeout')
-                         this.activeSessionCheck()
-                     }, 1000)
-                     return
-                 }*/
-            }
             if (data?.message === "Room for this user not found") {
                 this.forcedClosingSocket(this.user?.id)
                 this.socket?.off('rooms close')
@@ -227,7 +220,7 @@ export class SocketStore {
     checkActiveSession = async () => {
         const {data} = await authApi.getCurrentActiveRoom()
         console.log(data?.audience?.length, 'getCurrentActiveRoom')
-        if(data?.audience?.length > 0) {
+        if (data?.audience?.length > 0) {
             await this.socketInit()
             this.navigation?.navigate(routerConstants.CHAT)
         }

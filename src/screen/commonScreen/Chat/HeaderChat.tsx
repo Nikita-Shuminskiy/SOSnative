@@ -21,7 +21,7 @@ const HeaderChat = memo(({exitChatHandler, getInfo}: HeaderChatProps) => {
             locations={[0.14, 0.8]}
             start={{x: 0.3, y: 0.2}}
             style={styles.headerContainer}>
-            <StatusBar translucent={true} backgroundColor={'transparent'}/>
+            <StatusBar translucent={true} backgroundColor={'transparent'} hidden={false} style={'auto'}/>
             {checkLanguage && <View style={{flexDirection: 'row-reverse'}}>
                 <ArrowBack styleTouchable={styles.right} img={arrowLeftImg}
                            goBackPress={exitChatHandler}/>

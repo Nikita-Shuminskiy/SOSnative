@@ -6,4 +6,12 @@ export type MessageType = {
     id: string
     roomId: string
     userName: string
+    tool?: {
+        id: string
+        highlight?: string
+        value: string
+        text: string
+        image: 'action' | 'question' | 'sentences'
+        color: string
+    }
 }

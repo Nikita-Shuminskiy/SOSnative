@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from "react-native";
+import {Image, Platform, StyleSheet, TouchableOpacity, View} from "react-native";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import logo from '../../assets/images/logoWitchWiFi.png'
 import TextInput from "../../components/TextInput";
@@ -18,6 +18,7 @@ import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-sign
 import googleImg from '../../assets/images/google.png'
 import AuthWitchGoogleModal from "../../components/modal/AuthWitchGoogleModal";
 import {RoleEnum} from "../../api/type";
+import * as Animatable from "react-native-animatable";
 
 GoogleSignin.configure({
     scopes: ["https://www.googleapis.com/auth/userinfo.profile"], // what API you want to access on behalf of the user, default is email and profile
@@ -154,8 +155,7 @@ const LoginS = ({navigation}: LoginSProps) => {
                                               style={{marginTop: 20, marginBottom: 20, marginLeft: 10}}>
                                 <Text fontSize={18}
                                       fontWeight={'normal'}
-                                      color={colors.blueMedium}>Forgot my
-                                    password</Text>
+                                      color={colors.blueMedium}>Forgot my password</Text>
                             </TouchableOpacity>
                         </Box>
                         {/*// @ts-ignore */}
@@ -174,29 +174,31 @@ const LoginS = ({navigation}: LoginSProps) => {
                                 color={colors.blueMedium}>
                                 You don’t have an account yet?</Text>
                         </View>
-                        <Box mb={2}>
-                            <Button
-                                activeHover={true}
-                                styleContainer={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'center',
-                                    borderWidth: 1,
-                                    borderColor: colors.blue,
-                                    backgroundColor: colors.white
-                                }}
-                                styleText={{
-                                    color: colors.blue, fontSize: 15,
-                                }}
-                                img={googleImg}
-                                title={'Continue with Google'} onPress={() => setIsAuthWitchGoogle(true)}/>
-                        </Box>
+                        {
+                            Platform.OS !== 'ios' && <Box mb={2}>
+                                <Button
+                                    activeHover={true}
+                                    styleContainer={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        borderWidth: 1,
+                                        borderColor: colors.blue,
+                                        backgroundColor: colors.white
+                                    }}
+                                    styleText={{
+                                        color: colors.blue, fontSize: 15,
+                                    }}
+                                    img={googleImg}
+                                    textBtn={'Continue with Google'} onPress={() => setIsAuthWitchGoogle(true)}/>
+                            </Box>
+                        }
                         <Button
                             activeHover={true}
                             styleContainer={{borderWidth: 1, borderColor: colors.blue, backgroundColor: colors.white}}
                             styleText={{
                                 color: colors.blue, fontSize: 18,
                             }}
-                            title={'Create an account'} onPress={() => {
+                            textBtn={'Create an account'} onPress={() => {
                             navigation.navigate(routerConstants.REGISTRATION)
                         }}/>
                     </View>

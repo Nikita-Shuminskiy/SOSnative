@@ -1,5 +1,5 @@
 import React from 'react';
-import {ImageSourcePropType, Platform, SafeAreaView, StyleSheet, Text, View} from "react-native";
+import {ImageSourcePropType, Platform, SafeAreaView, StyleSheet, Text} from "react-native";
 import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
 import {colors} from "../../assets/colors/colors";
@@ -13,6 +13,7 @@ import SliderEmotionalState from "../../components/SliderEmotionalState";
 import {observer} from "mobx-react-lite";
 import ImageHeaderAvatar from "../../components/ImageHeaderAvatar";
 import {checkLanguage} from "../../utils/utils";
+import {Box} from "native-base";
 
 
 export type ItemData = {
@@ -39,23 +40,25 @@ const EmotionalStateS = observer(({navigation, route}: any) => {
             setDataPatient(value, 'conditionRate')
         }
     }
-    const onPressBtnHandler = () => {3
+    const onPressBtnHandler = () => {
+        3
         if (isFromChat) {
             socket?.connect()
             setVolunteerEvaluation(user?.id)
             navigation.navigate(routerConstants.GOODBYE)
             return
         }
-        if(!isFromChat) {
+        if (!isFromChat) {
             AuthStoreService.createRoom(dataPatient).then((data) => {
                 console.log(!!data, 'dataCreate room')
-               if(data) {
-                   socketInit().then((data) => {
-                       if(!!data) {
-                           navigation.navigate(routerConstants.CHAT)
-                       }
-                   })
-               }
+                if (data) {
+                    socketInit().then((data) => {
+                        if (!!data) {
+                            data.connect()
+                            navigation.navigate(routerConstants.SEARCHING_VOLUNTEER)
+                        }
+                    })
+                }
             })
             return
         }
@@ -66,13 +69,13 @@ const EmotionalStateS = observer(({navigation, route}: any) => {
             {
                 isFromChat && <ImageHeaderAvatar image={volunteerJoinedData?.avatar}/>
             }
-            <View style={styles.container}>
-                <View style={{position: 'relative', top: isFromChat ? 0 : 10}}>
+            <Box mt={2} paddingX={2} flex={1} justifyContent={'space-between'}>
+                <Box position={'relative'} top={isFromChat ? 0 : 10}>
                     <Text style={styles.text}>Evaluate your condition using this scale</Text>
-                </View>
-                <View style={styles.emotionalStateBlock}>
+                </Box>
+                <Box w={'100%'} h={95}>
                     <SliderEmotionalState onValueChange={onValueSliderChange}/>
-                </View>
+                </Box>
                 <ButtonGradient
                     styleTouchable={{marginBottom: 20}}
                     styleGradient={styles.button}
@@ -80,49 +83,16 @@ const EmotionalStateS = observer(({navigation, route}: any) => {
                     btnText={isFromChat ? 'It’s ok' : 'Continue'}
                     onPress={onPressBtnHandler}
                 />
-            </View>
+            </Box>
             <Backdrop/>
         </SafeAreaView>
     );
 })
 const styles = StyleSheet.create({
-    emotionalStateBlock: {
-        width: '100%',
-        height: 100
-    },
-    bodyContainer: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-    },
-
-    blockImg: {
-        flexDirection: "row",
-        alignItems: 'center',
-    },
-    img: {
-        width: 68,
-        height: 68,
-        marginRight: 20
-    },
-    textImg: {
-        marginRight: 20,
-        color: colors.blue,
-        fontSize: 16,
-        fontWeight: 'normal'
-    },
     text: {
         fontSize: 24,
         fontWeight: '500',
         color: colors.blue,
-    },
-    container: {
-        marginTop: 10,
-        paddingHorizontal: 10,
-        flex: 1,
-        justifyContent: 'space-between'
     },
     button: {
         padding: 15,

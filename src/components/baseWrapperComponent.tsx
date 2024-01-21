@@ -31,7 +31,7 @@ export const BaseWrapperComponent = ({
                     enableOnAndroid={true}
                     keyboardShouldPersistTaps={'handled'}
                     contentContainerStyle={{
-                        marginBottom: 10,
+                        marginBottom: 5,
                         width: '100%',
                     }}
                     onTouchStart={onTouchStart}
@@ -40,13 +40,12 @@ export const BaseWrapperComponent = ({
                     {children}
                 </KeyboardAwareScrollView>
             </LinearGradient> : (
-
                     <KeyboardAwareScrollView
                         enableOnAndroid={true}
                         keyboardShouldPersistTaps={'handled'}
                         contentContainerStyle={{
                             flexGrow: 1,
-                            marginBottom: 10,
+                            marginBottom: 5,
                             width: '100%',
                         }}
                         onTouchStart={onTouchStart}
@@ -59,7 +58,7 @@ export const BaseWrapperComponent = ({
         )
     }
     return (
-        <SafeAreaView style={{flex: 1, marginTop: Platform.OS === 'ios' ? 10 : 40, ...styleSafeArea}}>
+        <SafeAreaView style={{flex: 1, paddingTop: Platform.OS === 'ios' ? 10 : 40, ...styleSafeArea}}>
             {isKeyboardAwareScrollView ? (
                 checkOnBackDrop()
             ) : (

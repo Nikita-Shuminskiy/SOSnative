@@ -2,6 +2,10 @@ import {makeAutoObservable} from "mobx";
 import {deviceStorage} from "../../utils/storage/storage";
 import {authApi} from "../../api/api";
 import {DataSignUpType, LoginPayloadType, RoomType, UploadScope, UserType} from "../../api/type";
+import {Linking, Platform} from "react-native";
+import {createAlert} from "../../components/alert";
+import Constants from "expo-constants"
+import {APPLE_STORE_URL, PLAY_STORE_URL} from "../../constants/common";
 
 export type AfflictionType = 'head' | 'heart' | 'stomach' | 'leftHand' | 'rightHand' | 'none'
 export type DataPatientType = {
@@ -116,7 +120,22 @@ export class AuthStore {
     setRedirectFromNotification = (route: string) => {
         this.redirectFromNotification = route
     }
-
+    async getAppVersion() {
+        const {data} = await authApi.getAppVersion()
+        if (Constants?.expoConfig?.version < data?.version) {
+            // version from app.json
+            const onPressGoMarket = async () => {
+                if (Platform.OS === "ios") return
+                await Linking.openURL(PLAY_STORE_URL) //Platform.OS === "ios" ? APPLE_STORE_URL :
+            }
+            createAlert({
+                title: "Message",
+                message: "Updates available",
+                buttons: [{text: "Update", style: "default", onPress: onPressGoMarket}],
+            })
+        }
+        return data
+    }
     constructor() {
         makeAutoObservable(this)
     }

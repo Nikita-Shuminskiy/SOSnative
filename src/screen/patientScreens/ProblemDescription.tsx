@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useState} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity} from "react-native";
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import userImages from '../../assets/images/user.png'
 import btnBack from '../../assets/images/btnBackground.png'
@@ -13,6 +13,8 @@ import {checkLanguage} from "../../utils/utils";
 import {observer} from "mobx-react-lite";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import {useGoBack} from "../../utils/hook/useGoBack";
+import {Box} from "native-base";
+
 type ProblemDescriptionProps = {
     navigation: NavigationProp<ParamListBase>
 }
@@ -25,38 +27,29 @@ const ProblemDescription = observer(({navigation}: ProblemDescriptionProps) => {
         setDataPatient(description, 'description')
         setDescription('')
     }
- /*   const focues = useIsFocused()
-    useEffect(() => {
-        if(focues) {
-         navigation.navigate(routerConstants.EMOTIONAL_STATE)
-        }
-    }, [focues]);*/
     const goBackPress = () => {
-
         return true
     }
     useGoBack(goBackPress)
     return (
         <>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-                <View style={styles.container}>
+                <Box paddingX={4}>
                     <TouchableOpacity onPress={() => navigation.navigate(routerConstants.USER_PROFILE)}
                                       style={styles.header}>
                         <Text style={styles.nameUser}>{user?.name}</Text>
                         {
-                            userImages && <Image source={user?.avatar ? {uri: user.avatar} : userImages} alt={'logo'} style={styles.logo}/>
+                            userImages && <Image source={user?.avatar ? {uri: user.avatar} : userImages} alt={'logo'}
+                                                 style={styles.logo}/>
                         }
                     </TouchableOpacity>
-                    <View style={styles.description}>
-                        <View style={{
-                            alignItems: 'flex-start',
-                            flex: 1
-                        }}>
+                    <Box mt={5}>
+                        <Box flex={1} alignItems={'flex-start'}>
                             <Text style={styles.textHi}>Hi,{' '}{user?.name}!</Text>
                             <Text style={styles.text}>Don’t worry, we’re here to help you cope with any situation.
                                 Describe the problem and press the button below.</Text>
-                        </View>
-                        <View style={{flex: 1, alignItems: 'center'}}>
+                        </Box>
+                        <Box flex={1} alignItems={'center'}>
                             <TextInput value={description} onChangeText={setDescription} style={styles.input}
                                        placeholder={'I feel depressed...'}/>
                             <ButtonGradient
@@ -66,10 +59,9 @@ const ProblemDescription = observer(({navigation}: ProblemDescriptionProps) => {
                                 btnText={'I need help!'}
                                 onPress={onPressHandler}
                             />
-
-                        </View>
-                    </View>
-                </View>
+                        </Box>
+                    </Box>
+                </Box>
             </BaseWrapperComponent>
             <Backdrop/>
         </>
@@ -77,15 +69,9 @@ const ProblemDescription = observer(({navigation}: ProblemDescriptionProps) => {
 })
 const styles = StyleSheet.create({
     styleGradient: {
-        width: 265,
-        height: 160,
+        width: 245,
+        height: 140,
         borderRadius: 100
-    },
-    container: {
-        flex: 1,
-        marginRight: 20,
-        marginLeft: 20,
-
     },
     activeBtn: {
         shadowColor: "#85B9E3",
@@ -97,10 +83,6 @@ const styles = StyleSheet.create({
         shadowRadius: 12.81,
         elevation: 16,
         borderRadius: 18
-    },
-
-    description: {
-        marginTop: 80
     },
     textHi: {
         fontSize: 24,
@@ -118,7 +100,7 @@ const styles = StyleSheet.create({
         height: 34
     },
     input: {
-        marginBottom: 40
+        marginBottom: 10
     },
     header: {
         justifyContent: checkLanguage ? 'flex-start' : 'flex-end',

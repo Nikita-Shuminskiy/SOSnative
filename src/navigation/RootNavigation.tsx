@@ -23,6 +23,11 @@ import UserProfileS from "../screen/patientScreens/UserProfileS";
 import GoodbyePageS from "../screen/patientScreens/GoodbyePageS";
 import {useBackgroundTime} from "../utils/hook/useBackgroundTime";
 import {useNotification} from "../utils/hook/useNotification";
+import VolunteerWaitingS from "../screen/patientScreens/VolunteerWaitingS";
+/*import * as NavigationBar from 'expo-navigation-bar';
+import {colors} from "../assets/colors/colors";
+
+NavigationBar.setBackgroundColorAsync(colors.blueDark);*/
 
 const RootStack = createNativeStackNavigator()
 const backgroundHandler = async (time: number) => {
@@ -98,6 +103,11 @@ const RootNavigation = observer(() => {
                                 options={{headerShown: false, animation: 'flip', gestureEnabled: false}}
                                 name={routerConstants.GOODBYE}
                                 component={GoodbyePageS}
+                            />
+                            <RootStack.Screen
+                                options={{headerShown: false, animation: 'flip', gestureEnabled: false}}
+                                name={routerConstants.SEARCHING_VOLUNTEER}
+                                component={VolunteerWaitingS}
                             />
                         </>
                 ) : (

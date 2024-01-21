@@ -1,20 +1,31 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity} from "react-native";
+import {
+    Image,
+    ImageSourcePropType,
+    StyleProp,
+    StyleSheet,
+    Text,
+    TextStyle,
+    TouchableOpacity,
+    ViewStyle
+} from "react-native";
 import logoutImages from "../assets/images/logout.png";
 import {checkLanguage} from "../utils/utils";
 import {colors} from "../assets/colors/colors";
 
 type BtnLogOutProps = {
     onPressLogOut: () => void
+    styleBtn?: StyleProp<ViewStyle>
+    styleText?: StyleProp<TextStyle>
+    image?: ImageSourcePropType
 }
-const BtnLogOut = ({onPressLogOut}: BtnLogOutProps) => {
+const BtnLogOut = ({onPressLogOut, styleBtn, image = logoutImages, styleText}: BtnLogOutProps) => {
     return (
-        <TouchableOpacity onPress={onPressLogOut} style={{
-            ...styles.notificationsBlock,
-            flexDirection: checkLanguage ? 'row-reverse' : 'row'
-        }}>
-            <Text style={styles.textNotification}>Logout</Text>
-            <Image source={logoutImages}/>
+        <TouchableOpacity onPress={onPressLogOut} style={[styles.btn, styleBtn]}>
+            <Text style={[styles.textNotification, styleText]}>Logout</Text>
+            {
+                image && <Image source={image}/>
+            }
         </TouchableOpacity>
     );
 };
@@ -24,13 +35,13 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '400',
     },
-    notificationsBlock: {
+    btn: {
         paddingHorizontal: 10,
+        flexDirection: checkLanguage ? 'row-reverse' : 'row',
         height: 67,
         width: 341,
         borderRadius: 8,
-        flexDirection: 'row',
-        backgroundColor: '#D5E3FE',
+        backgroundColor: colors.blueLight,
         alignItems: 'center',
         justifyContent: 'space-between'
     },

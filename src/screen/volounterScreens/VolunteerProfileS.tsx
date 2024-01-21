@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import ArrowBack from "../../components/ArrowBack";
 import arrowBack from "../../assets/images/keyboard_arrow_left-He.png";
-import {StyleSheet, Switch, Text, View} from "react-native";
+import {StyleSheet, Switch, View} from "react-native";
 import Picker from "../../components/Picker";
 import {colors} from "../../assets/colors/colors";
 import Backdrop from "../../components/backdrop";
@@ -10,11 +10,12 @@ import AuthStore from "../../store/AuthStore/auth-store";
 import rootStore from "../../store/RootStore/root-store";
 import {observer} from "mobx-react-lite";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
-import {Box} from "native-base";
+import {Box, Text} from "native-base";
 import BtnLogOut from "../../components/btnLogOut";
 import * as Notifications from 'expo-notifications';
 import {checkLanguage} from "../../utils/utils";
 import AvatarProfile from "../../components/AvatarProfile";
+import Constants from "expo-constants";
 
 type VolunteerProfileSProps = {
     navigation: NavigationProp<ParamListBase>
@@ -53,9 +54,9 @@ const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps)
                 <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
                 <Box paddingX={4} flex={1} w={'100%'} justifyContent={'space-between'} alignItems={'center'}>
                     <Box alignItems={'center'}>
-                        <Box mb={3}>
+                        <Box mb={3} alignItems={'center'}>
                             <AvatarProfile photo={user?.avatar}/>
-                            <Text style={styles.textNameUser}>{user?.name}</Text>
+                            <Text mt={1} style={styles.textNameUser}>{user?.name}</Text>
                         </Box>
                         <View style={styles.blockPicker}>
                             <Picker onValueChange={(e) => {
@@ -64,7 +65,8 @@ const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps)
                                 height: 67
                             }}/>
                         </View>
-                        <View style={[styles.notificationsBlock, {flexDirection: checkLanguage ? 'row-reverse' : 'row'}]}>
+                        <View
+                            style={[styles.notificationsBlock, {flexDirection: checkLanguage ? 'row-reverse' : 'row'}]}>
                             <Text style={styles.textNotification}>Notifications</Text>
                             <Switch
                                 thumbColor={colors.blue}
@@ -78,14 +80,16 @@ const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps)
                             marginTop: 20,
                             color: '#51658D',
                             fontWeight: '500',
-                            fontSize: 18,
+                            fontSize: 15,
                             textAlign: 'center'
                         }}>Situations in which a person feels bad can happen at any moment. Turn on notifications to see
                             when they appear.</Text>
                     </Box>
 
-                    <Box mt={2}>
-                        <BtnLogOut onPressLogOut={onPressLogOut} />
+                    <Box mt={2} alignItems={'center'}>
+                        <BtnLogOut onPressLogOut={onPressLogOut}/>
+                        <Text mt={1} fontWeight={'normal'} fontSize={15}
+                              color={colors.gray}>version {Constants?.expoConfig?.version}</Text>
                     </Box>
                 </Box>
 
@@ -119,22 +123,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between'
     },
-    blockUserText: {
-        marginLeft: 15
-    },
     textNameUser: {
+        textAlign: 'center',
         color: colors.blue,
-        fontSize: 27,
+        fontSize: 21,
         fontWeight: 'normal',
-    },
-    textChange: {
-        color: '#1F8298',
-        fontSize: 17,
-        fontWeight: 'normal',
-    },
-    img: {
-        width: 68,
-        height: 68
     }
 })
 

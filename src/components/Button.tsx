@@ -1,24 +1,33 @@
 import React, {useState} from 'react';
-import {KeyboardAvoidingView, Pressable, StyleProp, StyleSheet, Text, TouchableOpacity} from "react-native";
+import {
+    ImageSourcePropType,
+    KeyboardAvoidingView,
+    Pressable,
+    StyleProp,
+    StyleSheet,
+    Text,
+    TouchableOpacity
+} from "react-native";
 import {Image} from "native-base";
 
 type ButtonProps = {
     onPress: () => void
     styleContainer?: StyleProp<any>
     styleText?: StyleProp<any>
-    title: string
+    textBtn: string
+    activeOpacity?: number
+    activeHover?: boolean
+    img?: ImageSourcePropType
 }
 const Button = ({
-                    title,
+                    textBtn,
                     onPress,
                     styleText,
-                    onPressIn,
-                    onPressOut,
                     activeOpacity,
                     styleContainer,
                     activeHover,
                     img
-                }: any) => {
+                }: ButtonProps) => {
     const [activeBtn, setActiveBtn] = useState(false)
     return (
         <KeyboardAvoidingView behavior="padding">
@@ -40,7 +49,7 @@ const Button = ({
                     fontWeight: '500',
                     fontSize: 18,
                     ...styleText,
-                }}>{title}</Text>
+                }}>{textBtn}</Text>
             </TouchableOpacity>
         </KeyboardAvoidingView>
     );

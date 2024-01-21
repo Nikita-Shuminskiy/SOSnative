@@ -4,7 +4,7 @@ import {AfflictionType} from "../store/AuthStore/auth-store";
 import peopleNoProblem from '../assets/images/people_problem/people-no-problem.png'
 import {manipulateAsync, SaveFormat} from "expo-image-manipulator";
 import Constants from 'expo-constants';
-import {Platform} from "react-native";
+import {I18nManager, Platform} from "react-native";
 import {UploadScope} from "../api/type";
 const regex = {
     hostname: /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
@@ -40,7 +40,7 @@ const checkLanguagesArabic = () => {
     const rtlLanguages = ['he', 'ar', 'fa', 'ur', 'ar-EG', 'he-IL', 'he-BY', 'he-EN'];
 
     const currentLanguage = Localization.locale;
-    return false  //rtlLanguages?.includes(currentLanguage);
+    return false //I18nManager.isRTL  //rtlLanguages?.includes(currentLanguage);
 };
 export const checkLanguage = checkLanguagesArabic()
 export const getCurrentConditionRateData = (id: number) => {

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Linking, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {colors} from "../../assets/colors/colors";
 import TextInput from "../../components/TextInput";
 import ArrowBack from "../../components/ArrowBack";
@@ -73,6 +73,9 @@ const RegisterS = ({navigation}) => {
         !!(errors.email && !validateEmail(values.email.trim())) ||
         !!(errors.password && values.password.length <= 7) ||
         !!(errors.password && !values.password)
+    const onPressOpenLink = () => {
+        Linking.openURL('https://docs.google.com/document/d/e/2PACX-1vRd42ro9hvg670m7ucNKaJ7uAec5dYO4OyFaSe1dOXupGY9ESF9UixiTJ48V_lAK-TdN2I_DA03ONP4/pub')
+    }
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
@@ -107,7 +110,7 @@ const RegisterS = ({navigation}) => {
                     <View style={{alignItems: 'center', width: '100%'}}>
                         <TextInput errorText={'Enter a name'} error={!!(!values.name.trim() && errors.name)}
                                    onBlur={handleBlur('name')} onChangeText={handleChange('name')}
-                                   value={values.name} placeholder={'Your name'} />
+                                   value={values.name} placeholder={'Your name'}/>
                         <Text style={[styles.textAnyName]}>You can use any name you want to
                             stay {"\n"} anonymous.</Text>
 
@@ -147,7 +150,8 @@ const RegisterS = ({navigation}) => {
                                     I agree with{' '}
                                 </Text>
 
-                                <TouchableOpacity style={{borderBottomWidth: 1, borderColor: colors.blue}}>
+                                <TouchableOpacity onPress={onPressOpenLink}
+                                                  style={{borderBottomWidth: 1, borderColor: colors.blue}}>
                                     <Text style={styles.textAgree}>Terms and Conditions</Text>
                                 </TouchableOpacity>
                             </View>

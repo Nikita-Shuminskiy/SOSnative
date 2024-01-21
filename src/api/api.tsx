@@ -3,11 +3,14 @@ import {DataPatientType} from "../store/AuthStore/auth-store";
 import {AxiosResponse} from 'axios';
 import {convertToFormDataImg} from "../utils/utils";
 import {DataSignUpType, DataType, LoginPayloadType, RoomType, UploadScope, UserType} from "./type";
-import {AudienceType} from "../store/SocketStore/type";
+import {AudienceType, VolunteerToolboxType} from "../store/SocketStore/type";
 
 export const authApi = {
     async login(payload: LoginPayloadType) {
         return await instance.post(`authentication`, {...payload})
+    },
+    async getAppVersion() {
+        return await instance.get<{ version: string }>(`app-version?latest=true`)
     },
     async logout(aссessToken: string) {
         return await instance.delete<ResponseType>(`authentication/${aссessToken}`)
@@ -45,9 +48,12 @@ export const authApi = {
         return await instance.patch<RoomType>(`rooms/${idRoom}?isOpen=true`, {isOpen: false})
     },
     async getCurrentActiveRoom() {
-        return await instance.get<{audience: AudienceType[]}>(`rooms?audience=true`)
+        return await instance.get<{ audience: AudienceType[] }>(`rooms?audience=true`)
     },
     async sendToken(payload: { token: string, device: string, platform: string, osVersion: string }) {
         return await instance.post<any>(`device-tokens`, payload)
-    }
+    },
+    async getToolboxVolunteer() {
+        return await instance.get<VolunteerToolboxType[]>(`toolbox`)
+    },
 }

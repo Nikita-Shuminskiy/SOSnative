@@ -1,14 +1,14 @@
 import React, {memo, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Image, StyleSheet, TouchableOpacity} from "react-native";
 import {colors} from "../../assets/colors/colors";
 import userImg from '../../assets/images/user.png'
-import volunteerImg from '../../assets/images/people2.png'
 import Loaders from "react-native-pure-loaders";
 import {MessageType} from "../../screen/commonScreen/Chat/types";
-import {Box} from "native-base";
+import {Box, Text} from "native-base";
 import {checkLanguage} from "../../utils/utils";
-import {AudienceType} from "../../store/SocketStore/type";
 import ShowImagesModal from "../modal/ShowImagesModal";
+import {SvgXml} from "react-native-svg";
+import {IMG_TOOLBOX} from "../../screen/commonScreen/Chat/Footer/Constants";
 
 type ChatListType = {
     message: MessageType
@@ -18,11 +18,14 @@ type ChatListType = {
 }
 const ChatList = memo(({message, isSentByCurrentUser, isTyping = false, avatar}: ChatListType) => {
     const [openImg, setOpenImg] = useState(false)
+    const isTool =  message?.tool?.text
+    const isBackColor = isTool ? colors[message.tool.color] : isSentByCurrentUser ? '#4DB8D5' : '#7EA7D9'
     return (
         <>
-            <Box paddingX={1} paddingY={2} borderRadius={8}
+            <Box paddingX={0.5} paddingY={1.5} borderRadius={8}
                  alignSelf={isSentByCurrentUser ? 'flex-end' : 'flex-start'}>
-                <Box p={isTyping ? 2 : 0}  style={styles.container} backgroundColor={isSentByCurrentUser ? '#4DB8D5' : '#7EA7D9'}>
+                <Box p={isTyping ? 2 : 0} style={styles.container}
+                     backgroundColor={isBackColor}>
                     {
                         !isTyping ? <>
                                 {
@@ -33,8 +36,26 @@ const ChatList = memo(({message, isSentByCurrentUser, isTyping = false, avatar}:
                                     </TouchableOpacity>
                                 }
                                 {
-                                    message?.content && <Text  style={styles.text}>{message.content}</Text>
+                                    !message?.imageUrl &&
+                                    <Box paddingX={5} paddingY={1} flexDirection={'row'} alignItems={'center'}
+                                         justifyContent={'space-evenly'}>
+                                        {
+                                            message?.content && <Text style={styles.text}>{message.content.trim()}</Text>
+                                        }
+                                        {
+                                            isTool && <>
+                                                <Text style={styles.text}>{message.tool.text.trim()}</Text>
+                                                {
+                                                    message?.tool.image &&
+                                                    <Box position={'relative'} left={2} backgroundColor={colors.white} borderRadius={50} p={1}>
+                                                        <SvgXml xml={IMG_TOOLBOX[message?.tool.image]} width={15} height={15}/>
+                                                    </Box>
+                                                }
+                                            </>
+                                        }
+                                    </Box>
                                 }
+
                                 {/*<Text style={styles.text}>{message?.createdAt}</Text>*/}
                                 {
                                     !isSentByCurrentUser &&
@@ -61,20 +82,16 @@ const styles = StyleSheet.create({
         height: 200
     },
     container: {
-        borderRadius:12,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 0
+        borderRadius: 12,
+        alignItems: 'center'
     },
     avatar: {width: 25, height: 25, position: "absolute", bottom: -5, left: -12, borderRadius: 30},
     text: {
         color: colors.white, fontSize: 13, textAlign: checkLanguage ? 'right' : "left",
         fontWeight: 'normal',
-        paddingHorizontal: 15,
         writingDirection: 'auto',
         flexWrap: 'wrap',
         width: 'auto',
-        paddingVertical: 5,
     }
 
 })

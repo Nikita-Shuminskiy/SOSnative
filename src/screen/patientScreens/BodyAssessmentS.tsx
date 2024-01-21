@@ -16,6 +16,7 @@ import SocketStore from "../../store/SocketStore/socket-store";
 import {checkLanguage} from "../../utils/utils";
 import ImageHeaderAvatar from "../../components/ImageHeaderAvatar";
 import {observer} from "mobx-react-lite";
+import {Box} from "native-base";
 
 type CheckEvaluationConditionType = {
     head: boolean,
@@ -63,24 +64,24 @@ const BodyAssessmentS = observer(({navigation, route}: any) => {
     }
     return (
         <>
-            <BaseWrapperComponent styleSafeArea={{paddingTop: 0}} isKeyboardAwareScrollView={true}>
+            <BaseWrapperComponent isKeyboardAwareScrollView={true}>
                 {!isFromChat &&
                     <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
                 {
                     isFromChat && <ImageHeaderAvatar image={volunteerJoinedData?.avatar}/>
                 }
-                <View style={styles.container}>
-                    <View style={{marginTop: isFromChat ? 0 : 10}}>
+                <Box paddingX={2} style={styles.container}>
+                    <Box style={{marginTop: isFromChat ? 0 : 10}}>
                         <Text style={styles.text}>
                             {
                                 isFromChat ? 'Chat is over. How do you feel now?' : 'Which part of your body is bothering you?'
                             }
                         </Text>
-                    </View>
-                    <View style={styles.imageContainer}>
+                    </Box>
+                    <Box flexDirection={'row'}>
                         <Image style={styles.img} source={bodyImg}/>
-                        <View style={{marginTop: 10}}>
-                            <View>
+                        <Box mt={2}>
+                            <Box>
                                 <Text
                                     style={[styles.textBody, styles.head, {color: isChecked.head ? colors.green : colors.blue}]}>head</Text>
                                 {
@@ -90,7 +91,6 @@ const BodyAssessmentS = observer(({navigation, route}: any) => {
                                             right: checkLanguage ? 84 : 86
                                         }} onTouchEnd={() => onTouchEndCheckedHandler('head')}>
                                             <Image
-
                                                 source={checkBodyHeadImg}/>
                                         </Pressable>
                                         :
@@ -103,8 +103,8 @@ const BodyAssessmentS = observer(({navigation, route}: any) => {
                                         </Pressable>
 
                                 }
-                            </View>
-                            <View>
+                            </Box>
+                            <Box>
                                 <Text
                                     style={[styles.textBody, styles.heart, {color: isChecked.heart ? colors.green : colors.blue}]}>heart</Text>
                                 {
@@ -123,8 +123,8 @@ const BodyAssessmentS = observer(({navigation, route}: any) => {
                                               }}/>
 
                                 }
-                            </View>
-                            <View>
+                            </Box>
+                            <Box>
                                 <Text
                                     style={[styles.textBody, styles.stomach, {color: isChecked.stomach ? colors.green : colors.blue}]}>stomach</Text>
                                 {
@@ -144,8 +144,8 @@ const BodyAssessmentS = observer(({navigation, route}: any) => {
                                               }}/>
 
                                 }
-                            </View>
-                            <View>
+                            </Box>
+                            <Box>
                                 <Text
                                     style={[styles.textBody, styles.hands, {color: isChecked.leftHand ? colors.green : colors.blue}]}>hands</Text>
                                 {
@@ -171,17 +171,17 @@ const BodyAssessmentS = observer(({navigation, route}: any) => {
 
                                 }
 
-                            </View>
-                        </View>
-                    </View>
+                            </Box>
+                        </Box>
+                    </Box>
                     <ButtonGradient
-                        styleTouchable={{width: '100%', marginBottom: 10}}
+                        styleTouchable={{width: '100%', marginBottom: 5, marginTop: 5}}
                         styleGradient={styles.button}
                         styleText={styles.textBtn}
                         btnText={!isFromChat ? 'Continue' : 'Next step'}
                         onPress={onPressBtnHandler}
                     />
-                </View>
+                </Box>
             </BaseWrapperComponent>
             <Backdrop/>
         </>
@@ -190,9 +190,6 @@ const BodyAssessmentS = observer(({navigation, route}: any) => {
 
 
 const styles = StyleSheet.create({
-    isChecked: {
-        backgroundColor: '#1F8298'
-    },
     checkbox: {
         position: 'absolute',
         borderWidth: 0,
@@ -203,7 +200,7 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
         top: 240,
-        right: 172
+        right: 171
     },
     checkboxHandsRight: {
         width: 20,
@@ -246,11 +243,6 @@ const styles = StyleSheet.create({
         width: 200,
         height: 520
     },
-    imageContainer: {
-        flexDirection: "row",
-        marginTop: 10,
-        marginBottom: 10,
-    },
     textBody: {
         position: 'absolute',
         fontWeight: 'normal',
@@ -274,7 +266,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: '100%',
-        paddingHorizontal: 10,
         alignItems: 'center',
         justifyContent: 'space-between'
     },
