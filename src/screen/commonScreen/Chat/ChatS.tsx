@@ -20,6 +20,8 @@ import {Reconnect} from "./Reconnect";
 import {Box} from "native-base";
 import {useTyping} from "./hook/useTyping";
 import {MessagePayloadType} from "../../../store/SocketStore/type";
+import {colors} from "../../../assets/colors/colors";
+import {StatusBar} from "expo-status-bar";
 
 type ChatSProps = {
     navigation: NavigationProp<ParamListBase>
@@ -106,58 +108,59 @@ const ChatS = observer(({navigation}: ChatSProps) => {
     }, [scrollViewRef?.current])
 
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(223,233,255,0.97)'}}>
-            <HeaderChat exitChatHandler={exitChatHandler} getInfo={getInfoInterlocutor}/>
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                                  style={{flex: 1}}
-            >
+     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                           style={{flex: 1}}
+     >
+         <HeaderChat exitChatHandler={exitChatHandler} getInfo={getInfoInterlocutor}/>
+         <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
+                 <ScrollView //style={{flex: 0, width: '100%'}}
+                     style={{ backgroundColor: 'rgba(223,233,255,0.97)' }}
+                     contentContainerStyle={{flexGrow: 1, justifyContent: 'flex-end'}}
+                     ref={scrollViewRef}>
+                     <LinearGradient
+                         style={{flex: 1, width: '100%'}}
+                         colors={['rgba(213,227,254,0.71)', 'rgba(223,233,255,0.97)']}
+                         locations={[0.14, 0.8]}
+                         start={{x: 0.1, y: 0.2}}
+                     >
+                         <View style={{width: '100%', paddingHorizontal: 12}}>
+                             {isVolunteer && <SensePatient currentUserConditionRate={currentUserConditionRate}
+                                                           joinedRoomData={joinedRoomData}/>}
+                             <Box mt={2} mb={2}>
+                                 {getInfoInterlocutor?.avatar &&
+                                     <ChatAvatar getInfo={getInfoInterlocutor} isVolunteer={isVolunteer} user={user}/>}
+                             </Box>
+                             {
+                                 messages?.map((message) => {
+                                     return chatView(message)
+                                 })
+                             }
+                             {showWhoEnteredTheChat && currentUserEnteredTheChat?.role !== user?.role && (
+                                 <Text style={styles.text}>
+                                     {currentUserEnteredTheChat?.name} entered the chat room
+                                 </Text>
+                             )}
+                             {showWhoDisconnected && currentUserDisconnectedTheChat?.role !== user?.role && (
+                                 <Text style={styles.text}>
+                                     User {currentUserDisconnectedTheChat?.name} logged out
+                                 </Text>
+                             )}
+                             <View style={styles.typingBlock}>
+                                 {typingUser?.isTyping && (
+                                     <ChatList isSentByCurrentUser={typingUser.user?.from?.id === user.id}
+                                               message={typingUser?.user}
+                                               isTyping={true}/>
+                                 )}
+                             </View>
+                         </View>
+                         {!isConnected && <Reconnect/>}
+                     </LinearGradient>
+                 </ScrollView>
+                 <FooterChat toolboxVolunteer={toolboxVolunteer} messagesLength={messages?.length}
+                             onSendMessage={onSendMessage} joinedRoomData={joinedRoomData} isVolunteer={isVolunteer}/>
 
-                <ScrollView //style={{flex: 0, width: '100%'}}
-                    contentContainerStyle={{flexGrow: 1, justifyContent: 'flex-end'}}
-                    ref={scrollViewRef}>
-                    <LinearGradient
-                        style={{flex: 1, width: '100%'}}
-                        colors={['rgba(213,227,254,0.71)', 'rgba(223,233,255,0.97)']}
-                        locations={[0.14, 0.8]}
-                        start={{x: 0.1, y: 0.2}}
-                    >
-                        <View style={{width: '100%', paddingHorizontal: 12}}>
-                            {isVolunteer && <SensePatient currentUserConditionRate={currentUserConditionRate}
-                                                          joinedRoomData={joinedRoomData}/>}
-                            <Box mt={2} mb={2}>
-                                {getInfoInterlocutor?.avatar &&
-                                    <ChatAvatar getInfo={getInfoInterlocutor} isVolunteer={isVolunteer} user={user}/>}
-                            </Box>
-                            {
-                                messages?.map((message) => {
-                                    return chatView(message)
-                                })
-                            }
-                            {showWhoEnteredTheChat && currentUserEnteredTheChat?.role !== user?.role && (
-                                <Text style={styles.text}>
-                                    {currentUserEnteredTheChat?.name} entered the chat room
-                                </Text>
-                            )}
-                            {showWhoDisconnected && currentUserDisconnectedTheChat?.role !== user?.role && (
-                                <Text style={styles.text}>
-                                    User {currentUserDisconnectedTheChat?.name} logged out
-                                </Text>
-                            )}
-                            <View style={styles.typingBlock}>
-                                {typingUser?.isTyping && (
-                                    <ChatList isSentByCurrentUser={typingUser.user?.from?.id === user.id}
-                                              message={typingUser?.user}
-                                              isTyping={true}/>
-                                )}
-                            </View>
-                        </View>
-                        {!isConnected && <Reconnect/>}
-                    </LinearGradient>
-                </ScrollView>
-                <FooterChat toolboxVolunteer={toolboxVolunteer} messagesLength={messages?.length}
-                            onSendMessage={onSendMessage} joinedRoomData={joinedRoomData} isVolunteer={isVolunteer}/>
-            </KeyboardAvoidingView>
-        </SafeAreaView>
+         </SafeAreaView>
+     </KeyboardAvoidingView>
     );
 });
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-export const BASE_URL = 'https://stage.sos.luden-labs.com/'
+export const BASE_URL = 'https://sos.luden-labs.com/'
 export const instance = axios.create({
     baseURL: BASE_URL,
     withCredentials: true

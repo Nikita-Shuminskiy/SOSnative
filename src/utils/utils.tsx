@@ -83,10 +83,9 @@ export const getInfoAboutPhone = () => {
     return phone
 }
 export const convertToFormDataImg = async (img: string, scope: UploadScope) => {
-    //{ resize: { width: image.width * 0.5, height: image.height * 0.5 } }  compression 0.7
     const resizedImage = await manipulateAsync(
         img,
-        [{ resize: { width: 720, height: 1280 } }],
+        [],
         { format: 'jpeg' as SaveFormat, compress: 0.5 },
     )
     const formData = new FormData()

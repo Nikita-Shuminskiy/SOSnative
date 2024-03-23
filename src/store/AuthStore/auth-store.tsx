@@ -33,7 +33,7 @@ export class AuthStore {
         this.isAuth = auth
     }
 
-    logout = async () => {
+    logout = async (isDelete: boolean = false) => {
         this.user = {} as UserType;
         this.token = '';
         this.redirectFromNotification = '';
@@ -46,7 +46,8 @@ export class AuthStore {
         };
         this.rooms = [];
         const token = await deviceStorage.getItem('token')
-        const {data} = await authApi.logout(token)
+        const{data} = isDelete ? await authApi.deleteAccount() : await authApi.logout(token)
+        console.log(data)
         await deviceStorage.removeItem('token')
         this.setAuth(false)
         this.setUser({})
@@ -122,6 +123,8 @@ export class AuthStore {
     }
     async getAppVersion() {
         const {data} = await authApi.getAppVersion()
+        console.log(Constants?.expoConfig?.version)
+        console.log(data?.version)
         if (Constants?.expoConfig?.version < data?.version) {
             // version from app.json
             const onPressGoMarket = async () => {
@@ -131,7 +134,7 @@ export class AuthStore {
             createAlert({
                 title: "Message",
                 message: "Updates available",
-                buttons: [{text: "Update", style: "default", onPress: onPressGoMarket}],
+                buttons: [{text: "Update", style: "default", onPress: onPressGoMarket}, {text: "Later", style: "default"}],
             })
         }
         return data

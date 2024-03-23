@@ -14,7 +14,7 @@ import {observer} from "mobx-react-lite";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import {useGoBack} from "../../utils/hook/useGoBack";
 import {Box} from "native-base";
-
+import * as Animatable from "react-native-animatable";
 type ProblemDescriptionProps = {
     navigation: NavigationProp<ParamListBase>
 }
@@ -31,34 +31,38 @@ const ProblemDescription = observer(({navigation}: ProblemDescriptionProps) => {
         return true
     }
     useGoBack(goBackPress)
+
     return (
         <>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>
                 <Box paddingX={4}>
                     <TouchableOpacity onPress={() => navigation.navigate(routerConstants.USER_PROFILE)}
                                       style={styles.header}>
-                        <Text style={styles.nameUser}>{user?.name}</Text>
+                        <Animatable.Text duration={2000} animation={'flipInY'} style={styles.nameUser}>{user?.name}</Animatable.Text>
                         {
                             userImages && <Image source={user?.avatar ? {uri: user.avatar} : userImages} alt={'logo'}
                                                  style={styles.logo}/>
                         }
                     </TouchableOpacity>
                     <Box mt={5}>
-                        <Box flex={1} alignItems={'flex-start'}>
-                            <Text style={styles.textHi}>Hi,{' '}{user?.name}!</Text>
-                            <Text style={styles.text}>Don’t worry, we’re here to help you cope with any situation.
-                                Describe the problem and press the button below.</Text>
-                        </Box>
+                        <Animatable.View flex={1} alignItems={'flex-start'}>
+                            <Animatable.Text duration={1000} animation={'slideInLeft'} style={styles.textHi}>Hi,{' '}{user?.name}!</Animatable.Text>
+                            <Animatable.Text duration={1000} animation={'slideInRight'} style={styles.text}>Don’t worry, we’re here to help you cope with any situation.
+                                Describe the problem and press the button below.</Animatable.Text>
+                        </Animatable.View>
                         <Box flex={1} alignItems={'center'}>
-                            <TextInput value={description} onChangeText={setDescription} style={styles.input}
+                            <TextInput onSubmitEditing={onPressHandler} value={description}
+                                       onChangeText={setDescription} style={styles.input}
                                        placeholder={'I feel depressed...'}/>
-                            <ButtonGradient
-                                backgroundImage={btnBack}
-                                styleGradient={styles.styleGradient}
-                                styleText={{fontSize: 24}}
-                                btnText={'I need help!'}
-                                onPress={onPressHandler}
-                            />
+                            <Box mt={2}>
+                                <ButtonGradient
+                                    backgroundImage={btnBack}
+                                    styleGradient={styles.styleGradient}
+                                    styleText={{fontSize: 24}}
+                                    btnText={'I need help!'}
+                                    onPress={onPressHandler}
+                                />
+                            </Box>
                         </Box>
                     </Box>
                 </Box>
@@ -69,20 +73,10 @@ const ProblemDescription = observer(({navigation}: ProblemDescriptionProps) => {
 })
 const styles = StyleSheet.create({
     styleGradient: {
+        zIndex: 999,
         width: 245,
         height: 140,
         borderRadius: 100
-    },
-    activeBtn: {
-        shadowColor: "#85B9E3",
-        shadowOffset: {
-            width: 0,
-            height: 12,
-        },
-        shadowOpacity: 0.23,
-        shadowRadius: 12.81,
-        elevation: 16,
-        borderRadius: 18
     },
     textHi: {
         fontSize: 24,

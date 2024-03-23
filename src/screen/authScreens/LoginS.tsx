@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Image, Platform, StyleSheet, TouchableOpacity, View} from "react-native";
+import {Platform, StyleSheet, TouchableOpacity, View} from "react-native";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import logo from '../../assets/images/logoWitchWiFi.png'
 import TextInput from "../../components/TextInput";
@@ -14,10 +14,11 @@ import {checkLanguage, validateEmail} from "../../utils/utils";
 import {Checkbox} from "expo-checkbox";
 import SocketStore from "../../store/SocketStore";
 import {Box, Text} from "native-base";
-import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import googleImg from '../../assets/images/google.png'
 import AuthWitchGoogleModal from "../../components/modal/AuthWitchGoogleModal";
 import {RoleEnum} from "../../api/type";
+import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Animatable from "react-native-animatable";
 
 GoogleSignin.configure({
@@ -36,12 +37,12 @@ GoogleSignin.configure({
 type LoginSProps = {
     navigation: NavigationProp<ParamListBase>
 }
-
 const LoginS = ({navigation}: LoginSProps) => {
     const {AuthStoreService} = rootStore
     const {checkActiveSession} = SocketStore
     const [isRememberMe, setIsRememberMe] = useState(false)
     const [isAuthWitchGoogle, setIsAuthWitchGoogle] = useState(false)
+    const [isAuthWitchApple, setIsAuthWitchApple] = useState(false)
     const {handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, setSubmitting} =
         useFormik({
             initialValues: {
@@ -95,26 +96,40 @@ const LoginS = ({navigation}: LoginSProps) => {
                 }
             })
         } catch (error) {
-            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-                // user cancelled the login flow
-                console.log('SIGN_IN_CANCELLED')
-            } else if (error.code === statusCodes.IN_PROGRESS) {
-                // operation (e.g. sign in) is in progress already
-                console.log('IN_PROGRESS')
-            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-                // play services not available or outdated
-                console.log('PLAY_SERVICES_NOT_AVAILABLE')
-            } else {
-                console.log(error)
-                // some other error happened
-            }
         } finally {
         }
     }
     const isDisabledBtn = () => !!(errors.email && !validateEmail(values.email.trim())) ||
         !!(errors.password && values.password.length <= 7) ||
         isSubmitting
-
+    const loginApple = async (role: RoleEnum) => {
+        setIsAuthWitchApple(false)
+        try {
+            const credential = await AppleAuthentication.signInAsync({
+                requestedScopes: [
+                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                ],
+            });
+            AuthStoreService.login({
+                strategy: 'apple',
+                role: role,
+                accessToken: credential.authorizationCode,
+                user: {
+                    email: credential.email,
+                    fullName: credential.fullName,
+                    identityToken: credential.identityToken
+                }
+            }).then((data) => {
+                if (data) {
+                    checkActiveSession()
+                    navigation.navigate(data.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
+                }
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <View style={styles.container}>
@@ -124,11 +139,12 @@ const LoginS = ({navigation}: LoginSProps) => {
                         flex: 1,
                         alignItems: checkLanguage ? 'flex-start' : 'center',
                         marginTop: 10,
-                        marginBottom: 30
+                        marginBottom: 10
                     }}>
-                    <Image style={styles.logo} source={logo}/>
-                    <Text style={styles.textHeader}>Welcome!{"\n"}
-                        Log in to your account</Text>
+                    <Animatable.Image animation={'tada'} easing={"ease-in"} iterationCount={2} style={styles.logo}
+                                      source={logo}/>
+                    <Animatable.Text duration={2000} animation={'slideInRight'} style={styles.textHeader}>Welcome!{"\n"}
+                        Log in to your account</Animatable.Text>
                 </View>
                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'space-between'}}>
                     <View>
@@ -162,7 +178,7 @@ const LoginS = ({navigation}: LoginSProps) => {
                         <TouchableOpacity onPress={handleSubmit} disabled={isDisabledBtn()}>
                             <LinearGradient
                                 colors={['#89BDE7', '#7EA7D9']}
-                                style={styles.button}>
+                                style={[styles.button, {borderRadius: 8}]}>
                                 <Text style={[styles.text, {color: isDisabledBtn() ? 'red' : 'white'}]}>Log in</Text>
                             </LinearGradient>
                         </TouchableOpacity>
@@ -174,33 +190,46 @@ const LoginS = ({navigation}: LoginSProps) => {
                                 color={colors.blueMedium}>
                                 You don’t have an account yet?</Text>
                         </View>
-                        {
-                            Platform.OS !== 'ios' && <Box mb={2}>
-                                <Button
-                                    activeHover={true}
-                                    styleContainer={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'center',
-                                        borderWidth: 1,
-                                        borderColor: colors.blue,
-                                        backgroundColor: colors.white
-                                    }}
-                                    styleText={{
-                                        color: colors.blue, fontSize: 15,
-                                    }}
-                                    img={googleImg}
-                                    textBtn={'Continue with Google'} onPress={() => setIsAuthWitchGoogle(true)}/>
-                            </Box>
-                        }
                         <Button
                             activeHover={true}
-                            styleContainer={{borderWidth: 1, borderColor: colors.blue, backgroundColor: colors.white}}
+                            styleContainer={{
+                                borderWidth: 1,
+                                borderColor: colors.blue,
+                                backgroundColor: colors.white,
+                                height: 60
+                            }}
                             styleText={{
                                 color: colors.blue, fontSize: 18,
                             }}
                             textBtn={'Create an account'} onPress={() => {
                             navigation.navigate(routerConstants.REGISTRATION)
                         }}/>
+                        <Box mb={2} mt={2} flexDirection={'row'} justifyContent={'center'}>
+                            <Box mr={2}>
+                                <Button
+                                    activeHover={true}
+                                    styleContainer={styles.btnGoogle}
+                                    styleText={{color: colors.blue, fontSize: 13}}
+                                    img={googleImg}
+                                    textBtn={''} onPress={() => setIsAuthWitchGoogle(true)}/>
+                            </Box>
+                            <Box>
+                                {
+                                    Platform.OS === 'ios' && <AppleAuthentication.AppleAuthenticationButton
+                                        buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+                                        buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                                        cornerRadius={8}
+                                        style={{
+                                            width: 60,
+                                            height: 60
+                                        }}
+                                        onPress={() => {
+                                            setIsAuthWitchApple(true)
+                                        }}
+                                    />
+                                }
+                            </Box>
+                        </Box>
                     </View>
                 </View>
             </View>
@@ -208,10 +237,24 @@ const LoginS = ({navigation}: LoginSProps) => {
                 isAuthWitchGoogle && <AuthWitchGoogleModal visible={isAuthWitchGoogle} onPress={loginGoogle}
                                                            onClose={() => setIsAuthWitchGoogle(false)}/>
             }
+            {
+                isAuthWitchApple && <AuthWitchGoogleModal visible={isAuthWitchApple} onPress={loginApple}
+                                                          onClose={() => setIsAuthWitchApple(false)}/>
+            }
         </BaseWrapperComponent>
     );
 };
 const styles = StyleSheet.create({
+    btnGoogle: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        height: 60,
+        width: 60,
+        borderColor: colors.blue,
+        backgroundColor: colors.white
+    },
     checkBox: {borderColor: colors.blue, borderRadius: 8, marginRight: 5, width: 20, height: 20},
     imgIco: {
         width: 24,
@@ -246,8 +289,7 @@ const styles = StyleSheet.create({
         padding: 15,
         alignItems: 'center',
         justifyContent: 'center',
-        height: 67,
-        borderRadius: 8,
+        height: 60,
     },
     text: {
         fontWeight: '500',
@@ -255,11 +297,10 @@ const styles = StyleSheet.create({
         color: colors.white,
     },
     container: {
-        paddingTop: 20,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 50
+        marginBottom: 20
     },
     input: {},
     textHeader: {

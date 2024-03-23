@@ -3,7 +3,7 @@ import {Image, StyleSheet} from "react-native";
 import {Box} from "native-base";
 import {UserType} from "../api/type";
 import {AudienceType} from "../store/SocketStore/type";
-
+import * as Animatable from "react-native-animatable";
 type ChatAvatarProps = {
     user: UserType
     isVolunteer: boolean
@@ -12,7 +12,8 @@ type ChatAvatarProps = {
 const ChatAvatar = memo(({getInfo}: ChatAvatarProps) => {
     return (
         <Box style={styles.container}>
-            <Image style={styles.imgBig} source={{uri: getInfo?.avatar}}/>
+            <Animatable.Image animation={'tada'}
+                              duration={2000}  style={styles.imgBig} source={{uri: getInfo?.avatar}}/>
            {/* <Image style={styles.imgSmall} source={{uri: getInfo?.avatar}}/>*/}
         </Box>
     );

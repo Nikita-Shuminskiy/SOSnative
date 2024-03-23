@@ -7,13 +7,16 @@ import {AudienceType, VolunteerToolboxType} from "../store/SocketStore/type";
 
 export const authApi = {
     async login(payload: LoginPayloadType) {
-        return await instance.post(`authentication`, {...payload})
+        return await instance.post(`authentication`, payload)
     },
     async getAppVersion() {
         return await instance.get<{ version: string }>(`app-version?latest=true`)
     },
     async logout(aссessToken: string) {
         return await instance.delete<ResponseType>(`authentication/${aссessToken}`)
+    },
+    async deleteAccount() {
+        return await instance.post(`users/me/delete`)
     },
     async signup(data: DataSignUpType): Promise<AxiosResponse<DataSignUpType, any>> {
         return await instance.post(`users`, data)
@@ -39,6 +42,7 @@ export const authApi = {
         })
     },
     async changeUser(photo: string, idUser) {
+        console.log(idUser, photo)
         return await instance.patch(`users/${idUser}`, {avatar: photo})
     },
     async getDonePatients(idVolunteer: string) {

@@ -20,6 +20,8 @@ import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
 import {Box} from "native-base";
 import {observer} from "mobx-react-lite";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
+import * as Animatable from "react-native-animatable";
+
 type ResultWorkSProps = {
     navigation:  NavigationProp<ParamListBase>
     route: any
@@ -43,7 +45,7 @@ const ResultWorkS = observer(({navigation, route}: ResultWorkSProps) => {
     return (
         <>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-                <Box flex={1} w={'100%'}>
+                <Animatable.View animation={'zoomInUp'} style={{flex: 1, width: '100%'}}>
                     <View>
                         <Image style={{width: 95, height: 170}}
                                source={checkLanguage ? backgroundUserHeaderHe : backgroundUserHeader}/>
@@ -58,7 +60,7 @@ const ResultWorkS = observer(({navigation, route}: ResultWorkSProps) => {
                             <View style={{flex: 1, width: '100%', alignItems: 'flex-start'}}>
                                 {
                                     getProblem && getProblem.map((problem) => {
-                                        return <View key={problem.id} style={[styles.dot, styles?.[problem.title]]}/>
+                                        return <Animatable.View animation={'fadeInUp'} key={problem.id} style={[styles.dot, styles?.[problem.title]]}/>
                                     })
                                 }
                                 <Image style={{height: 209, width: 80}} source={people}/>
@@ -71,13 +73,12 @@ const ResultWorkS = observer(({navigation, route}: ResultWorkSProps) => {
                                     {' '}{currentAllDescriptions ? `feels pain in his ${currentAllDescriptions}` : 'doesn’t feel pain anywhere.'} </Text>
                                 <Text style={styles.textUser}>Current condition:</Text>
                                 <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
-                                    <Image style={{height: 68, width: 68}} source={conditionRate?.img}/>
+                                    <Animatable.Image duration={1500} animation={'tada'} style={{height: 68, width: 68}} source={conditionRate?.img}/>
                                     <Text style={styles.textTitle}>{conditionRate?.title}</Text>
                                 </View>
                             </View>
                         </View>
-
-                        <Text style={styles.textGoodJob}>Good job!</Text>
+                        <Animatable.Text animation={'bounceInDown'} duration={2000} style={styles.textGoodJob}>Good job! : )</Animatable.Text>
                         <ButtonGradient
                             styleTouchable={{marginBottom: 20, width: '100%'}}
                             styleGradient={styles.button}
@@ -86,7 +87,7 @@ const ResultWorkS = observer(({navigation, route}: ResultWorkSProps) => {
                             onPress={onPressBtnHandler}
                         />
                     </View>
-                </Box>
+                </Animatable.View>
             </BaseWrapperComponent>
             <Backdrop/>
         </>

@@ -3,7 +3,7 @@ import {Image, StyleSheet, Text, View} from "react-native";
 import {checkLanguage, getCurrentConditionRateData} from "../utils/utils";
 import {Box} from "native-base";
 import {DataJoinRoomType} from "../store/SocketStore/type";
-
+import * as Animatable from "react-native-animatable";
 
 type SensePatientType = {
     joinedRoomData: DataJoinRoomType
@@ -17,9 +17,11 @@ const SensePatient = memo(({joinedRoomData, currentUserConditionRate}: SensePati
             <View style={styles.container}>
                 <View style={styles.blockText}>
                     {/* <Text ellipsizeMode={'middle'} numberOfLines={1} style={{color: colors.grayLight, fontSize: 12}}>{userJoin?.name}</Text>*/}
-                    <Text style={{color: '#1F8298', fontSize: 12, textAlign: 'center', fontWeight: 'normal'}}>{conditionRate?.title}</Text>
+                    <Animatable.Text  animation={'tada'}
+                                      duration={2000} style={{color: '#1F8298', fontSize: 12, textAlign: 'center', fontWeight: 'normal'}}>{conditionRate?.title}</Animatable.Text>
                 </View>
-                <Image style={styles.img} resizeMode={'contain'} alt="feel" source={conditionRate?.img}/>
+                <Animatable.Image  animation={'tada'}
+                                   duration={2000} style={styles.img} resizeMode={'contain'} alt="feel" source={conditionRate?.img}/>
             </View>
         </Box>
     );

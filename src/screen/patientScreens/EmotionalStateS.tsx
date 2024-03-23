@@ -1,5 +1,5 @@
-import React from 'react';
-import {ImageSourcePropType, Platform, SafeAreaView, StyleSheet, Text} from "react-native";
+import React, {useCallback} from 'react';
+import {ImageSourcePropType, StyleSheet, Text} from "react-native";
 import ButtonGradient from "../../components/ButtonGradient";
 import {routerConstants} from "../../constants/routerConstants";
 import {colors} from "../../assets/colors/colors";
@@ -14,7 +14,14 @@ import {observer} from "mobx-react-lite";
 import ImageHeaderAvatar from "../../components/ImageHeaderAvatar";
 import {checkLanguage} from "../../utils/utils";
 import {Box} from "native-base";
-
+import {BaseWrapperComponent} from "../../components/baseWrapperComponent";
+import * as Animatable from "react-native-animatable";
+import smileBad from "../../assets/images/lottie/smileBad.json";
+import smileGood from "../../assets/images/lottie/smileGood.json";
+import smileOk from "../../assets/images/lottie/smileOk.json";
+import smileNotGood from "../../assets/images/lottie/smileNotGood.json";
+import smileAverege from "../../assets/images/lottie/smileAverege.json";
+import LottieView from "lottie-react-native";
 
 export type ItemData = {
     id: number;
@@ -31,17 +38,18 @@ const EmotionalStateS = observer(({navigation, route}: any) => {
     const {
         setDataScoresAfterChat,
         setVolunteerEvaluation,
-        volunteerJoinedData
+        volunteerJoinedData,
+        dataScoresAfterChat
     } = SocketStore
-    const onValueSliderChange = (value) => {
+    const onValueSliderChange = useCallback((value) => {
         if (isFromChat) {
             setDataScoresAfterChat(value, 'resultConditionRate')
         } else {
             setDataPatient(value, 'conditionRate')
         }
-    }
+    }, [isFromChat])
+
     const onPressBtnHandler = () => {
-        3
         if (isFromChat) {
             socket?.connect()
             setVolunteerEvaluation(user?.id)
@@ -50,7 +58,6 @@ const EmotionalStateS = observer(({navigation, route}: any) => {
         }
         if (!isFromChat) {
             AuthStoreService.createRoom(dataPatient).then((data) => {
-                console.log(!!data, 'dataCreate room')
                 if (data) {
                     socketInit().then((data) => {
                         if (!!data) {
@@ -63,29 +70,56 @@ const EmotionalStateS = observer(({navigation, route}: any) => {
             return
         }
     }
+    const dataLottie = {
+        '1': smileOk,
+        '0': smileGood,
+        '4': smileAverege,
+        '7': smileNotGood,
+        '10': smileBad,
+    }
     return (
-        <SafeAreaView style={{flex: 1, marginTop: Platform.OS === 'ios' ? 10 : 40}}>
-            {!isFromChat && <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
-            {
-                isFromChat && <ImageHeaderAvatar image={volunteerJoinedData?.avatar}/>
-            }
-            <Box mt={2} paddingX={2} flex={1} justifyContent={'space-between'}>
-                <Box position={'relative'} top={isFromChat ? 0 : 10}>
-                    <Text style={styles.text}>Evaluate your condition using this scale</Text>
-                </Box>
-                <Box w={'100%'} h={95}>
-                    <SliderEmotionalState onValueChange={onValueSliderChange}/>
-                </Box>
-                <ButtonGradient
-                    styleTouchable={{marginBottom: 20}}
-                    styleGradient={styles.button}
-                    styleText={styles.textBtn}
-                    btnText={isFromChat ? 'It’s ok' : 'Continue'}
-                    onPress={onPressBtnHandler}
-                />
-            </Box>
+        <>
+            <BaseWrapperComponent isKeyboardAwareScrollView={true}>
+                {!isFromChat &&
+                    <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>}
+                {
+                    isFromChat && <ImageHeaderAvatar image={volunteerJoinedData?.avatar}/>
+                }
+                <Animatable.View animation={'zoomInUp'} style={{flex: 1}}>
+                    <Box mt={2} paddingX={2} flex={1} w={'100%'} justifyContent={'space-between'}>
+                        <Box position={'relative'} top={isFromChat ? 0 : 10}>
+                            <Text style={styles.text}>Evaluate your condition using this scale</Text>
+                            {
+                                !isFromChat && dataLottie[dataPatient?.conditionRate] && <Box alignItems={'center'}>
+                                    <LottieView
+                                        source={isFromChat ? dataLottie[dataScoresAfterChat?.resultConditionRate] : dataLottie[dataPatient.conditionRate]}
+                                        style={{width: '100%', height: 150}} loop autoPlay/>
+                                </Box>
+                            }
+                            {
+                                isFromChat && dataLottie[dataScoresAfterChat?.resultConditionRate] &&
+                                <Box alignItems={'center'}>
+                                    <LottieView source={dataLottie[dataScoresAfterChat?.resultConditionRate]}
+                                                style={{width: '100%', height: 150}} loop autoPlay/>
+                                </Box>
+                            }
+
+                        </Box>
+                        <Box w={'100%'}>
+                            <SliderEmotionalState onValueChange={onValueSliderChange}/>
+                        </Box>
+                        <Box mb={2}>
+                            <ButtonGradient
+                                styleText={styles.textBtn}
+                                btnText={isFromChat ? 'It’s ok' : 'Continue'}
+                                onPress={onPressBtnHandler}
+                            />
+                        </Box>
+                    </Box>
+                </Animatable.View>
+            </BaseWrapperComponent>
             <Backdrop/>
-        </SafeAreaView>
+        </>
     );
 })
 const styles = StyleSheet.create({
@@ -93,13 +127,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: '500',
         color: colors.blue,
-    },
-    button: {
-        padding: 15,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 67,
-        borderRadius: 8,
     },
     textBtn: {
         fontSize: 18,

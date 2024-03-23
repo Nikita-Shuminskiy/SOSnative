@@ -1,6 +1,5 @@
-import React, {useState} from 'react';
+import React, {memo, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import { Slider, Button } from 'react-native-elements';
 import {LinearGradient} from 'expo-linear-gradient';
 import smileGood from "../assets/images/coleredSmile/smileGood.png";
 import smileOk from "../assets/images/coleredSmile/smileOk.png";
@@ -8,12 +7,13 @@ import smileAverage from "../assets/images/coleredSmile/smileAverege.png";
 import smileBad from "../assets/images/coleredSmile/smileBad.png";
 import smileVeryBad from "../assets/images/coleredSmile/smileVeryBad.png";
 import {checkLanguage} from "../utils/utils";
+import * as Animatable from "react-native-animatable";
+
 type SliderEmotionalStateProps = {
     onValueChange: (value) => void
 }
 const SliderEmotionalState = ({onValueChange}: SliderEmotionalStateProps) => {
     const [sliderValue, setSliderValue] = useState(0);
-
     const handleSliderChange = (value) => {
         onValueChange(value)
         setSliderValue(value);
@@ -41,29 +41,33 @@ const SliderEmotionalState = ({onValueChange}: SliderEmotionalStateProps) => {
                 start={{x: 0, y: 0.5}}
                 end={{x: 1, y: 0.5}}
             >
-                <Slider
+                {/*  <Slider
                     thumbTintColor={'#89BDE7'}
                     value={sliderValue}
                     minimumValue={0}
                     maximumValue={10}
                     step={1}
-                    thumbStyle={styles.thumb } /*checkLanguage && {position: 'absolute', right: 0}*/
-                    style={styles.slider}
-                    onValueChange={handleSliderChange}
-                    minimumTrackTintColor="transparent"
-                    maximumTrackTintColor="transparent"
+                    thumbStyle={styles.thumb }
+                style={styles.slider}
+                onValueChange={handleSliderChange}
+                minimumTrackTintColor="transparent"
+                maximumTrackTintColor="transparent"
                 />
+                */}
             </LinearGradient>
             <View style={styles.smileContainer}>
                 <TouchableOpacity onPress={() => handleSliderChange(0)} style={[styles.smileBlock]}>
-                    <Image
+                    <Animatable.Image
+                        animation={isActiveSmile(0, 0) ? 'rubberBand' : 'swing'}
+                        duration={1500}
                         style={[styles.img, isActiveSmile(0, 0) && styles.activeSmileBlock]}
                         source={smileGood}
                     />
                     <Text style={{...styles.smileText, color: '#205C26'}}>0</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleSliderChange(1)} style={[styles.smileBlock]}>
-                    <Image
+                    <Animatable.Image
+                        animation={isActiveSmile(1, 3) ? 'rubberBand' : 'swing'}
                         style={[styles.img, isActiveSmile(1, 3) && styles.activeSmileBlock]}
                         source={smileOk}
                     />
@@ -71,7 +75,8 @@ const SliderEmotionalState = ({onValueChange}: SliderEmotionalStateProps) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => handleSliderChange(4)}  style={[styles.smileBlock]}>
-                    <Image
+                    <Animatable.Image
+                        animation={isActiveSmile(4, 6) ? 'rubberBand' : 'swing'}
                         style={[styles.img, isActiveSmile(4, 6) && styles.activeSmileBlock]}
                         source={smileAverage}
                     />
@@ -79,14 +84,16 @@ const SliderEmotionalState = ({onValueChange}: SliderEmotionalStateProps) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => handleSliderChange(7)}  style={[styles.smileBlock]}>
-                    <Image
+                    <Animatable.Image
+                        animation={isActiveSmile(7, 9) ? 'rubberBand' : 'swing'}
                         style={[styles.img, isActiveSmile(7, 9) && styles.activeSmileBlock]}
                         source={smileBad}
                     />
                     <Text style={{...styles.smileText, color: '#EB5231'}}>7-9</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleSliderChange(10)}  style={[styles.smileBlock]}>
-                    <Image
+                    <Animatable.Image
+                        animation={isActiveSmile(10, 10) ? 'rubberBand' : 'swing'}
                         style={[styles.img, isActiveSmile(10, 10) && styles.activeSmileBlock]}
                         source={smileVeryBad}
                     />
@@ -137,11 +144,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
     },
     colorLine: {
         borderRadius: 16,
-        height: 15,
+        height: 30,
         width: '100%',
         flex: 1,
     },
@@ -150,4 +157,4 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
     },
 });
-export default SliderEmotionalState
+export default memo(SliderEmotionalState)

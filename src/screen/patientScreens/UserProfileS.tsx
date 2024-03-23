@@ -15,6 +15,8 @@ import AvatarProfile from "../../components/AvatarProfile";
 import {observer} from "mobx-react-lite";
 import {NavigationProp} from "@react-navigation/native";
 import Constants from "expo-constants";
+import Link from "../../components/Link";
+import {createAlert} from "../../components/alert";
 
 type UserProfileSProps = {
     navigation: NavigationProp<any>
@@ -26,7 +28,13 @@ const UserProfileS = observer(({navigation}: UserProfileSProps) => {
     const onPressLogOut = () => {
         AuthStoreService.logOut()
     }
-
+    const onPressDeleteAccount = (isDelete?: boolean) => {
+        createAlert({
+            title: 'Message',
+            buttons: [{ text: 'Delete', onPress: () => AuthStoreService.logOut(isDelete)}, {text: 'Close'}],
+            message: 'Do you really want to delete the account?'
+        })
+    }
     return (
         <>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>
@@ -56,16 +64,23 @@ const UserProfileS = observer(({navigation}: UserProfileSProps) => {
                 </Box>
                 <Box mt={2} alignItems={'center'}>
                     <BtnLogOut onPressLogOut={onPressLogOut}/>
+                    <Box mt={2}>
+                        <Link styleText={styles.textDelete} onPress={() => onPressDeleteAccount(true)}  text={'Delete and forgot account'} />
+                    </Box>
                     <Text mt={1} fontWeight={'normal'} fontSize={15}
                           color={colors.gray}>version {Constants?.expoConfig?.version}</Text>
                 </Box>
-
             </BaseWrapperComponent>
             <Backdrop/>
         </>
     );
 })
 const styles = StyleSheet.create({
+    textDelete: {
+        color: colors.red,
+        fontSize: 16,
+        fontWeight: '400',
+    },
     picker: {
         height: 67
     },

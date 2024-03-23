@@ -34,8 +34,8 @@ export const Patient = React.memo(({patient, onPress, selectedPatient}: PatientP
             <Text style={{
                 color: colors.blue,
                 fontWeight: 'normal',
-            }}>{patient.patient.name}{' '}<Text style={styles.textTime}>{timeElapsed}</Text></Text>
-            <Text style={styles.textDescription}>{patient.description}</Text>
+            }}>{patient?.patient?.name}{' '}<Text style={styles.textTime}>{timeElapsed}</Text></Text>
+            <Text style={styles.textDescription}>{patient?.description}</Text>
         </View>
 
         <View style={styles.imageContainer}>

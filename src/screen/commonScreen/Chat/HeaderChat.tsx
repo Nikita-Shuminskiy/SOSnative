@@ -9,7 +9,7 @@ import React, {memo} from "react";
 import {colors} from "../../../assets/colors/colors";
 import {StatusBar} from "expo-status-bar";
 import {AudienceType} from "../../../store/SocketStore/type";
-
+import * as Animatable from "react-native-animatable";
 type HeaderChatProps = {
     exitChatHandler: () => void
     getInfo: AudienceType
@@ -46,14 +46,18 @@ const HeaderChat = memo(({exitChatHandler, getInfo}: HeaderChatProps) => {
                 </View>
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text
+                    <Animatable.Text
+                        animation={'zoomIn'}
+                        duration={2000}
                         style={{
                             ...styles.userNameText,
                             position: 'relative',
                             right: 20
-                        }}>{getInfo?.name ?? 'Waiting'}</Text>
+                        }}>{getInfo?.name ?? 'Waiting'}</Animatable.Text>
                     <ImageBackground style={{width: 82, height: 82}} source={ovalImg}>
-                        <Image
+                        <Animatable.Image
+                            animation={'zoomIn'}
+                            duration={2000}
                             style={{position: 'relative', right: 10, width: 68, height: 68, borderRadius: 50}}
                             source={getInfo?.avatar ? {uri: getInfo?.avatar} : avatarMock}/>
                     </ImageBackground>
@@ -93,9 +97,8 @@ const styles = StyleSheet.create({
         color: colors.white
     },
     headerContainer: {
-        paddingTop: 20,
         width: '100%',
-        minHeight: 110,
+        minHeight: 120,
     },
     right: {},
 })

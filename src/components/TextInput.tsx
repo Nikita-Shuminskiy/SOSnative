@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, TextInput as Input, TextInputProps, Image, TouchableOpacity} from "react-native";
+import React, {memo, useState} from 'react';
+import {View, Text, StyleSheet, TextInput as Input, TextInputProps, TouchableOpacity} from "react-native";
 import {colors} from "../assets/colors/colors";
 import {StyleProp} from "react-native/Libraries/StyleSheet/StyleSheet";
 import {TextStyle} from "react-native/Libraries/StyleSheet/StyleSheetTypes";
@@ -12,8 +12,8 @@ type TextInputPropsType = TextInputProps & {
     errorText?: string
     isPassword?: boolean
 }
-const TextInput = ({style, styleContainer, error, errorText, isPassword, ...rest}: TextInputPropsType) => {
-    const [userName, setUserName] = useState('');
+const TextInput = React.forwardRef(({style, styleContainer, error, errorText, isPassword, ...rest}: TextInputPropsType, ref) => {
+    const [text, setText] = useState('');
     const [showPassword, setShowPassword] = useState(true)
     return (
         <View style={[styles.container, styleContainer]}>
@@ -28,8 +28,8 @@ const TextInput = ({style, styleContainer, error, errorText, isPassword, ...rest
             <Input
                 returnKeyType={'send'}
                 secureTextEntry={isPassword && showPassword}
-                value={userName}
-                onChangeText={(userName) => setUserName(userName)}
+                value={text}
+                onChangeText={(userName) => setText(userName)}
                 placeholderTextColor={colors.blue}
                 style={[styles.input, style]}
                 {...rest}
@@ -39,7 +39,7 @@ const TextInput = ({style, styleContainer, error, errorText, isPassword, ...rest
             }
         </View>
     );
-};
+})
 const styles = StyleSheet.create({
     icon: {
         position: 'absolute',
@@ -62,4 +62,4 @@ const styles = StyleSheet.create({
         backgroundColor: colors.blueLight
     },
 });
-export default TextInput;
+export default memo(TextInput)

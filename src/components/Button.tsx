@@ -14,7 +14,7 @@ type ButtonProps = {
     onPress: () => void
     styleContainer?: StyleProp<any>
     styleText?: StyleProp<any>
-    textBtn: string
+    textBtn?: string
     activeOpacity?: number
     activeHover?: boolean
     img?: ImageSourcePropType
@@ -43,13 +43,16 @@ const Button = ({
                               onPress={onPress}>
                 {
                     img &&
-                    <Image w={10} h={10} mr={2} source={img} alt={'img'} />
+                    <Image w={10} h={10} source={img} alt={'img'} />
                 }
-                <Text style={{
-                    fontWeight: '500',
-                    fontSize: 18,
-                    ...styleText,
-                }}>{textBtn}</Text>
+                {
+                    textBtn &&  <Text style={{
+                        fontWeight: '500',
+                        fontSize: 18,
+                        ...styleText,
+                    }}>{textBtn}</Text>
+                }
+
             </TouchableOpacity>
         </KeyboardAvoidingView>
     );

@@ -1,24 +1,44 @@
 {
   "expo": {
-    "name": "SOSnative",
-    "slug": "SOSnative",
-    "version": "1.0.0",
+    "name": "sos",
+    "slug": "sos",
+    "version": "2.0.6",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ea1111"
+    },
+    "notification": {
+      "iosDisplayInForeground": true,
+      "color": "#ffffff",
+      "icon": "./assets/notification_icon.png"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
+      "usesAppleSignIn": true,
       "userInterfaceStyle": "light",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "buildNumber": "2.0.19",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ]
+      },
+      "bundleIdentifier": "com.ludenlabs.sosmobile",
+      "entitlements": {
+        "com.apple.developer.networking.wifi-info": true
+      }
     },
     "android": {
+      "versionCode": 15,
+      "googleServicesFile": "./google-services.json",
       "userInterfaceStyle": "light",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -31,12 +51,34 @@
     },
     "extra": {
       "eas": {
-        "projectId": "ba114943-c65e-44ab-a903-af6bacd4d894"
+        "projectId": "1ac68062-338f-4b87-8d47-57961f764814"
       }
     },
-    "owner": "nick_1995",
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/1ac68062-338f-4b87-8d47-57961f764814"
+    },
+    "owner": "sosmobile",
     "plugins": [
-      "expo-localization"
-    ]
+      "@react-native-firebase/app",
+      "expo-localization",
+      "expo-apple-authentication",
+      "expo-notifications",
+      "@react-native-google-signin/google-signin",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          },
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
   }
 }

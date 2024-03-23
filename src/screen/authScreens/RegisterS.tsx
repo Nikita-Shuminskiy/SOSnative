@@ -12,7 +12,8 @@ import {useFormik} from "formik";
 import {checkLanguage, validateEmail} from "../../utils/utils";
 import rootStore from "../../store/RootStore";
 import {DataSignUpType, RoleEnum} from "../../api/type";
-
+import {Box} from "native-base";
+import * as Animatable from "react-native-animatable";
 
 const RegisterS = ({navigation}) => {
     const [role, setRole] = useState<'patient' | 'volunteer'>('patient')
@@ -80,31 +81,30 @@ const RegisterS = ({navigation}) => {
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
 
-            <View style={styles.container}>
+            <Animatable.View animation={'zoomInUp'} style={styles.container}>
                 <View style={{justifyContent: 'center', flex: 1}}>
                     <Text style={styles.textHeader}>Create an account</Text>
                 </View>
                 <View>
-                    <View>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            <ButtonGradient
-                                styleTouchable={{marginRight: 10}}
-                                styleGradient={styles.button}
-                                colorsGradient={role == 'volunteer' ? ['#D5E3FE', '#D5E3FE'] : null}
-                                styleText={styles.textBtn}
-                                colorText={role === 'volunteer' ? colors.gray : colors.white}
-                                btnText={'I need help'}
-                                onPress={() => setRole('patient')}
-                            />
-                            <ButtonGradient
-                                styleGradient={styles.button}
-                                colorsGradient={role === 'patient' ? ['#D5E3FE', '#D5E3FE'] : null}
-                                styleText={styles.textBtn}
-                                colorText={role === 'patient' ? colors.gray : colors.white}
-                                btnText={'I am a volunteer'}
-                                onPress={() => setRole('volunteer')}
-                            />
-                        </View>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <ButtonGradient
+                            styleTouchable={{marginRight: 10, width: 162}}
+                            styleGradient={styles.button}
+                            colorsGradient={role == 'volunteer' ? ['#D5E3FE', '#D5E3FE'] : null}
+                            styleText={styles.textBtn}
+                            colorText={role === 'volunteer' ? colors.gray : colors.white}
+                            btnText={'I need help'}
+                            onPress={() => setRole('patient')}
+                        />
+                        <ButtonGradient
+                            styleGradient={styles.button}
+                            styleTouchable={{width: 162}}
+                            colorsGradient={role === 'patient' ? ['#D5E3FE', '#D5E3FE'] : null}
+                            styleText={styles.textBtn}
+                            colorText={role === 'patient' ? colors.gray : colors.white}
+                            btnText={'I am a volunteer'}
+                            onPress={() => setRole('volunteer')}
+                        />
                     </View>
 
                     <View style={{alignItems: 'center', width: '100%'}}>
@@ -158,16 +158,13 @@ const RegisterS = ({navigation}) => {
 
                         </View>
                     </View>
-                    <ButtonGradient disabled={isDisabledBtn()}
-                                    styleGradient={{
-                                        width: '100%',
-                                        height: 65,
-                                        borderRadius: 10
-                                    }}
-                                    styleText={[styles.text, {color: isDisabledBtn() ? 'red' : 'white'}]}
-                                    onPress={handleSubmit} btnText={'Log in'}/>
+                    <Box>
+                        <ButtonGradient disabled={isDisabledBtn()}
+                                        styleText={[styles.text, {color: isDisabledBtn() ? 'red' : 'white'}]}
+                                        onPress={handleSubmit} btnText={'Log in'}/>
+                    </Box>
                 </View>
-            </View>
+            </Animatable.View>
 
         </BaseWrapperComponent>
     );
@@ -196,9 +193,6 @@ const styles = StyleSheet.create({
     button: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 8,
-        height: 53,
-        width: 162,
     },
     text: {
         fontWeight: '500',

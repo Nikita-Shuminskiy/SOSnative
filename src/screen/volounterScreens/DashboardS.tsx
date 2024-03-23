@@ -22,7 +22,7 @@ import {RoomType} from "../../api/type";
 import {Box} from "native-base";
 import {useGoBack} from "../../utils/hook/useGoBack";
 import {usePermissions} from "../../utils/hook/usePermissions";
-
+import * as Animatable from "react-native-animatable";
 
 type DashboardSType = {
     navigation: NavigationProp<ParamListBase>
@@ -101,7 +101,7 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
         <>
             <VirtualizedList>
                 <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-                    <View style={{paddingHorizontal: 10}}>
+                    <Animatable.View animation={'zoomInUp'} style={{paddingHorizontal: 10}}>
                         <StatusBar hidden={false} style={'auto'} animated={true}
                                    translucent={false}/>
                         <TouchableOpacity onPress={() => navigation.navigate(routerConstants.VOLUNTEER_PROFILE)}
@@ -145,7 +145,7 @@ const DashboardS = observer(({navigation, route}: DashboardSType) => {
                                 />
                             </View>
                         </View>
-                    </View>
+                    </Animatable.View>
                 </BaseWrapperComponent>
             </VirtualizedList>
             <Box alignItems={'center'} w={'100%'} px={2} mb={Platform.OS === 'ios' ? 8 : 5}>

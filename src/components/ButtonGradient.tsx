@@ -1,20 +1,20 @@
-import React, {useState} from 'react';
-import {ImageBackground, StyleSheet, Text, TouchableOpacity} from "react-native";
-import {LinearGradient} from "expo-linear-gradient";
-import {colors} from "../assets/colors/colors";
-import {ImageSourcePropType} from "react-native/Libraries/Image/Image";
+import React, {memo, useRef} from 'react';
+import {Animated, StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle} from 'react-native';
+import {LinearGradient} from 'expo-linear-gradient';
+import {colors} from '../assets/colors/colors';
+import {ImageSourcePropType} from 'react-native/Libraries/Image/Image';
 
 type ButtonGradientProps = {
-    onPress: () => void
-    btnText: string
-    styleGradient?: any
-    styleTouchable?: any
-    styleText?: any
-    colorsGradient?: string[]
-    colorText?: string
-    disabled?: boolean
-    backgroundImage?: ImageSourcePropType
-}
+    onPress: () => void;
+    btnText: string;
+    styleGradient?: StyleProp<ViewStyle>;
+    styleTouchable?: StyleProp<ViewStyle>;
+    styleText?: StyleProp<TextStyle>;
+    colorsGradient?: string[];
+    colorText?: string;
+    disabled?: boolean;
+    backgroundImage?: ImageSourcePropType;
+};
 
 const ButtonGradient = ({
                             onPress,
@@ -25,54 +25,59 @@ const ButtonGradient = ({
                             colorsGradient,
                             colorText,
                             disabled,
-                            backgroundImage
+                            backgroundImage,
                         }: ButtonGradientProps) => {
-    const [activeBtn, setActiveBtn] = useState(false)
+    const opacityValue = useRef(new Animated.Value(0)).current;
+    const handlePress = (toValue: number) => {
+        Animated.timing(opacityValue, {
+            toValue: toValue,
+            duration: 150,
+            useNativeDriver: true,
+        }).start();
+    };
     return (
-        backgroundImage ? (
-            <ImageBackground style={styles.backgroundImg} source={activeBtn ? backgroundImage : null}>
-                <TouchableOpacity
-                    disabled={disabled}
-                    activeOpacity={0.9}
-                    onPressIn={() => setActiveBtn(true)}
-                    onPressOut={() => setActiveBtn(false)} style={styleTouchable} onPress={onPress}>
-                    <LinearGradient
-                        colors={colorsGradient ?? ['#89BDE7', '#7EA7D9']}
-                        style={{...styles.button, ...styleGradient}}>
-                        <Text
-                            style={{...styles.textBtn, ...styleText, color: colorText ?? colors.white}}>{btnText}</Text>
-                    </LinearGradient>
-                </TouchableOpacity>
-            </ImageBackground>
-            ) : (
-            <TouchableOpacity
-                activeOpacity={0.9}
-                onPressIn={() => setActiveBtn(true)}
-                onPressOut={() => setActiveBtn(false)} style={styleTouchable} onPress={onPress}>
-                <LinearGradient
-                    colors={colorsGradient ?? ['#89BDE7', '#7EA7D9']}
-                    style={{...styles.button, ...styleGradient}}>
-                    <Text
-                        style={{...styles.textBtn, ...styleText, color: colorText ?? colors.white}}>{btnText}</Text>
-                </LinearGradient>
-            </TouchableOpacity>
-        )
-
+        <TouchableOpacity
+            disabled={disabled}
+            activeOpacity={1}
+            onPress={() => onPress()}
+            onPressIn={() => handlePress(1)}
+            onPressOut={() => handlePress(0)}
+            style={[styles.button, styleTouchable]}
+        >
+            <LinearGradient
+                colors={colorsGradient ?? ['#89BDE7', '#7EA7D9']}
+                style={[styles.gradient, styleGradient]}
+            >
+                <Text style={[styles.textBtn, {color: colorText ?? colors.white}, styleText]}>{btnText}</Text>
+            </LinearGradient>
+            {backgroundImage && (
+                <Animated.Image
+                    source={backgroundImage}
+                    style={[styles.backgroundImg, {opacity: opacityValue}]}
+                />
+            )}
+        </TouchableOpacity>
     );
 };
-const styles = StyleSheet.create({
-    backgroundImg: {
-        width: 278,
-        height: 180, justifyContent: 'center', alignItems: 'center'
-    },
-    button: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
 
+const styles = StyleSheet.create({
+    gradient: {width: '100%', borderRadius: 8, alignItems: 'center', justifyContent: 'center',  height: 65},
+    button: {
+        width: '100%',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    backgroundImg: {
+        position: 'absolute',
+        width: 258,
+        height: 165,
+    },
     textBtn: {
         fontWeight: '500',
         fontSize: 18,
+        color: colors.white
     },
-})
-export default ButtonGradient;
+});
+
+export default memo(ButtonGradient);

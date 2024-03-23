@@ -1,5 +1,5 @@
 import React, {memo, useState} from 'react';
-import {Image, StyleSheet, I18nManager, Alert} from "react-native";
+import {Image, StyleSheet, I18nManager, Alert, TextInputProps} from "react-native";
 import paperClippingImg from '../assets/images/paperСlippng.png'
 import TextInput from "./TextInput";
 import {colors} from "../assets/colors/colors";
@@ -12,12 +12,12 @@ import {UploadScope} from "../api/type";
 import rootStore from "../store/RootStore/root-store";
 import {checkLanguage} from "../utils/utils";
 
-type InputFieldsChatProps = {
+type InputFieldsChatProps = TextInputProps & {
     onSendMessage: (payload: MessagePayloadType) => void
     onTypingHandler: () => void
 
 }
-const InputFieldsChat = memo(({onSendMessage, onTypingHandler}: InputFieldsChatProps) => {
+const InputFieldsChat = memo(({onSendMessage, onTypingHandler, ...restProps}: InputFieldsChatProps) => {
     const [textInput, setTextInput] = useState<string>('')
     const {AuthStoreService} = rootStore
     const onChangeText = (text: string) => {
@@ -58,13 +58,17 @@ const InputFieldsChat = memo(({onSendMessage, onTypingHandler}: InputFieldsChatP
              alignItems={'center'} flex={1}
              justifyContent={'space-between'} w={'100%'}>
 
-            <TextInput multiline={true} textAlign={checkLanguage ? 'right' : 'left'} inputMode={'text'}
-                       pointerEvents={'box-only'} value={textInput}
-                       returnKeyType={'done'}
-                       autoCorrect={false}
-                       onSubmitEditing = {(event) => (Alert.alert(event.nativeEvent.text))}
-                       onChangeText={onChangeText} styleContainer={styles.styleInputContainer}
-                       style={styles.input}/>
+            <TextInput multiline={false}
+                       textAlign={checkLanguage ? 'right' : 'left'}
+                       value={textInput}
+                       returnKeyType={'send'}
+                       autoCorrect={true}
+                       onSubmitEditing={onPressSend}
+                       onChangeText={onChangeText}
+                       styleContainer={styles.styleInputContainer}
+                       style={styles.input}
+                       {...restProps}
+            />
             {/*<TouchableOpacity>
                 <Image style={{...styles.img, marginRight: 5}} source={microImg}/>
             </TouchableOpacity>*/}

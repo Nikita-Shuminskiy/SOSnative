@@ -16,6 +16,9 @@ import * as Notifications from 'expo-notifications';
 import {checkLanguage} from "../../utils/utils";
 import AvatarProfile from "../../components/AvatarProfile";
 import Constants from "expo-constants";
+import Link from "../../components/Link";
+import {createAlert} from "../../components/alert";
+import * as Animatable from "react-native-animatable";
 
 type VolunteerProfileSProps = {
     navigation: NavigationProp<ParamListBase>
@@ -38,6 +41,13 @@ const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps)
     const onPressLogOut = () => {
         AuthStoreService.logOut()
     }
+    const onPressDeleteAccount = (isDelete?: boolean) => {
+        createAlert({
+            title: 'Message',
+            buttons: [{text: 'Delete', onPress: () => AuthStoreService.logOut(isDelete)}, {text: 'Close'}],
+            message: 'Do you really want to delete the account?'
+        })
+    }
     const toggleNotifications = async () => {
         Notifications.setNotificationHandler({
             handleNotification: async () => ({
@@ -52,7 +62,14 @@ const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps)
         <>
             <BaseWrapperComponent isKeyboardAwareScrollView={true}>
                 <ArrowBack img={checkLanguage ? arrowBack : null} goBackPress={() => navigation.goBack()}/>
-                <Box paddingX={4} flex={1} w={'100%'} justifyContent={'space-between'} alignItems={'center'}>
+                <Animatable.View animation={'zoomInUp'} style={{
+                    paddingHorizontal: 12,
+                    flex: 1,
+                    width: '100%',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                }}
+                >
                     <Box alignItems={'center'}>
                         <Box mb={3} alignItems={'center'}>
                             <AvatarProfile photo={user?.avatar}/>
@@ -88,17 +105,25 @@ const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps)
 
                     <Box mt={2} alignItems={'center'}>
                         <BtnLogOut onPressLogOut={onPressLogOut}/>
+                        <Box mt={2}>
+                            <Link styleText={styles.textDelete} onPress={() => onPressDeleteAccount(true)}
+                                  text={'Delete and forgot account'}/>
+                        </Box>
                         <Text mt={1} fontWeight={'normal'} fontSize={15}
                               color={colors.gray}>version {Constants?.expoConfig?.version}</Text>
                     </Box>
-                </Box>
-
+                </Animatable.View>
             </BaseWrapperComponent>
             <Backdrop/>
         </>
     );
 });
 const styles = StyleSheet.create({
+    textDelete: {
+        color: colors.red,
+        fontSize: 16,
+        fontWeight: '400',
+    },
     blockPicker: {
         backgroundColor: '#D5E3FE',
         height: 67,

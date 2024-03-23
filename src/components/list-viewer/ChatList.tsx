@@ -9,7 +9,7 @@ import {checkLanguage} from "../../utils/utils";
 import ShowImagesModal from "../modal/ShowImagesModal";
 import {SvgXml} from "react-native-svg";
 import {IMG_TOOLBOX} from "../../screen/commonScreen/Chat/Footer/Constants";
-
+import * as Animatable from "react-native-animatable";
 type ChatListType = {
     message: MessageType
     isSentByCurrentUser: boolean
@@ -22,8 +22,12 @@ const ChatList = memo(({message, isSentByCurrentUser, isTyping = false, avatar}:
     const isBackColor = isTool ? colors[message.tool.color] : isSentByCurrentUser ? '#4DB8D5' : '#7EA7D9'
     return (
         <>
-            <Box paddingX={0.5} paddingY={1.5} borderRadius={8}
-                 alignSelf={isSentByCurrentUser ? 'flex-end' : 'flex-start'}>
+            <Animatable.View style={{
+                padding: 4,
+                paddingVertical: 6,
+                borderRadius: 8,
+                alignSelf: isSentByCurrentUser ? 'flex-end': 'flex-start'
+            }} animation={'pulse'}>
                 <Box p={isTyping ? 2 : 0} style={styles.container}
                      backgroundColor={isBackColor}>
                     {
@@ -67,7 +71,7 @@ const ChatList = memo(({message, isSentByCurrentUser, isTyping = false, avatar}:
                             </>
                     }
                 </Box>
-            </Box>
+            </Animatable.View>
             <ShowImagesModal image={message?.imageUrl} visible={openImg} onClose={() => {
                 setOpenImg(false)
             }}/>
@@ -78,7 +82,7 @@ const ChatList = memo(({message, isSentByCurrentUser, isTyping = false, avatar}:
 const styles = StyleSheet.create({
     imgContent: {
         width: 250,
-        borderRadius: 16,
+        borderRadius: 12,
         height: 200
     },
     container: {
