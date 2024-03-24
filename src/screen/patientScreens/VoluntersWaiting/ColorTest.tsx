@@ -4,7 +4,7 @@ import {colors} from "../../../assets/colors/colors";
 import {StyleSheet, TouchableOpacity} from "react-native";
 import {generateBoxShadowStyle} from "../../../utils/utils";
 import {createAlert} from "../../../components/alert";
-
+import * as Animatable from 'react-native-animatable'
 type ColorType = { color: string, opacity: number }
 const generateRandomColor = () => {
     const letters = '0123456789ABCDEF';
@@ -59,7 +59,8 @@ const ColorTest = ({closeTest,}) => {
     };
     const generateShadow = generateBoxShadowStyle(5, 5, '#171717', 0.2, 3, 10, '#171717')
     return (
-        <Box flex={1} alignItems={'center'} justifyContent="space-evenly">
+        <Animatable.View style={{flex: 1, alignItems: 'center', justifyContent: 'space-evenly'}}
+                         animation={'zoomIn'} easing={"ease-in"}>
             <Box alignItems={'center'}>
                 <Text fontSize={20} color={colors.blue} fontWeight={'500'}>
                     Choose the colors in any order you like
@@ -102,7 +103,7 @@ const ColorTest = ({closeTest,}) => {
                     </Button>
                 </Box>
             }
-        </Box>
+        </Animatable.View>
     );
 };
 const styles = StyleSheet.create({

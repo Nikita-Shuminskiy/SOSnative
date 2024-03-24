@@ -8,7 +8,8 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain"
+      "resizeMode": "contain",
+      "backgroundColor": "#D5E3FE"
     },
     "notification": {
       "iosDisplayInForeground": true,
@@ -73,6 +74,12 @@
           "ios": {
             "useFrameworks": "static"
           }
+        }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow SOS to access your microphone."
         }
       ]
     ],

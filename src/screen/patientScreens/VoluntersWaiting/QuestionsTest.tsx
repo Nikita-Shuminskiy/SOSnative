@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {BaseWrapperComponent} from "../../../components/baseWrapperComponent";
-import {Image, Pressable, StyleSheet, TouchableOpacity} from "react-native";
+import {Pressable, StyleSheet} from "react-native";
 import {DATA_QUESTIONS, QuestionsType} from "./common";
 import * as Animatable from 'react-native-animatable'
 import Button from "../../../components/Button";
@@ -25,16 +25,17 @@ const QuestionsTest = ({closeTest}) => {
     };
     const currentQuestionData: QuestionsType = DATA_QUESTIONS[currentQuestion];
     return (
-        <BaseWrapperComponent isKeyboardAwareScrollView={true} styleSafeArea={{ paddingTop: 0}}>
+        <BaseWrapperComponent isKeyboardAwareScrollView={true} styleSafeArea={{paddingTop: 0}}>
             {currentQuestionData?.img &&
-                <Animatable.Image animation={'pulse'} easing={"ease-in"}  source={currentQuestionData.img} style={{width: '100%', height: 300 }}/>}
+                <Animatable.Image animation={'pulse'} easing={"ease-in"} source={currentQuestionData.img}
+                                  style={{width: '100%', height: 300}}/>}
             <Animatable.View style={styles.container} animation={'zoomIn'} easing={"ease-in"}>
 
-                <Text mt={2} style={[styles.text, { fontSize: 22 }]}>{currentQuestionData.text}</Text>
+                <Text mt={2} style={[styles.text, {fontSize: 22}]}>{currentQuestionData.text}</Text>
 
                 <Box mt={2} mb={5}>
                     {currentQuestionData?.answers?.map(answer => (
-                        <Animatable.View animation={selectedAnswer === answer.id ? 'tada' : 'pulse'}   key={answer.id}>
+                        <Animatable.View animation={selectedAnswer === answer.id ? 'tada' : 'pulse'} key={answer.id}>
                             <Pressable
                                 style={{
                                     borderRadius: 16,

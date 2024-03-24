@@ -21,7 +21,6 @@ import {Box} from "native-base";
 import {useTyping} from "./hook/useTyping";
 import {MessagePayloadType} from "../../../store/SocketStore/type";
 import {colors} from "../../../assets/colors/colors";
-import {StatusBar} from "expo-status-bar";
 
 type ChatSProps = {
     navigation: NavigationProp<ParamListBase>

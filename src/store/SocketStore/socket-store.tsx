@@ -11,11 +11,14 @@ import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import {
     AudienceType,
     DataJoinRoomType,
-    DataScoresAfterChatType, MessagePayloadType,
+    DataScoresAfterChatType,
+    MessagePayloadType,
     ResultPatchedVolunteerDataType,
-    RoomDisconnectInfoType, VolunteerToolboxType
+    RoomDisconnectInfoType,
+    VolunteerToolboxType
 } from "./type";
 import {RoleEnum, UserType} from "../../api/type";
+import {Audio} from 'expo-av';
 
 export class SocketStore {
     socket: Socket | null = null
@@ -44,6 +47,11 @@ export class SocketStore {
     }
 
     setMessage = (message: MessageType) => {
+        if(message.from.id !== this.user.id) {
+            this.playSoundSendSms(false)
+        } else {
+            this.playSoundSendSms(true)
+        }
         this.messages = [...this.messages, message]
     }
 
@@ -71,7 +79,15 @@ export class SocketStore {
     sendMessage = (payload: MessagePayloadType) => {
         this.socket?.emit('create', 'messages', payload);
     }
-
+    playSoundSendSms = async (outSms: boolean) => {
+        const isOutSms =  outSms ? require('../../assets/sounds/outSms.mp3') : require('../../assets/sounds/inboxesSms.mp3')
+        try {
+            const {sound} = await Audio.Sound.createAsync(isOutSms)
+            await sound.playAsync();
+        } catch (error) {
+            console.log('Ошибка при воспроизведении звука:', error);
+        }
+    }
     setVolunteerEvaluation = (userId: string) => {
         const volunteerEvaluationHandler = (data) => {
             this.forcedClosingSocket(userId)
@@ -88,7 +104,7 @@ export class SocketStore {
     }
     getToolboxVolunteer = async () => {
         const {data} = await authApi.getToolboxVolunteer()
-        this.toolboxVolunteer = data
+        this.toolboxVolunteer = data as VolunteerToolboxType[]
     }
 
     joinRoom = async (idRoom) => {
