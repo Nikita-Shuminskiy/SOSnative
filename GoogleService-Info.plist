@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CLIENT_ID</key>
+	<string>91939127177-o63v8uchocr821fpab1nodh16dsb0ol4.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+    <string>com.googleusercontent.apps.91939127177-o63v8uchocr821fpab1nodh16dsb0ol4</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>91939127177-gkf26dd4kf4ug2olqb1d6l6k3uji5dae.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDj7_O1jk8SX-g2_j7xy1fq_VG-u4_TfQs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>91939127177</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ludenlabs.sosmobile</string>
+	<key>PROJECT_ID</key>
+	<string>sos-luden-labs</string>
+	<key>STORAGE_BUCKET</key>
+	<string>sos-luden-labs.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:91939127177:ios:76c1638936d74d9a4aeb58</string>
+</dict>
+</plist>

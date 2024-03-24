@@ -8,8 +8,7 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ea1111"
+      "resizeMode": "contain"
     },
     "notification": {
       "iosDisplayInForeground": true,
@@ -37,7 +36,7 @@
       }
     },
     "android": {
-      "versionCode": 15,
+      "versionCode": 16,
       "googleServicesFile": "./google-services.json",
       "userInterfaceStyle": "light",
       "adaptiveIcon": {
