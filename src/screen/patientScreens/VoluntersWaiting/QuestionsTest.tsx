@@ -1,32 +1,88 @@
-import React, {useCallback} from 'react';
+import React, {useState} from 'react';
 import {BaseWrapperComponent} from "../../../components/baseWrapperComponent";
-import {Text} from "react-native";
+import {Image, Pressable, StyleSheet, TouchableOpacity} from "react-native";
 import {DATA_QUESTIONS, QuestionsType} from "./common";
-import TextQuestion from "../../../components/list-viewer/TextQuestion";
+import * as Animatable from 'react-native-animatable'
+import Button from "../../../components/Button";
+import {colors} from "../../../assets/colors/colors";
+import {Box, Text} from "native-base";
 
 
-const QuestionsTest = () => {
-    const onPressQuestion = useCallback((question: QuestionsType) => {
+const QuestionsTest = ({closeTest}) => {
+    const [currentQuestion, setCurrentQuestion] = useState(0);
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
 
-    }, [])
-    const questions: any = DATA_QUESTIONS.map((question) => <TextQuestion question={question} onPress={onPressQuestion}
-                                                                          key={question.id}/>)
+    const nextQuestion = () => {
+        if (currentQuestion < DATA_QUESTIONS.length - 1) {
+            setCurrentQuestion(currentQuestion + 1);
+            setSelectedAnswer(null);
+        } else {
+            closeTest()
+        }
+    };
+    const handleAnswerSelection = (answerId) => {
+        setSelectedAnswer(answerId);
+    };
+    const currentQuestionData: QuestionsType = DATA_QUESTIONS[currentQuestion];
     return (
-        <BaseWrapperComponent isKeyboardAwareScrollView={true}>
-            <Text>
-                Welcome to Your Support Journey! While we're getting your support companion ready, let's get to know
-                each other a bit better. Your answers will help us tailor the support you receive. And don't worry, we
-                like to keep things light-hearted around here!
-            </Text>
-            {questions}
-            <Text>
-                Thank you for sharing a piece of your world with us!
-                Remember, it's okay to not be okay, and it's even better to share a laugh or two, even in tough times.
-                Your support companion will be with you shortly to continue this journey together. Hang tight, and
-                remember, we're here for you, one step (or one chuckle) at a time.
-            </Text>
+        <BaseWrapperComponent isKeyboardAwareScrollView={true} styleSafeArea={{ paddingTop: 0}}>
+            {currentQuestionData?.img &&
+                <Animatable.Image animation={'pulse'} easing={"ease-in"}  source={currentQuestionData.img} style={{width: '100%', height: 300 }}/>}
+            <Animatable.View style={styles.container} animation={'zoomIn'} easing={"ease-in"}>
+
+                <Text mt={2} style={[styles.text, { fontSize: 22 }]}>{currentQuestionData.text}</Text>
+
+                <Box mt={2} mb={5}>
+                    {currentQuestionData?.answers?.map(answer => (
+                        <Animatable.View animation={selectedAnswer === answer.id ? 'tada' : 'pulse'}   key={answer.id}>
+                            <Pressable
+                                style={{
+                                    borderRadius: 16,
+                                    marginTop: 10,
+                                    padding: 10,
+                                    backgroundColor: selectedAnswer === answer.id ? colors.blueMedium : colors.blueLightMedium
+                                }}
+                                onPress={() => handleAnswerSelection(answer.id)}
+                            >
+                                <Text style={[styles.text, {color: colors.white}]}>{answer.text}</Text>
+                            </Pressable>
+                        </Animatable.View>
+                    ))}
+                </Box>
+
+                <Button styleText={styles.txtBtnStart} styleContainer={styles.btnStart}
+                        onPress={nextQuestion}
+                        textBtn={currentQuestionData.isFirst ? 'let\'s do it. :)' : currentQuestionData.isLast ? 'Go to waiting' : 'Next question'}/>
+            </Animatable.View>
         </BaseWrapperComponent>
     );
 };
+const styles = StyleSheet.create({
+    container: {
+        paddingHorizontal: 12,
 
+
+        alignItems: 'center',
+        justifyContent: 'space-evenly'
+    },
+    btnStart: {
+        backgroundColor: colors.blueMedium,
+        borderRadius: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    txtBtnStart: {
+        textAlign: 'center',
+        fontWeight: '500',
+        fontSize: 18,
+        color: colors.white,
+        paddingHorizontal: 20,
+    },
+    text: {
+        fontSize: 18,
+        lineHeight: 32,
+        color: colors.black,
+        fontWeight: '500'
+    },
+})
 export default QuestionsTest;

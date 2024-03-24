@@ -4,6 +4,7 @@ import {NavigationProp} from "@react-navigation/native";
 import {routerConstants} from "../../../constants/routerConstants";
 import SearchingVolunteer from "../../../components/modal/SearchingVolunteer";
 import SocketStore from "../../../store/SocketStore/socket-store";
+import QuestionsTest from "./QuestionsTest";
 import ColorTest from "./ColorTest";
 
 
@@ -14,11 +15,15 @@ type GameTestSProps = {
 
 const VolunteerWaitingS = observer(({navigation}: GameTestSProps) => {
     const {user, volunteerJoinedData} = SocketStore
-    const [isOpenGameTest, setIsOpenGameTest] = useState(false)
+    const [isOpenQuiz, setIsOpenQuiz] = useState(false)
+    const [isOpenColorQuiz, setIsOpenColorQuiz] = useState(false)
 
 
-    const onPressGoGameTest = () => {
-        setIsOpenGameTest(true)
+    const onPressColorQuiz = () => {
+        setIsOpenColorQuiz(true)
+    }
+    const onPressGoQuiz = () => {
+        setIsOpenQuiz(true)
     }
 
     const onLeaveHandler = useCallback(() => {
@@ -29,9 +34,11 @@ const VolunteerWaitingS = observer(({navigation}: GameTestSProps) => {
     return (
         <>
             {
-                isOpenGameTest ? <ColorTest closeTest={() => setIsOpenGameTest(false)}/> :
-                    <SearchingVolunteer navigation={navigation} volunteerJoinedData={volunteerJoinedData}
-                                        onLeave={onLeaveHandler} onPressGoGameTest={onPressGoGameTest}/>
+                isOpenQuiz ? <QuestionsTest closeTest={() => setIsOpenQuiz(false)}/> :
+                    isOpenColorQuiz ? <ColorTest closeTest={() => setIsOpenColorQuiz(false)}/> :
+                        <SearchingVolunteer navigation={navigation} onPressGoQuiz={onPressGoQuiz}
+                                            volunteerJoinedData={volunteerJoinedData}
+                                            onLeave={onLeaveHandler} onPressColorQuiz={onPressColorQuiz}/>
             }
         </>
     );

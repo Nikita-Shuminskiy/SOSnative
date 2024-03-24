@@ -7,8 +7,6 @@ import PeoplesWitchElements from "../../assets/images/people-witch-elements.png"
 import imgPeople from "../../assets/images/people2.png";
 import imgPeople2 from "../../assets/images/Ellipse47.png";
 import imgPeople3 from "../../assets/images/Ellipse48.png";
-import arrowBack from "../../assets/images/keyboard_arrow_left-white.png";
-import {checkLanguage} from "../../utils/utils";
 import {LinearGradient} from "expo-linear-gradient";
 import {Box} from "native-base";
 import {StatusBar} from "expo-status-bar";
@@ -20,13 +18,15 @@ type SearchingVolunteerModalProps = {
     volunteerJoinedData: any
     navigation: any
     onLeave?: () => void
-    onPressGoGameTest?: () => void
+    onPressColorQuiz?: () => void
+    onPressGoQuiz?: () => void
 }
 const SearchingVolunteer = memo(({
                                      navigation,
                                      volunteerJoinedData,
                                      onLeave,
-                                     onPressGoGameTest
+                                     onPressColorQuiz,
+                                     onPressGoQuiz
                                  }: SearchingVolunteerModalProps) => {
     const goBackPress = () => {
         onLeave()
@@ -50,14 +50,20 @@ const SearchingVolunteer = memo(({
                     <Text style={styles.textHeader}>Searching for a volunteer for you!</Text>
                     <Text style={styles.text}>It will take no longer than 10 minutes.</Text>
                 </Box>
-            </Box>
-            <Box alignItems={'center'} justifyContent={'center'} flex={1}>
-                <Box w={200} mb={3}>
-                    <Animatable.View animation={'bounce'} easing={"ease-in"} iterationCount={10}>
+                <Box alignItems={'center'} mt={2} mb={2}>
+                    <Animatable.View animation={'zoomIn'} easing={"ease-in"}>
                         <Button styleText={styles.txtBtnStart} styleContainer={styles.btnStart}
-                                onPress={onPressGoGameTest} textBtn={'Take a test'}/>
+                                onPress={onPressGoQuiz} textBtn={'Take a quiz'}/>
+                    </Animatable.View>
+                    <Text style={{ fontWeight: '600', fontSize: 22, color: colors.white, marginTop: 5, marginBottom: 5 }}>or</Text>
+                    <Animatable.View animation={'zoomIn'} easing={"ease-in"}>
+                        <Button styleText={styles.txtBtnStart} styleContainer={styles.btnStart}
+                                onPress={onPressColorQuiz} textBtn={'Take a color quiz'}/>
                     </Animatable.View>
                 </Box>
+            </Box>
+            <Box alignItems={'center'} justifyContent={'center'} flex={1}>
+
                 <Animatable.View animation={'pulse'} delay={1000} iterationCount={30}>
                     <Image style={styles.imgPeople} source={PeoplesWitchElements}/>
                 </Animatable.View>
@@ -83,6 +89,9 @@ const styles = StyleSheet.create({
         paddingTop: Platform.OS === 'ios' ? 20 : 30
     },
     btnStart: {
+        height: 55,
+        paddingHorizontal: 5,
+        paddingVertical: 2,
         backgroundColor: colors.greenMedium,
         borderRadius: 16,
         alignItems: 'center',
@@ -91,10 +100,8 @@ const styles = StyleSheet.create({
     txtBtnStart: {
         textAlign: 'center',
         fontWeight: '500',
-        fontSize: 23,
+        fontSize: 18,
         color: colors.white,
-        paddingHorizontal: 30,
-        paddingVertical: 20
     },
     imgFooter: {
         width: 47,

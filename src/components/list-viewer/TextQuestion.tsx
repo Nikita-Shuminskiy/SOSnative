@@ -4,6 +4,7 @@ import {checkLanguage, generateBoxShadowStyle} from "../../utils/utils";
 import {colors} from "../../assets/colors/colors";
 import {TouchableOpacity} from "react-native";
 import {QuestionsType} from "../../screen/patientScreens/VoluntersWaiting/common";
+import CustomCheckbox from "../CustomCheckbox";
 
 type TextQuestionProps = {
     question: QuestionsType
@@ -18,6 +19,10 @@ const TextQuestion = ({question, onPress}: TextQuestionProps) => {
                  justifyContent={'space-evenly'}
                  flexDirection={checkLanguage ? 'row-reverse' : 'row'}
             >
+               {/* <CustomCheckbox
+                    checked={question.answers === answer}
+                    onPress={() => onPress(answer)}
+                />*/}
                 <Text marginX={2} flex={1} fontWeight={'normal'} fontSize={13}
                       color={colors.white}>{question.text}</Text>
             </Box>

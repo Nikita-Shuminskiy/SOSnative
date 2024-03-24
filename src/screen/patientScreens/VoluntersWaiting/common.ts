@@ -5,6 +5,10 @@ import img4 from '../../../assets/images/testQuestions/4.jpg'
 import img5 from '../../../assets/images/testQuestions/5.jpg'
 import img6 from '../../../assets/images/testQuestions/6.jpg'
 import img7 from '../../../assets/images/testQuestions/7.jpg'
+import {ImageSourcePropType} from "react-native";
+import welcomeImg from '../../../assets/images/testQuestions/welcome.jpg'
+import goodByeImg from "../../../assets/images/testQuestions/goodbye.jpg";
+
 type AnswerType = {
     id: number,
     text: string
@@ -13,10 +17,20 @@ type AnswerType = {
 export type QuestionsType = {
     id: number,
     text: string,
-    answers: AnswerType[]
-    img: string
+    answers?: AnswerType[]
+    img?: ImageSourcePropType
+    isFirst?: boolean,
+    isLast?: boolean
 }
 export const DATA_QUESTIONS: QuestionsType[] = [
+    {
+        id: 8,
+        isFirst: true,
+        text: 'Welcome to Your Support Journey!\nWhile we\'re getting your support companion ready, let\'s get to know' +
+            'each other a bit better. Your answers will help us tailor the support you receive. And don\'t worry, we' +
+            'like to keep things light-hearted around here!',
+        img: welcomeImg
+    },
     {
         id: 1,
         text: 'How\'s your day shaping up?',
@@ -100,5 +114,14 @@ export const DATA_QUESTIONS: QuestionsType[] = [
         id: 7,
         text: 'Finally, what\'s one thing you wish for right now (besides a magic wand)?',
         img: img7
+    },
+    {
+        id: 9,
+        isLast: true,
+        text: "Thank you for sharing a piece of your world with us!\n" +
+            "Remember, it's okay to not be okay, and it's even better to share a laugh or two, even in tough times.\n" +
+            "Your support companion will be with you shortly to continue this journey together. Hang tight, and\n" +
+            "remember, we're here for you, one step (or one chuckle) at a time.",
+        img: goodByeImg
     },
 ]

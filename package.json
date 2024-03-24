@@ -10,7 +10,7 @@
     "web": "npx expo start --web",
     "build_apk": "eas build -p android --profile preview",
     "eas_update": "eas update --branch preview --message \"fix\"",
-    "build_dev": "eas build --profile development --platform androiyd",
+    "build_dev": "eas build --profile development --platform android",
     "build_android_aab": "eas build --platform android",
     "expo_cred_android": "expo credentials:manager -p android",
     "build_dev_ios": "eas build --profile development --platform ios",
