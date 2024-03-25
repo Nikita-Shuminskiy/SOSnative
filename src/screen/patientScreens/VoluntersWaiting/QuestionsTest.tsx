@@ -6,6 +6,7 @@ import * as Animatable from 'react-native-animatable'
 import Button from "../../../components/Button";
 import {colors} from "../../../assets/colors/colors";
 import {Box, Text} from "native-base";
+import {playSound, PlaySoundData} from "../../../utils/playSound";
 
 
 const QuestionsTest = ({closeTest}) => {
@@ -21,6 +22,7 @@ const QuestionsTest = ({closeTest}) => {
         }
     };
     const handleAnswerSelection = (answerId) => {
+        playSound(PlaySoundData.press)
         setSelectedAnswer(answerId);
     };
     const currentQuestionData: QuestionsType = DATA_QUESTIONS[currentQuestion];

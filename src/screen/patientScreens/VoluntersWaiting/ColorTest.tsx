@@ -5,6 +5,7 @@ import {StyleSheet, TouchableOpacity} from "react-native";
 import {generateBoxShadowStyle} from "../../../utils/utils";
 import {createAlert} from "../../../components/alert";
 import * as Animatable from 'react-native-animatable'
+import {playSound, PlaySoundData} from "../../../utils/playSound";
 type ColorType = { color: string, opacity: number }
 const generateRandomColor = () => {
     const letters = '0123456789ABCDEF';
@@ -26,6 +27,7 @@ const ColorTest = ({closeTest,}) => {
         if (selectedColors?.length === 10) {
             return
         }
+        playSound(PlaySoundData.press)
         setSelectedColors([...selectedColors, currColor]);
         const updateColors = colorPalette.map((color) => {
             if (color.color === currColor.color) {

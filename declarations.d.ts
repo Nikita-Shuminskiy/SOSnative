@@ -9,6 +9,7 @@ declare module '*.jpg' {
     const content: string;
     export default content;
 }
+declare module '*.mp3';
 
 declare module '*.png' {
     import { ImageSourcePropType } from 'react-native'

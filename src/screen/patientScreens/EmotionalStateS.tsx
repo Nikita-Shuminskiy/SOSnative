@@ -22,6 +22,7 @@ import smileOk from "../../assets/images/lottie/smileOk.json";
 import smileNotGood from "../../assets/images/lottie/smileNotGood.json";
 import smileAverege from "../../assets/images/lottie/smileAverege.json";
 import LottieView from "lottie-react-native";
+import {playSound, PlaySoundData} from "../../utils/playSound";
 
 export type ItemData = {
     id: number;
@@ -42,6 +43,7 @@ const EmotionalStateS = observer(({navigation, route}: any) => {
         dataScoresAfterChat
     } = SocketStore
     const onValueSliderChange = useCallback((value) => {
+        playSound(PlaySoundData.out)
         if (isFromChat) {
             setDataScoresAfterChat(value, 'resultConditionRate')
         } else {

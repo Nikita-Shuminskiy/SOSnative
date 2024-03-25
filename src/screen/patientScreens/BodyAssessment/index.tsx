@@ -19,6 +19,9 @@ import {observer} from "mobx-react-lite";
 import {Box} from "native-base";
 import CheckBox from "./component/CheckBox";
 import * as Animatable from "react-native-animatable";
+import {playSound, PlaySoundData} from "../../../utils/playSound";
+
+
 type CheckEvaluationConditionType = {
     head: boolean,
     heart: boolean,
@@ -32,7 +35,8 @@ const BodyAssessmentS = observer(({navigation, route}: any) => {
     const isFromChat = route.params?.fromChat
     const {
         setDataScoresAfterChat,
-        volunteerJoinedData
+        volunteerJoinedData,
+        playSoundSendSms
     } = SocketStore
     const [isChecked, setChecked] = useState<Partial<CheckEvaluationConditionType>>({
         head: false,
@@ -57,6 +61,7 @@ const BodyAssessmentS = observer(({navigation, route}: any) => {
         navigation.navigate(routerConstants.EMOTIONAL_STATE, {fromChat: isFromChat})
     }
     const onTouchEndCheckedHandler = (key: keyof typeof isChecked) => {
+        playSound(PlaySoundData.press)
         setChecked((prevState) => {
             return {
                 ...isChecked,

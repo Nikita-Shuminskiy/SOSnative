@@ -19,6 +19,7 @@ import {
 } from "./type";
 import {RoleEnum, UserType} from "../../api/type";
 import {Audio} from 'expo-av';
+import {playSound, PlaySoundData} from "../../utils/playSound";
 
 export class SocketStore {
     socket: Socket | null = null
@@ -48,9 +49,9 @@ export class SocketStore {
 
     setMessage = (message: MessageType) => {
         if(message.from.id !== this.user.id) {
-            this.playSoundSendSms(false)
+            playSound(PlaySoundData.inbox)
         } else {
-            this.playSoundSendSms(true)
+            playSound(PlaySoundData.out)
         }
         this.messages = [...this.messages, message]
     }
@@ -79,15 +80,7 @@ export class SocketStore {
     sendMessage = (payload: MessagePayloadType) => {
         this.socket?.emit('create', 'messages', payload);
     }
-    playSoundSendSms = async (outSms: boolean) => {
-        const isOutSms =  outSms ? require('../../assets/sounds/outSms.mp3') : require('../../assets/sounds/inboxesSms.mp3')
-        try {
-            const {sound} = await Audio.Sound.createAsync(isOutSms)
-            await sound.playAsync();
-        } catch (error) {
-            console.log('Ошибка при воспроизведении звука:', error);
-        }
-    }
+
     setVolunteerEvaluation = (userId: string) => {
         const volunteerEvaluationHandler = (data) => {
             this.forcedClosingSocket(userId)
