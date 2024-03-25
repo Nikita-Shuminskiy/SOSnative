@@ -20,6 +20,7 @@ import {Box} from "native-base";
 import CheckBox from "./component/CheckBox";
 import * as Animatable from "react-native-animatable";
 import {playSound, PlaySoundData} from "../../../utils/playSound";
+import {useGoBack} from "../../../utils/hook/useGoBack";
 
 
 type CheckEvaluationConditionType = {
@@ -35,9 +36,15 @@ const BodyAssessmentS = observer(({navigation, route}: any) => {
     const isFromChat = route.params?.fromChat
     const {
         setDataScoresAfterChat,
-        volunteerJoinedData,
-        playSoundSendSms
+        volunteerJoinedData
     } = SocketStore
+    const goBack = () => {
+        if(!isFromChat) {
+            navigation.navigate(routerConstants.NEED_HELP)
+        }
+        return true
+    }
+    useGoBack(goBack)
     const [isChecked, setChecked] = useState<Partial<CheckEvaluationConditionType>>({
         head: false,
         heart: false,

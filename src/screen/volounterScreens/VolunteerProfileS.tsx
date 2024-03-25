@@ -19,6 +19,7 @@ import Constants from "expo-constants";
 import Link from "../../components/Link";
 import {createAlert} from "../../components/alert";
 import * as Animatable from "react-native-animatable";
+import {routerConstants} from "../../constants/routerConstants";
 
 type VolunteerProfileSProps = {
     navigation: NavigationProp<ParamListBase>
@@ -39,7 +40,11 @@ const VolunteerProfileS = observer(({navigation, route}: VolunteerProfileSProps)
     };
 
     const onPressLogOut = () => {
-        AuthStoreService.logOut()
+        AuthStoreService.logOut().then((data) => {
+            if(data) {
+                navigation.navigate(routerConstants.LOGIN)
+            }
+        })
     }
     const onPressDeleteAccount = (isDelete?: boolean) => {
         createAlert({

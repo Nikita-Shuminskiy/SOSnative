@@ -52,7 +52,7 @@ const VolunteerDashboard = memo(({onSendMessage, toolboxVolunteer}: VolunteerDas
 
                 <Box mb={2} style={{maxHeight: 400}}>
                     <ScrollView showsVerticalScrollIndicator={false}>
-                        {currentDataQuestions.data.map((question) => {
+                        {currentDataQuestions?.data?.map((question) => {
                             return renderDataQuestion(question)
                         })}
                     </ScrollView>
@@ -62,7 +62,7 @@ const VolunteerDashboard = memo(({onSendMessage, toolboxVolunteer}: VolunteerDas
             {
                 <Box flexDirection={checkLanguage ? 'row-reverse' : 'row'} justifyContent={'space-around'}
                      w={'100%'}>
-                    {toolboxVolunteer.map((question) => {
+                    {toolboxVolunteer?.map((question) => {
                         return renderItem({item: question})
                     })}
                 </Box>

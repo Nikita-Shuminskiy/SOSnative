@@ -47,7 +47,6 @@ export class AuthStore {
         this.rooms = [];
         const token = await deviceStorage.getItem('token')
         const{data} = isDelete ? await authApi.deleteAccount() : await authApi.logout(token)
-        console.log(data)
         await deviceStorage.removeItem('token')
         this.setAuth(false)
         this.setUser({})

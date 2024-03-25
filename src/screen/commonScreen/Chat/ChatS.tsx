@@ -76,14 +76,14 @@ const ChatS = observer(({navigation}: ChatSProps) => {
     const exitChatHandler = useCallback(() => {
         const onPressLeave = () => {
             if (user?.role === 'volunteer') {
-                socket.off('rooms close')
+                socket?.off('rooms close')
                 SocketStore?.forcedClosingSocket(user?.id)
                 navigation?.goBack()
             } else {
-                socket.off('rooms close')
-                socket.off('rooms timeout')
-                socket.off('rooms disconnect')
-                socket.emit('rate', 'rooms')
+                socket?.off('rooms close')
+                socket?.off('rooms timeout')
+                socket?.off('rooms disconnect')
+                socket?.emit('rate', 'rooms')
                 navigation.navigate(routerConstants.EVALUATION_CONDITION, {fromChat: true})
             }
         }

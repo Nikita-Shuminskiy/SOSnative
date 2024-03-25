@@ -28,7 +28,8 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "fetch",
-          "remote-notification"
+          "remote-notification",
+          "audio"
         ]
       },
       "bundleIdentifier": "com.ludenlabs.sosmobile",

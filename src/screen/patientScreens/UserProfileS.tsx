@@ -17,6 +17,7 @@ import {NavigationProp} from "@react-navigation/native";
 import Constants from "expo-constants";
 import Link from "../../components/Link";
 import {createAlert} from "../../components/alert";
+import {routerConstants} from "../../constants/routerConstants";
 
 type UserProfileSProps = {
     navigation: NavigationProp<any>
@@ -26,7 +27,11 @@ const UserProfileS = observer(({navigation}: UserProfileSProps) => {
     const {AuthStoreService} = rootStore
     const [notifications, setNotifications] = useState(false)
     const onPressLogOut = () => {
-        AuthStoreService.logOut()
+        AuthStoreService.logOut().then((data) => {
+            if(data) {
+                navigation.navigate(routerConstants.LOGIN)
+            }
+        })
     }
     const onPressDeleteAccount = (isDelete?: boolean) => {
         createAlert({

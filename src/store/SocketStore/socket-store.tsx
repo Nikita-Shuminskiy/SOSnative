@@ -18,7 +18,6 @@ import {
     VolunteerToolboxType
 } from "./type";
 import {RoleEnum, UserType} from "../../api/type";
-import {Audio} from 'expo-av';
 import {playSound, PlaySoundData} from "../../utils/playSound";
 
 export class SocketStore {
@@ -95,6 +94,7 @@ export class SocketStore {
     sendSelectedRate = (conditionRate: number[]) => {
         this.socket?.emit('patch', 'rooms', null, {conditionRate: conditionRate[0]})
     }
+
     getToolboxVolunteer = async () => {
         const {data} = await authApi.getToolboxVolunteer()
         this.toolboxVolunteer = data as VolunteerToolboxType[]
@@ -127,6 +127,7 @@ export class SocketStore {
                     Authorization: `Bearer ${token}`,
                 },
             });
+
             this.setSocket(socket)
             return socket
         } catch (e) {
@@ -227,12 +228,18 @@ export class SocketStore {
     }
 
     checkActiveSession = async () => {
-        const {data} = await authApi.getCurrentActiveRoom()
-        console.log(data?.audience?.length, 'getCurrentActiveRoom')
-        if (data?.audience?.length > 0) {
-            await this.socketInit()
-            this.navigation?.navigate(routerConstants.CHAT)
-        }
+       try {
+           const {data} = await authApi.getCurrentActiveRoom()
+           console.log(data?.audience?.length, 'getCurrentActiveRoom')
+           if (data?.audience?.length > 0) {
+               await this.socketInit()
+               return true
+           } else {
+               return false
+           }
+       } catch (e) {
+           return false
+       }
     }
 
     setCurrentUserConditionRate = (rate: number) => {

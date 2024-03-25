@@ -23,7 +23,7 @@ const ProblemDescription = observer(({navigation}: ProblemDescriptionProps) => {
     const [description, setDescription] = useState('')
     const onPressHandler = () => {
         if (!description) return
-        navigation.navigate(routerConstants.EVALUATION_CONDITION)
+        navigation.navigate(routerConstants.EVALUATION_CONDITION, {fromChat: false})
         setDataPatient(description, 'description')
         setDescription('')
     }

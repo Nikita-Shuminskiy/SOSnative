@@ -11,6 +11,7 @@ export enum PlaySoundData {
 
 const playSound = async (audio: PlaySoundData) => {
     try {
+
         const {sound} = await Audio.Sound.createAsync(audio)
         await sound.playAsync();
     } catch (error) {

@@ -6,6 +6,8 @@ import SearchingVolunteer from "../../../components/modal/SearchingVolunteer";
 import SocketStore from "../../../store/SocketStore/socket-store";
 import QuestionsTest from "./QuestionsTest";
 import ColorTest from "./ColorTest";
+import {BackHandler} from "react-native";
+import {useGoBack} from "../../../utils/hook/useGoBack";
 
 
 type GameTestSProps = {
@@ -30,7 +32,11 @@ const VolunteerWaitingS = observer(({navigation}: GameTestSProps) => {
         SocketStore?.forcedClosingSocket(user?.id)
         navigation.navigate(routerConstants.NEED_HELP)
     }, [])
-
+    const goBack = () => {
+        BackHandler.exitApp();
+        return true
+    }
+    useGoBack(goBack)
     return (
         <>
             {

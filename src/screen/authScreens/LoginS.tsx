@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Platform, StyleSheet, TouchableOpacity, View} from "react-native";
+import {BackHandler, Platform, StyleSheet, TouchableOpacity, View} from "react-native";
 import {NavigationProp, ParamListBase} from "@react-navigation/native";
 import logo from '../../assets/images/logoWitchWiFi.png'
 import TextInput from "../../components/TextInput";
@@ -20,6 +20,7 @@ import AuthWitchGoogleModal from "../../components/modal/AuthWitchGoogleModal";
 import {RoleEnum} from "../../api/type";
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Animatable from "react-native-animatable";
+import {useGoBack} from "../../utils/hook/useGoBack";
 
 GoogleSignin.configure({
     scopes: ["https://www.googleapis.com/auth/userinfo.profile"], // what API you want to access on behalf of the user, default is email and profile
@@ -74,8 +75,10 @@ const LoginS = ({navigation}: LoginSProps) => {
             strategy: 'local'
         }).then((data) => {
             if (data) {
-                checkActiveSession()
-                navigation.navigate(data.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
+                checkActiveSession().then((isActiveSession) => {
+                    if(isActiveSession) return navigation.navigate(routerConstants.CHAT)
+                    navigation.navigate(data.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
+                })
             }
         })
         setSubmitting(false)
@@ -91,12 +94,15 @@ const LoginS = ({navigation}: LoginSProps) => {
                 accessToken: userInfo.idToken
             }).then((data) => {
                 if (data) {
-                    checkActiveSession()
-                    navigation.navigate(data.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
+                    checkActiveSession().then((isActiveSession) => {
+                        if(isActiveSession) return navigation.navigate(routerConstants.CHAT)
+                        navigation.navigate(data.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
+                    })
+
                 }
             })
-        } catch (error) {
-        } finally {
+        } catch (e) {
+            console.log(e, 'loginGoogle')
         }
     }
     const isDisabledBtn = () => !!(errors.email && !validateEmail(values.email.trim())) ||
@@ -122,14 +128,21 @@ const LoginS = ({navigation}: LoginSProps) => {
                 }
             }).then((data) => {
                 if (data) {
-                    checkActiveSession()
-                    navigation.navigate(data.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
+                    checkActiveSession().then((isActiveSession) => {
+                        if(isActiveSession) return navigation.navigate(routerConstants.CHAT)
+                        navigation.navigate(data.role === 'volunteer' ? routerConstants.DASHBOARD : routerConstants.NEED_HELP)
+                    })
                 }
             })
         } catch (e) {
             console.log(e)
         }
     }
+    const goBack = () => {
+        BackHandler.exitApp();
+        return true
+    }
+    useGoBack(goBack)
     return (
         <BaseWrapperComponent isKeyboardAwareScrollView={true}>
             <View style={styles.container}>
