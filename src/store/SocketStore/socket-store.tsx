@@ -230,7 +230,6 @@ export class SocketStore {
     checkActiveSession = async () => {
        try {
            const {data} = await authApi.getCurrentActiveRoom()
-           console.log(data?.audience?.length, 'getCurrentActiveRoom')
            if (data?.audience?.length > 0) {
                await this.socketInit()
                return true

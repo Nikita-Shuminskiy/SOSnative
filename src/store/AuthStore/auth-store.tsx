@@ -122,8 +122,8 @@ export class AuthStore {
     }
     async getAppVersion() {
         const {data} = await authApi.getAppVersion()
-        console.log(Constants?.expoConfig?.version)
-        console.log(data?.version)
+      /*  console.log(Constants?.expoConfig?.version)
+        console.log(data?.version)*/
         if (Constants?.expoConfig?.version < data?.version) {
             // version from app.json
             const onPressGoMarket = async () => {

@@ -22,9 +22,8 @@ const ProblemDescription = observer(({navigation}: ProblemDescriptionProps) => {
     const {user, setDataPatient} = AuthStore
     const [description, setDescription] = useState('')
     const onPressHandler = () => {
-        if (!description) return
         navigation.navigate(routerConstants.EVALUATION_CONDITION, {fromChat: false})
-        setDataPatient(description, 'description')
+        setDataPatient(description ? description : 'I feel depressed...', 'description')
         setDescription('')
     }
     const goBackPress = () => {
