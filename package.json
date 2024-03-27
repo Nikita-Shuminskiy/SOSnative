@@ -12,6 +12,7 @@
     "build_dev_ios": "eas build --profile development --platform ios",
     "uplad_ios": "eas submit -p ios --latest",
     "build_ios": "eas build -p ios",
+    "build_preview_ios": "eas build -p ios --profile preview",
     "install_check_deep": "npx expo install --check"
   },
   "dependencies": {

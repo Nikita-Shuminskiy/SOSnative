@@ -76,12 +76,6 @@
             "useFrameworks": "static"
           }
         }
-      ],
-      [
-        "expo-av",
-        {
-          "microphonePermission": "Allow SOS to access your microphone."
-        }
       ]
     ],
     "runtimeVersion": {
